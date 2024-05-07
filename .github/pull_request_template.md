@@ -7,7 +7,7 @@
 - 변경사항을 서술합니다
 
 ## 관련 이슈 링크
-https://github.com/team-capybara/totoro/issues/
+https://github.com/team-capybara/Porco-Rosso/issues/
 
 ## 배포 시 유의사항
 - [선행/후행 머지되어야 할 PR] 혹은 [배포되어야 하는 특정 날짜]가 있다면 명시합니다

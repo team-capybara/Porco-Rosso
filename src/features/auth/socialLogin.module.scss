@@ -1,0 +1,33 @@
+.social_login {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  .title {
+    margin-top: 145px;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 32px;
+    color: #000000;
+    text-align: center;
+    .text {
+      display: block;
+      margin-top: 38px;
+    }
+  }
+  .link_area {
+    margin-bottom: 104px;
+    .link {
+      display: block;
+      height: 30px;
+      margin: 0 20px;
+      border: 1px solid #000000;
+      border-radius: 20px;
+      line-height: 30px;
+      text-align: center;
+      & + .link {
+        margin-top: 10px;
+      }
+    }
+  }
+}

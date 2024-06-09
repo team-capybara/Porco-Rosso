@@ -1,0 +1,12 @@
+.back_navigation {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 20px;
+  .back_link {
+    display: block;
+    width: 32px;
+    height: 32px;
+    background-color: #333;
+  }
+}

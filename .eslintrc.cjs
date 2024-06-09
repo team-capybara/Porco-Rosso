@@ -18,6 +18,8 @@ module.exports = {
     'dist',
     '*.config.js',
     '.eslintrc.cjs',
+    '**/*.css',
+    '**/*.scss',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {

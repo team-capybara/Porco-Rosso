@@ -1,0 +1,9 @@
+.new_profile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  .wrap_next_step_link {
+    margin: 0 8px 19px;
+  }
+}

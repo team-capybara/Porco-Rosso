@@ -1,0 +1,44 @@
+.ongoing_footer {
+  height: 100px;
+  .footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    padding: 12px 16px 32px;
+  }
+  .button {
+    display: block;
+    height: 56px;
+    & + .button {
+      margin-left: 10px;
+    }
+    &.camera {
+      @include font-type('16-22', 600);
+      flex: 1 1 auto;
+      border-radius: 30px;
+      background-color: $green;
+      color: $gray-700;
+      .icon {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        margin-right: 4px;
+        color: $gray-700;
+      }
+    }
+    &.out {
+      position: relative;
+      flex: none;
+      width: 56px;
+      border-radius: 50%;
+      background-color: #efefef;
+      .icon {
+        width: 24px;
+        height: 24px;
+        color: #292929;
+      }
+    }
+  }
+}

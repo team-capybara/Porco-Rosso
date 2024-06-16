@@ -1,0 +1,83 @@
+.participant_list {
+  .title {
+    @include font-type('16-22', 600);
+    display: block;
+    margin: 0 16px 12px;
+    color: $gray-50;
+  }
+  .people_list {
+    padding: 0 16px;
+  }
+  .item {
+    display: inline-block;
+    width: 56px;
+    vertical-align: top;
+    & + .item {
+      margin-left: 12px;
+    }
+  }
+  .button {
+    display: block;
+    max-width: 56px;
+  }
+  .plus_icon {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: $gray-50;
+    .icon {
+      width: 24px;
+      height: 24px;
+      color: #000000;
+    }
+  }
+  .text {
+    @include font-type('12-18', 500);
+    @include ellipsis(1);
+    margin-top: 5px;
+    color: $gray-50;
+    text-align: center;
+  }
+  .thumbnail_area {
+    position: relative;
+  }
+  .thumbnail {
+    overflow: hidden;
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: $gray-50;
+  }
+  .image {
+    position: absolute;
+    top: -100%;
+    right: -100%;
+    bottom: -100%;
+    left: -100%;
+    width: auto;
+    height: 100%;
+    margin: auto;
+  }
+  .crown_icon {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: $yellow;
+    .icon {
+      width: 14px;
+      height: 11px;
+      color: $gray-50;
+    }
+  }
+}

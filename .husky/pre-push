@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
- echo "🔍 push 이전에 lint 규칙을 적용합니다..."
+echo "🔍 push 이전에 lint 규칙을 적용합니다..."
 if npm run lint; then
   echo "✅ 모든 lint 규칙이 성공적으로 적용되었습니다."
   exit 0

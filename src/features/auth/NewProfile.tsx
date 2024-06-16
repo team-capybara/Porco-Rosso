@@ -16,7 +16,10 @@ const NewProfile = (props: NewProfileProps) => {
     <div className={cn('new_profile')}>
       <div>
         {/* todo: StepThree에서 BackNavigation 미노출 부탁드립니다. */}
-        <BackNavigation />
+        <BackNavigation
+          classNameForIconType="arrow_type"
+          blindText="이전 페이지"
+        />
         {/* todo: StepOne, StepTwo, StepThree 상황에 맞게 노출부탁드립니다. */}
         {/* <StepOne /> */}
         <StepTwo />

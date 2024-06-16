@@ -1,0 +1,11 @@
+.horizontal_scroll_wrapper {
+  .inner {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

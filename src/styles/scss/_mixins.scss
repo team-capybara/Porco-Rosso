@@ -1,0 +1,61 @@
+@mixin ellipsis($line) {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @if ($line == 1) {
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    white-space: normal;
+    word-wrap: break-word;
+    -webkit-line-clamp: $line;
+    -webkit-box-orient: vertical;
+  }
+}
+@mixin font-type($name: '', $weight: null) {
+  @if ($name == '12-18') {
+    font-size: 12px;
+    line-height: 18px;
+  } @else if ($name == '12-20') {
+    font-size: 12px;
+    line-height: 20px;
+  } @else if ($name == '14-20') {
+    font-size: 14px;
+    line-height: 20px;
+  } @else if ($name == '14-24') {
+    font-size: 14px;
+    line-height: 24px;
+  } @else if ($name == '16-22') {
+    font-size: 16px;
+    line-height: 22px;
+  } @else if ($name == '20-26') {
+    font-size: 20px;
+    line-height: 26px;
+  } @else if ($name == '24-30') {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  @if (type-of($weight) == number) {
+    font-weight: $weight;
+  }
+}
+@mixin number-font-type($name: '', $weight: null) {
+  font-family: 'Object Sans', sans-serif;
+  @if ($name == '12-20') {
+    font-size: 12px;
+    line-height: 20px;
+  } @else if ($name == '14-20') {
+    font-size: 14px;
+    line-height: 20px;
+  } @else if ($name == '16-22') {
+    font-size: 16px;
+    line-height: 22px;
+  } @else if ($name == '20-24') {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  @if (type-of($weight) == number) {
+    font-weight: $weight;
+  }
+}

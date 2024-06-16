@@ -1,0 +1,24 @@
+import React, { SVGProps } from 'react';
+
+const IconOut24X24 = (props: SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={24}
+      height={24}
+      fill="none"
+      {...props}
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeMiterlimit="10"
+        strokeWidth="1.5"
+        d="m17.441 14.62 2.56-2.56-2.56-2.56M9.762 12.06h10.17M11.762 20c-4.42 0-8-3-8-8s3.58-8 8-8"
+      />
+    </svg>
+  );
+};
+
+export default IconOut24X24;

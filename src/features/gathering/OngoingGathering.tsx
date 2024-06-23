@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames/bind';
 import { OngoingGatheringProps } from './types/index';
 import BackNavigation from '../auth/components/BackNavigation';
@@ -11,8 +11,11 @@ import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 
 const cn = classnames.bind(styles);
 
+// 진행 중 모임
 const OngoingGathering = (props: OngoingGatheringProps) => {
   console.log(props);
+  const [moimId] = useState<number>(1); //props로 변경될 수 있음
+
   return (
     <div className={cn('ongoing_gathering')}>
       <BackNavigation
@@ -29,7 +32,7 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
         <ScrollPhotoList />
       </section>
       <section className={cn('section')}>
-        <RouteMap />
+        <RouteMap moimId={moimId} />
       </section>
       <div className={cn('button_area')}>
         <button type="button" className={cn('end_button')}>

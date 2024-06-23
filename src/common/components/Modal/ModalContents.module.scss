@@ -1,0 +1,31 @@
+.modal_contents {
+  .title_area {
+    padding: 0 8px 16px;
+  }
+  .title {
+    @include font-type('20-26');
+    display: block;
+    color: $gray-700;
+  }
+  .description {
+    @include font-type('12-18');
+    color: $gray-400;
+  }
+  .button_area {
+    display: flex;
+    margin: 0 -2px;
+    .button {
+      @include font-type('14-20', 600);
+      flex: 1 1 0;
+      height: 52px;
+      margin: 0 2px;
+      border-radius: 30px;
+      background-color: $gray-200;
+      color: $gray-700;
+      & + .button {
+        background-color: $gray-700;
+        color: $gray-50;
+      }
+    }
+  }
+}

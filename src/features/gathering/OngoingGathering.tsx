@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames/bind';
 import { OngoingGatheringProps } from './types/index';
 import BackNavigation from '../auth/components/BackNavigation';
@@ -10,10 +10,23 @@ import RouteMap from './components/RouteMap/RouteMap';
 import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import PhotoList from './components/PhotoList/PhotoList';
 import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
+import Modal from '../../common/components/Modal/Modal';
+import ModalContents from '../../common/components/Modal/ModalContents';
 
 const cn = classnames.bind(styles);
 
 const OngoingGathering = (props: OngoingGatheringProps) => {
+  // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
+  const [leaveModal, setLeaveModal] = useState<boolean>(false);
+
+  const openLeaveModal = () => {
+    setLeaveModal(true);
+  };
+
+  const closeLeaveModal = () => {
+    setLeaveModal(false);
+  };
+
   // 진행 중 모임 메인 화면
   const renderOngoingMain = () => {
     return (
@@ -39,10 +52,25 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
           <RouteMap />
         </section>
         <div className={cn('button_area')}>
-          <button type="button" className={cn('end_button')}>
+          <button
+            type="button"
+            className={cn('end_button')}
+            onClick={openLeaveModal}
+          >
             모임 종료
           </button>
         </div>
+        {leaveModal && (
+          <Modal>
+            <ModalContents
+              title="모임을 종료하시겠어요?"
+              description="모임이 종료되고 베스트 컷을 선정해요."
+              firstButton="취소"
+              secondButton="종료"
+              onClickFirstButton={closeLeaveModal}
+            />
+          </Modal>
+        )}
       </>
     );
   };
@@ -93,8 +121,8 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
   console.log(props);
   return (
     <div className={cn('ongoing_gathering')}>
-      {false && renderOngoingMain()}
-      {true && renderPhotoList()}
+      {true && renderOngoingMain()}
+      {false && renderPhotoList()}
       {false && renderPhotoDetail()}
       <OngoingFooter />
     </div>

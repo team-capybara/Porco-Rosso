@@ -15,7 +15,8 @@ const PhotoCard = () => {
           className={cn('image')}
         />
       </div>
-      <button type="button" className={cn('like_button')}>
+      {/* todo: 좋아요 된 경우, 'active' 클래스 활성화부탁드립니다. */}
+      <button type="button" className={cn('like_button', { active: false })}>
         <span className={cn('blind')}>좋아요</span>
         <IconHeart15X15 className={cn('icon')} />
         <span className={cn('number')}>5</span>

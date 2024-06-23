@@ -30,11 +30,22 @@
     padding: 0 16px;
   }
   .item {
+    overflow: hidden;
     display: inline-block;
     width: 220px;
+    border-radius: 8px;
     vertical-align: top;
     & + .item {
       margin-left: 4px;
+    }
+  }
+  &.is_mini_photo_card {
+    .item {
+      width: 86px;
+      border-radius: 3px;
+      & + .item {
+        margin-left: 1px;
+      }
     }
   }
 }

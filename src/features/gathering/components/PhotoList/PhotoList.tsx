@@ -1,14 +1,35 @@
 import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './photoList.module.scss';
+import PhotoCard from './PhotoCard/PhotoCard';
 
 const cn = classnames.bind(styles);
 
 const PhotoList = () => {
+  const renderItem = () => {
+    return (
+      <li className={cn('item')}>
+        <PhotoCard />
+      </li>
+    );
+  };
   return (
-    <div className={cn('photo_list')}>
-      <div className={cn('title_area')}>fdsfsd</div>
-    </div>
+    <ul className={cn('photo_list')}>
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+      {renderItem()}
+    </ul>
   );
 };
 

@@ -6,9 +6,9 @@
     display: block;
     color: $gray-50;
   }
-  .date {
+  .description {
     @include font-type('14-24', 500);
-    color: $gray-50;
+    color: $gray-400;
   }
   .button {
     position: absolute;
@@ -16,7 +16,7 @@
     right: 13px;
     padding: 3px;
   }
-  .refresh_icon {
+  .icon {
     width: 24px;
     height: 24px;
     color: $gray-50;

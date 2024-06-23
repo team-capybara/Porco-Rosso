@@ -1,7 +1,6 @@
 .photo_card {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
   .thumbnail {
     position: relative;
     padding-top: 100%;
@@ -49,6 +48,12 @@
     .number {
       @include number-font-type('14-20');
       color: $gray-50;
+    }
+    &.active {
+      .icon,
+      .number {
+        color: $green;
+      }
     }
   }
   .user_thumbnail {

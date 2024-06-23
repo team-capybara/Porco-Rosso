@@ -41,7 +41,7 @@
   }
 }
 @mixin number-font-type($name: '', $weight: null) {
-  font-family: 'Object Sans', sans-serif;
+  font-family: 'PP object sans', sans-serif;
   @if ($name == '12-20') {
     font-size: 12px;
     line-height: 20px;

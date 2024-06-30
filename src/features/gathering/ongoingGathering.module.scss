@@ -2,7 +2,7 @@
   min-height: 100vh;
   background-color: $gray-700;
   .wrap_gathering_title {
-    margin: 4px 0 32px;
+    margin-bottom: 36px;
   }
   .section {
     & + .section {
@@ -20,5 +20,16 @@
     border-radius: 40px;
     background-color: $gray-800;
     color: $red;
+  }
+  .wrap_photo_list {
+    margin: 0 8px;
+  }
+  .wrap_photo_card {
+    overflow: hidden;
+    margin: 0 16px;
+    border-radius: 12px;
+  }
+  .wrap_scroll_photo_list {
+    margin-top: 32px;
   }
 }

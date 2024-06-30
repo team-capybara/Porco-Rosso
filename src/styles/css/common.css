@@ -82,3 +82,8 @@ svg {
   height: 1px;
   margin: -1px;
 }
+
+@font-face {
+  font-family: 'PP object sans';
+  src: url('../../assets/fonts/PPObjectSans-Regular.otf') format('opentype');
+}

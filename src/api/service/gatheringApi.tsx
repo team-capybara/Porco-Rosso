@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { mockAxios } from '../config';
 
 // 진행중모임 - 지도 좌표
 export const getMapLngLat = (moimId: number) => {
@@ -7,12 +7,7 @@ export const getMapLngLat = (moimId: number) => {
   const { isLoading, isFetching, data, isError, error, refetch } = useQuery({
     queryKey: ['get-map-lnglat', moimId],
     queryFn: () => {
-      return axios.get(
-        `https://moime.app/mock/moims/${moimId}/photos/locations`,
-        {
-          headers: { 'x-dummy-auth-id': 1 },
-        }
-      );
+      return mockAxios.get(`mock/moims/${moimId}/photos/locations`);
     },
     select: (data) => {
       return data;

@@ -9,7 +9,7 @@ import ScrollPhotoList from './components/PhotoList/ScrollPhotoList';
 import RouteMap from './components/RouteMap/RouteMap';
 import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import PhotoList from './components/PhotoList/PhotoList';
-import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
+// import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
 
@@ -108,9 +108,9 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
             hasShareButton={true}
           />
         </div>
-        <div className={cn('wrap_photo_card')}>
+        {/* <div className={cn('wrap_photo_card')}>
           <PhotoCard />
-        </div>
+        </div> */}
         <div className={cn('wrap_scroll_photo_list')}>
           <ScrollPhotoList hiddenTitle={true} isMiniPhotoCard={true} />
         </div>
@@ -121,8 +121,8 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
   console.log(props);
   return (
     <div className={cn('ongoing_gathering')}>
-      {true && renderOngoingMain()}
-      {false && renderPhotoList()}
+      {false && renderOngoingMain()}
+      {true && renderPhotoList()}
       {false && renderPhotoDetail()}
       <OngoingFooter />
     </div>

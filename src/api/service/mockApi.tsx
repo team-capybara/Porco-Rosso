@@ -4,8 +4,14 @@ import MockAdapter from 'axios-mock-adapter';
 
 const mock: MockAdapter = new MockAdapter(axios, { delayResponse: 2000 });
 
-export const getMoimePhoto = async (moimId: string): Promise<unknown> => {
-  const res = await mockAxios.get(`mock/moims/${moimId}/photos`);
+export const getMoimePhoto = async (
+  moimId: string,
+  cursorId: number | null,
+  size: number
+): Promise<unknown> => {
+  const res = await mockAxios.get(
+    `mock/moims/${moimId}/photos?size=${size}&cursorId=${cursorId}`
+  );
   const response: unknown = res.data;
   return response;
 };

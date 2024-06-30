@@ -3,8 +3,11 @@ import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './routeMap.module.scss';
 import { getMapLngLat } from '../../../../api/service/gatheringApi';
+import circle from '../../../../assets/svg/icon/IconCircle.svg';
 
 const cn = classnames.bind(styles);
+
+// ts에서 kakao 사용하기 위함
 declare global {
   interface Window {
     kakao: any;
@@ -19,18 +22,18 @@ const RouteMap = (props: RouteMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null); //map이 들어가야 할 DOM
   const mapInstance = useRef<any>(); //map 객체 kakao.maps.Map
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { isLoading, isFetching, data, isError, error } = getMapLngLat(
-    props.moimId
-  );
+  const { isLoading, data } = getMapLngLat(props.moimId);
 
+  // 첫 렌더링 시 지도 생성
   useEffect(() => {
     mapInstance.current = new kakao.maps.Map(mapContainer.current!, {
-      center: new kakao.maps.LatLng(33.450701, 126.570667),
+      center: new kakao.maps.LatLng(33.450701, 126.570667), // 중심점 (추후 bound처리 때문에 의미X)
+      draggable: false, // 드래그 막기
+      zoomEnabled: false, // 줌 막기
     });
-    console.log(mapInstance.current);
   }, []);
 
+  // 데이터 로딩 끝나면 bound 처리
   useEffect(() => {
     if (!mapInstance.current) return;
     if (!isLoading && data) {
@@ -39,16 +42,20 @@ const RouteMap = (props: RouteMapProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  // 방문 좌표에 맞게 bound 처리
   const settingBounds = () => {
     const bounds = new kakao.maps.LatLngBounds();
-    console.log(data);
     data?.data.data.forEach(
       (point: { latitude: number; logtitude: number }) => {
-        // MapMarker
         bounds.extend(new kakao.maps.LatLng(point.latitude, point.logtitude));
+        // MapMarker
         const marker = new kakao.maps.Marker({
           position: new kakao.maps.LatLng(point.latitude, point.logtitude),
-          // image: markerImage, // 마커이미지 설정 필요
+          image: new kakao.maps.MarkerImage(
+            circle, //image url
+            new kakao.maps.Size(8, 8), // image size
+            {} // image option (ex. offset)
+          ),
         });
         marker.setMap(mapInstance.current!);
       }

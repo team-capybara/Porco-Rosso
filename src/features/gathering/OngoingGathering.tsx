@@ -15,6 +15,7 @@ import ModalContents from '../../common/components/Modal/ModalContents';
 
 const cn = classnames.bind(styles);
 
+// 진행 중 모임
 const OngoingGathering = (props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
@@ -119,8 +120,31 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
   };
 
   console.log(props);
+  const [moimId] = useState<number>(1); //props로 변경될 수 있음
+
   return (
     <div className={cn('ongoing_gathering')}>
+      <BackNavigation
+        classNameForIconType="close_type"
+        blindText="메인으로 이동"
+      />
+      <div className={cn('wrap_gathering_title')}>
+        <GatheringTitle />
+      </div>
+      <section className={cn('section')}>
+        <ParticipantList />
+      </section>
+      <section className={cn('section')}>
+        <ScrollPhotoList />
+      </section>
+      <section className={cn('section')}>
+        <RouteMap moimId={moimId} />
+      </section>
+      <div className={cn('button_area')}>
+        <button type="button" className={cn('end_button')}>
+          모임 종료
+        </button>
+      </div>
       {true && renderOngoingMain()}
       {false && renderPhotoList()}
       {false && renderPhotoDetail()}

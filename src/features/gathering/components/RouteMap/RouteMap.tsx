@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './routeMap.module.scss';
 import { getMapLngLat } from '../../../../api/service/gatheringApi';
-import circle from '../../../../assets/svg/icon/IconCircle.svg';
+import circle from '../../../../assets/svg/icon/IconCircle8X8.svg';
 
 const cn = classnames.bind(styles);
 

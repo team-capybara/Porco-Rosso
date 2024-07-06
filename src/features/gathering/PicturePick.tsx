@@ -1,4 +1,3 @@
-import React from 'react';
 import { PicturePickProps } from './types/index';
 
 const PicturePick = (props: PicturePickProps) => {

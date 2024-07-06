@@ -1,4 +1,3 @@
-import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './participantList.module.scss';
 import IconPlus24X24 from '../../../../assets/svg/icon/IconPlus24X24';

@@ -1,4 +1,3 @@
-import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './ongoingFooter.module.scss';
 import IconCamera24X24 from '../../../../assets/svg/icon/IconCamera24X24';

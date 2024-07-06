@@ -9,3 +9,5 @@ export interface PicturePickProps {}
 export interface ShareProps {}
 
 export interface GalleryGridProps {}
+
+export interface CreateGatheringProps {}

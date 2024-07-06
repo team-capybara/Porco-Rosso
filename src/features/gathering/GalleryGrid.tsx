@@ -1,4 +1,3 @@
-import React from 'react';
 import { GalleryGridProps } from './types/index';
 
 const GalleryGrid = (props: GalleryGridProps) => {

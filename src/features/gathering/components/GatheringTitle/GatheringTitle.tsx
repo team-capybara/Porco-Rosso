@@ -1,4 +1,3 @@
-import React from 'react';
 import classnames from 'classnames/bind';
 import IconRefresh24X24 from '../../../../assets/svg/icon/IconRefresh24X24';
 import styles from './gatheringTitle.module.scss';

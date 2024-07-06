@@ -1,4 +1,4 @@
-import React, { SVGProps } from 'react';
+import { SVGProps } from 'react';
 
 const IconPlus24X24 = (props: SVGProps<SVGSVGElement>) => {
   return (

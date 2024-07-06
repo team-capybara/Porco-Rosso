@@ -1,4 +1,3 @@
-import React from 'react';
 import { SocialLoginProps } from './types/index';
 import classnames from 'classnames/bind';
 import style from './socialLogin.module.scss';
@@ -16,7 +15,7 @@ const SocialLogin = (props: SocialLoginProps) => {
         <span className={cn('text')}>모이미</span>
       </h1>
       <div className={cn('link_area')}>
-        <a href="/" className={cn('link')}>
+        <a href="/oauth2/authorization/" className={cn('link')}>
           Google로 계속하기
         </a>
         <a href="/" className={cn('link')}>

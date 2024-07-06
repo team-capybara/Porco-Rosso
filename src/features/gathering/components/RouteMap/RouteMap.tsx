@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './routeMap.module.scss';
 import { getMapLngLat } from '../../../../api/service/gatheringApi';

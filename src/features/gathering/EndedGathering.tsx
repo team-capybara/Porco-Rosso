@@ -1,4 +1,3 @@
-import React from 'react';
 import { EndedGatheringProps } from './types/index';
 
 const EndedGathering = (props: EndedGatheringProps) => {

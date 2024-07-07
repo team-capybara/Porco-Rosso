@@ -73,7 +73,7 @@ const RouteMap = (props: RouteMapProps) => {
         <div
           id="map"
           ref={mapContainer}
-          style={{ width: '100%', height: '100%' }}
+          style={{ position: 'sticky', width: '100%', height: '100%' }}
         ></div>
       </div>
     </div>

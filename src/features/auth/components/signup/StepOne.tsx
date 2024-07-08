@@ -1,4 +1,3 @@
-import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './stepOne.module.scss';
 import ProfileImage from './ProfileImage';

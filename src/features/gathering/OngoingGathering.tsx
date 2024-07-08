@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classnames from 'classnames/bind';
 import { OngoingGatheringProps } from './types/index';
-import BackNavigation from '../auth/components/BackNavigation';
+import BackNavigation from '../auth/components/signup/BackNavigation';
 import styles from './ongoingGathering.module.scss';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
 import ParticipantList from './components/ParticipantList/ParticipantList';

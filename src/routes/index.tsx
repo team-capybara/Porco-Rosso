@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import SocialLogin from '../features/auth/SocialLogin';
 import NewProfile from '../features/auth/NewProfile';
@@ -10,12 +9,16 @@ import Share from '../features/gathering/Share';
 import MypagePage from '../features/mypage/MypagePage';
 import NotificationPage from '../features/notification/NotificationPage';
 import StatisticsPage from '../features/statistics/StatisticsPage';
+import OauthRedirectHandler from '../features/auth/OauthRedirectHandler';
+import CreateGathering from '../features/gathering/CreateGathering';
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<SocialLogin />} />
       <Route path="/signup" element={<NewProfile />} />
+      <Route path="/redirect-handler" element={<OauthRedirectHandler />} />
+      <Route path="/create-gathering" element={<CreateGathering />} />
       <Route path="/upcoming-gathering" element={<UpcomingGathering />} />
       <Route path="/ongoing-gathering" element={<OngoingGathering />} />
       <Route path="/ended-gathering" element={<EndedGathering />} />

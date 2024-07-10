@@ -1,6 +1,5 @@
-import React from 'react';
 import classnames from 'classnames/bind';
-import BackNavigation from '../auth/components/BackNavigation';
+import BackNavigation from '../auth/components/signup/BackNavigation';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
 import PhotoList from './components/PhotoList/PhotoList';
 import styles from './endedGathering.module.scss';

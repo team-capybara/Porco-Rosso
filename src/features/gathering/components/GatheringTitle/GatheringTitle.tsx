@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import classnames from 'classnames/bind';
 import IconRefresh24X24 from '../../../../assets/svg/icon/IconRefresh24X24';
 import styles from './gatheringTitle.module.scss';
@@ -7,7 +8,7 @@ const cn = classnames.bind(styles);
 
 interface Props {
   title?: string;
-  description?: string;
+  description?: ReactNode;
   hasRefreshButton?: boolean;
   hasShareButton?: boolean;
 }

@@ -1,19 +1,14 @@
 .step_one {
   .title {
+    @include font-type('24-30');
     max-width: 293px;
-    padding: 0 18px;
-    margin: 37px auto 0;
-    font-size: 25px;
-    font-weight: 700;
-    line-height: 32px;
-    color: #000;
+    margin: 50px 16px 0;
+    color: $gray-50;
   }
   .wrap_profile_image {
-    margin-top: 39px;
+    margin-top: 56px;
   }
   .wrap_nickname_input {
-    max-width: 287px;
-    margin: 39px auto 0;
-    padding: 0 18px;
+    margin: 32px 16px 0;
   }
 }

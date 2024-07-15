@@ -5,10 +5,14 @@ import { getCookie } from '../../common/utils/authUtils';
 import classnames from 'classnames/bind';
 import styles from './newProfile.module.scss';
 import BackNavigation from './components/signup/BackNavigation';
-// import StepOne from './components/StepOne';
-import StepTwo from './components/signup/StepTwo';
+import StepOne from './components/signup/StepOne';
 import NextStepLink from './components/signup/NextStepLink';
 // import StepThree from './components/StepThree';
+import { getUserInfo } from '../../api/service/authApi';
+import {
+  useQuery,
+  // useMutation
+} from '@tanstack/react-query';
 
 const cn = classnames.bind(styles);
 
@@ -16,6 +20,21 @@ const NewProfile = (props: NewProfileProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   console.log(props);
+
+  const {
+    // isLoading,
+    // isFetching,
+    data: userData,
+    // isError,
+    // error,
+    // refetch,
+  } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: getUserInfo,
+  });
+
+  console.log(userData, 'userData에요요요용');
+
   useEffect(() => {
     const accessToken = getCookie('access_token');
     console.log(accessToken, '받아오나?');
@@ -38,8 +57,7 @@ const NewProfile = (props: NewProfileProps) => {
           blindText="이전 페이지"
         />
         {/* todo: StepOne, StepTwo, StepThree 상황에 맞게 노출부탁드립니다. */}
-        {/* <StepOne /> */}
-        <StepTwo />
+        <StepOne />
         {/* <StepThree /> */}ㅅ
       </div>
       <div className={cn('wrap_next_step_link')}>

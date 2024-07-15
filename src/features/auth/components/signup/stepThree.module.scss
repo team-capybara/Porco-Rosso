@@ -1,12 +1,7 @@
 .step_three {
   .title {
-    max-width: 293px;
-    padding: 0 18px;
-    margin: 268px auto 0;
-    font-size: 25px;
-    font-weight: 700;
-    line-height: 32px;
-    color: #000;
-    text-align: center;
+    @include font-type('24-30');
+    margin: 50px 16px 0;
+    color: $gray-50;
   }
 }

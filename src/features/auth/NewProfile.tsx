@@ -4,11 +4,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getCookie } from '../../common/utils/authUtils';
 import classnames from 'classnames/bind';
 import styles from './newProfile.module.scss';
-import BackNavigation from './components/signup/BackNavigation';
-// import StepOne from './components/StepOne';
-import StepTwo from './components/signup/StepTwo';
+import StepOne from './components/signup/StepOne';
+// import StepTwo from './components/signup/StepTwo';
+// import StepThree from './components/signup/StepThree';
 import NextStepLink from './components/signup/NextStepLink';
-// import StepThree from './components/StepThree';
 
 const cn = classnames.bind(styles);
 
@@ -32,18 +31,14 @@ const NewProfile = (props: NewProfileProps) => {
   return (
     <div className={cn('new_profile')}>
       <div>
-        {/* todo: StepThree에서 BackNavigation 미노출 부탁드립니다. */}
-        <BackNavigation
-          classNameForIconType="arrow_type"
-          blindText="이전 페이지"
-        />
         {/* todo: StepOne, StepTwo, StepThree 상황에 맞게 노출부탁드립니다. */}
-        {/* <StepOne /> */}
-        <StepTwo />
-        {/* <StepThree /> */}ㅅ
+        <StepOne />
+        {/* <StepTwo /> */}
+        {/* <StepThree /> */}
       </div>
       <div className={cn('wrap_next_step_link')}>
-        <NextStepLink />
+        {/* todo: StepOne에서는 건너뛰기, StepTwo에서는 다음 text Props 부탁드립니다. */}
+        <NextStepLink text="건너뛰기" />
       </div>
     </div>
   );

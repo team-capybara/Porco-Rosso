@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { NewProfileProps } from './types/index';
+// import { newProfileProps } from './types/index';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getCookie } from '../../common/utils/authUtils';
 import classnames from 'classnames/bind';
@@ -8,13 +8,33 @@ import StepOne from './components/signup/StepOne';
 // import StepTwo from './components/signup/StepTwo';
 // import StepThree from './components/signup/StepThree';
 import NextStepLink from './components/signup/NextStepLink';
+// import StepThree from './components/StepThree';
+import { getUserInfo } from '../../api/service/authApi';
+import {
+  useQuery,
+  // useMutation
+} from '@tanstack/react-query';
 
 const cn = classnames.bind(styles);
 
-const NewProfile = (props: NewProfileProps) => {
+const NewProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(props);
+
+  const {
+    // isLoading,
+    // isFetching,
+    data: userData,
+    // isError,
+    // error,
+    // refetch,
+  } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: getUserInfo,
+  });
+
+  console.log(userData, 'userData에요요요용');
+
   useEffect(() => {
     const accessToken = getCookie('access_token');
     console.log(accessToken, '받아오나?');
@@ -35,6 +55,7 @@ const NewProfile = (props: NewProfileProps) => {
         <StepOne />
         {/* <StepTwo /> */}
         {/* <StepThree /> */}
+        {/* <StepThree /> */}ㅅ
       </div>
       <div className={cn('wrap_next_step_link')}>
         {/* todo: StepOne에서는 건너뛰기, StepTwo에서는 다음 text Props 부탁드립니다. */}

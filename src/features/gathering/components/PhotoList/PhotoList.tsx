@@ -186,6 +186,7 @@ const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
         observerRef.current.disconnect();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -179,6 +179,7 @@ const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
     return () => {
       // 컴포넌트 언마운트 시 observer 해제
       if (observerRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         targetsRef.current.forEach((target) => {
           if (target) observerRef.current!.unobserve(target);
         });
@@ -208,6 +209,7 @@ const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
     );
 
     setPageNum(targetsRef.current.length - 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moimePhotoLst]);
 
   useEffect(() => {
@@ -217,6 +219,7 @@ const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
       }
     }
     setIntersectAction('idle');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intersectAction]);
 
   useEffect(() => {
@@ -252,6 +255,7 @@ const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
       { duration: 3000 }
     );
     setIsNew(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNew]);
 
   useEffect(() => {

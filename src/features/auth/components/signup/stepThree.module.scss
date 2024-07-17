@@ -1,0 +1,7 @@
+.step_three {
+  .title {
+    @include font-type('24-30');
+    margin: 50px 16px 0;
+    color: $gray-50;
+  }
+}

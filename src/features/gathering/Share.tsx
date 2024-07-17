@@ -1,4 +1,3 @@
-import React from 'react';
 import { ShareProps } from './types/index';
 
 const Share = (props: ShareProps) => {

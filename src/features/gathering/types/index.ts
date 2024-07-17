@@ -29,3 +29,4 @@ export interface getMoimePhotoResponse {
   };
   total: number;
 }
+export interface CreateGatheringProps {}

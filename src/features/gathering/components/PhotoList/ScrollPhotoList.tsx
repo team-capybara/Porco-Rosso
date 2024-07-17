@@ -1,4 +1,3 @@
-import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './scrollPhotoList.module.scss';
 import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';

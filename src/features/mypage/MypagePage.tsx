@@ -1,4 +1,3 @@
-import React from 'react';
 import { mypageProps } from './types/index';
 
 const MypagePage = (props: mypageProps) => {

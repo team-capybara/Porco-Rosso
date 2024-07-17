@@ -2,8 +2,8 @@ import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './backNavigation.module.scss';
 
-import ArrowLeft24X24 from '../../../assets/svg/arrow/ArrowLeft24X24';
-import IconClose24X24 from '../../../assets/svg/icon/IconClose24X24';
+import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
+import IconClose24X24 from '../../../../assets/svg/icon/IconClose24X24';
 
 const cn = classnames.bind(styles);
 

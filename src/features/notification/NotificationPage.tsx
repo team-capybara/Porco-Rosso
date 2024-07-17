@@ -1,4 +1,3 @@
-import React from 'react';
 import { notificationProps } from './types/index';
 
 const NotificationPage = (props: notificationProps) => {

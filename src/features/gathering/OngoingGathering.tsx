@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import classnames from 'classnames/bind';
 import { OngoingGatheringProps } from './types/index';
-import BackNavigation from '../auth/components/BackNavigation';
+import BackNavigation from '../auth/components/signup/BackNavigation';
 import styles from './ongoingGathering.module.scss';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
 import ParticipantList from './components/ParticipantList/ParticipantList';
@@ -14,10 +14,12 @@ import ModalContents from '../../common/components/Modal/ModalContents';
 
 const cn = classnames.bind(styles);
 
+// 진행 중 모임
 const OngoingGathering = (props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
   const [renderComponent, setRenderComponent] = useState<string>('PhotoList');
+  const [moimId] = useState<number>(1); //props로 변경될 수 있음
 
   const openLeaveModal = () => {
     setLeaveModal(true);
@@ -56,7 +58,7 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
           <ScrollPhotoList />
         </section> */}
         <section className={cn('section')}>
-          <RouteMap />
+          <RouteMap moimId={moimId} />
         </section>
         <div className={cn('button_area')}>
           <button
@@ -128,6 +130,7 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
   };
 
   console.log(props);
+
   return (
     <div className={cn('ongoing_gathering')}>
       {renderComponent === 'OngoingMain' && renderOngoingMain()}

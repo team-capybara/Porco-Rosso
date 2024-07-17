@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { mockAxios } from '../config';
 import MockAdapter from 'axios-mock-adapter';
+import { getMoimePhotoResponse } from '../../features/gathering/types';
 
 const mock: MockAdapter = new MockAdapter(axios, { delayResponse: 2000 });
 
@@ -8,11 +9,11 @@ export const getMoimePhoto = async (
   moimId: string,
   cursorId: number | null,
   size: number
-): Promise<unknown> => {
+): Promise<getMoimePhotoResponse> => {
   const res = await mockAxios.get(
     `mock/moims/${moimId}/photos?size=${size}&cursorId=${cursorId}`
   );
-  const response: unknown = res.data;
+  const response: getMoimePhotoResponse = res.data;
   return response;
 };
 

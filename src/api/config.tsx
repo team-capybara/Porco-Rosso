@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 export const mockAxios = axios.create({
-  baseURL: 'https://moime.app/',
+  baseURL: 'https://api.moime.app/',
   headers: {
     accept: '*/*',
     Authorization:

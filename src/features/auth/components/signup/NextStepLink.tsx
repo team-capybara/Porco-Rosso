@@ -1,13 +1,16 @@
-import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './nextStepLink.module.scss';
 
 const cn = classnames.bind(styles);
 
-const NextStepLink = () => {
+interface Props {
+  text: string;
+}
+
+const NextStepLink = ({ text }: Props) => {
   return (
     <a href="/" className={cn('next_step_link')}>
-      다음
+      {text}
     </a>
   );
 };

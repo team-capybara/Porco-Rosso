@@ -1,0 +1,25 @@
+.back_navigation {
+  height: 56px;
+  .inner {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 20px;
+    background-color: $gray-700;
+    .link {
+      display: block;
+      margin: -8px;
+      padding: 8px;
+    }
+    .icon {
+      width: 24px;
+      height: 24px;
+      color: $gray-50;
+    }
+  }
+}

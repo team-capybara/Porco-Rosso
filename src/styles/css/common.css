@@ -35,6 +35,10 @@ table {
   font-family: 'Pretendard Variable', Pretendard, sans-serif;
 }
 
+body {
+  background-color: #262628;
+}
+
 ul,
 ol {
   list-style: none;

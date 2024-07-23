@@ -1,4 +1,3 @@
-import React from 'react';
 import { UpcomingGatheringProps } from './types/index';
 
 const UpcomingGathering = (props: UpcomingGatheringProps) => {

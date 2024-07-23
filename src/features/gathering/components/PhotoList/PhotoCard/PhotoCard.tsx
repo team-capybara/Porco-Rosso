@@ -1,4 +1,3 @@
-import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './photoCard.module.scss';
 import IconHeart15X15 from '../../../../../assets/svg/icon/IconHeart15X15';

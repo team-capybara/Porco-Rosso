@@ -3,10 +3,6 @@ name: Deploy to S3 and CloudFront
 on:
   workflow_dispatch:
     inputs:
-      deploy_branch:
-        description: 'Branch to deploy'
-        required: true
-        default: 'main'
       version_bump:
         description: 'Which part of the version to bump (none, major, minor, patch)'
         required: true
@@ -35,8 +31,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        ref: ${{ env.DEPLOY_BRANCH }}
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -84,8 +78,10 @@ jobs:
           # 새로운 버전을 GitHub Actions 출력 변수로 설정
           echo "::set-output name=new_version::$new_version"
         else
-          # 버전 증가를 원하지 않는 경우 현재 버전을 사용
+          # 버전 증가를 원하지 않는 경우 현재 버전을 사용하고 타임스탬프 추가
           new_version=$(cat version.txt)
+          timestamp=$(date +%Y%m%d%H%M%S)
+          new_version="${new_version}-${timestamp}"
           echo "::set-output name=new_version::$new_version"
         fi
 
@@ -95,7 +91,7 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add version.txt
-        git commit -m "release : Bump version to ${{ steps.bump_version.outputs.new_version }}"
+        git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
         git push origin ${{ env.DEPLOY_BRANCH }}
 
     - name: Upload to S3

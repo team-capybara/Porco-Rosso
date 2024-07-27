@@ -1,4 +1,3 @@
-import { SocialLoginProps } from './types/index';
 import classnames from 'classnames/bind';
 import style from './socialLogin.module.scss';
 import IconGoogle24X24 from '../../assets/svg/icon/IconGoogle24X24';
@@ -6,8 +5,7 @@ import IconApple24X24 from '../../assets/svg/icon/IconApple24X24';
 
 const cn = classnames.bind(style);
 
-const SocialLogin = (props: SocialLoginProps) => {
-  console.log(props);
+const SocialLogin = () => {
   return (
     <div className={cn('social_login')}>
       <h1 className={cn('title')}>
@@ -17,11 +15,17 @@ const SocialLogin = (props: SocialLoginProps) => {
         <span className={cn('text')}>모이미</span>
       </h1>
       <div className={cn('link_area')}>
-        <a href="/oauth2/authorization/" className={cn('link', 'google')}>
+        <a
+          href="https://api.moime.app/oauth2/authorization/google"
+          className={cn('link', 'google')}
+        >
           <IconGoogle24X24 className={cn('icon')} />
           Continue with Google
         </a>
-        <a href="/" className={cn('link', 'apple')}>
+        <a
+          href="https://api.moime.app/oauth2/authorization/apple"
+          className={cn('link', 'apple')}
+        >
           <IconApple24X24 className={cn('icon')} />
           Continue with Apple
         </a>

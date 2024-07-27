@@ -1,4 +1,4 @@
-type ProfilePicture = string | File;
+type ProfilePicture = null | File;
 
 // userProfile 에 사용되는 데이터 타입 모델링
 export interface UserProfile {
@@ -7,12 +7,12 @@ export interface UserProfile {
   code: string;
   email: string;
   providerType: string;
-  profile: ProfilePicture;
+  profile: string;
 }
 
 export interface UpdateProfile {
   nickname: string;
-  profile: ProfilePicture;
+  newProfile: ProfilePicture;
 }
 
 // newProfile 컴포넌트에서 특화된 타입 정의
@@ -23,6 +23,8 @@ export interface NewProfileProps {
 }
 
 export interface ProfileImageProps {
+  value: string;
+  setProfile: React.Dispatch<React.SetStateAction<string>>;
   onChange: (file: File) => void;
 }
 

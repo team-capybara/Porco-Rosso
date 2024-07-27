@@ -40,17 +40,19 @@ const getUserInfo = async () => {
 };
 
 const updateProfile = async ({
-  profile,
+  newProfile,
   nickname,
 }: UpdateProfile): Promise<void> => {
+  console.log(newProfile, nickname, '요청은 가나');
   try {
+    console.log('요청은 가나');
     const formData = new FormData();
-    if (typeof profile !== 'string') {
-      formData.append('profile', profile);
+    if (newProfile !== null && typeof newProfile !== 'string') {
+      formData.append('profile', newProfile);
     }
     formData.append('nickname', nickname);
 
-    const response = await axios.put('/users/my', formData);
+    const response = await axios.put('/users/my/', formData);
     return response.data;
   } catch (error) {
     console.error('Error updating profile:', error);

@@ -1,23 +1,33 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { UpdateProfile } from './types/index';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getCookie } from '../../common/utils/authUtils';
 import classnames from 'classnames/bind';
 import styles from './newProfile.module.scss';
 import StepOne from './components/signup/StepOne';
-// import StepTwo from './components/signup/StepTwo';
 // import StepThree from './components/signup/StepThree';
-// import StepThree from './components/StepThree';
 import { getUserInfo, updateProfile } from '../../api/service/authApi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserProfile } from './types/index';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import { getCookie } from '../../common/utils/authUtils';
 
 const cn = classnames.bind(styles);
 
 const NewProfile = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  // const navigate = useNavigate();
+  // const location = useLocation();
+
+  // useEffect(() => {
+  //   // new bie 랜딩
+  //   const accessToken = getCookie('access_token');
+  //   console.log(accessToken, 'new bie access token 받아옴');
+
+  //   // 로그인 오류 처리
+  //   if (!accessToken) {
+  //     // 다시 로그인으로
+  //     navigate('/', { state: { from: location } });
+  //   }
+  // }, [location, navigate]);
 
   const {
     // isLoading,
@@ -45,19 +55,6 @@ const NewProfile = () => {
     mutation.mutate(updatedProfile);
   };
 
-  useEffect(() => {
-    const accessToken = getCookie('access_token');
-    console.log(accessToken, '받아오나?');
-
-    // 로그인 오류 처리
-    // if (!accessToken) {
-    //   // 다시 로그인으로
-    //   navigate('/', { state: { from: location } });
-    // } else {
-    //   // 앱 메인으로 연결
-    // }
-  }, [location, navigate]);
-
   return (
     <div className={cn('new_profile')}>
       <div>
@@ -65,14 +62,15 @@ const NewProfile = () => {
         {userData ? (
           <StepOne
             userProfile={userData}
-            updateProfile={{ profile: '', nickname: '' }} // 초기값을 전달
+            updateProfile={{
+              newProfile: null,
+              nickname: userData.nickname,
+            }} // 초기값을 전달
             onSave={handleSave}
           />
         ) : (
           <div>No user data available</div>
         )}
-        {/* <StepTwo /> */}
-        {/* <StepThree /> */}
         {/* <StepThree /> */}
       </div>
     </div>

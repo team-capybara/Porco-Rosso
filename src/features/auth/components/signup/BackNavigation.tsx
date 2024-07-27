@@ -1,3 +1,4 @@
+import React from 'react';
 import classnames from 'classnames/bind';
 import styles from './backNavigation.module.scss';
 
@@ -9,25 +10,40 @@ const cn = classnames.bind(styles);
 interface Props {
   classNameForIconType?: '' | 'arrow_type' | 'close_type';
   blindText?: string;
+  isButton?: boolean;
+  targetHref?: string;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 const BackNavigation = ({
   classNameForIconType = '',
   blindText = '',
+  isButton = false,
+  targetHref = '#;', // javascript:void(0);
+  onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+  },
 }: Props) => {
   return (
     <div className={cn('back_navigation')}>
-      <div className={cn('inner')}>
-        <a href="/" className={cn('link')}>
-          {classNameForIconType == 'arrow_type' && (
-            <ArrowLeft24X24 className={cn('icon')} />
-          )}
-          {classNameForIconType == 'close_type' && (
-            <IconClose24X24 className={cn('icon')} />
-          )}
-          {blindText && <span className={cn('blind')}>{blindText}</span>}
-        </a>
-      </div>
+      {/* 승현 todo: 아이콘에 따른 분기 필요 */}
+      <a
+        href={targetHref}
+        onClick={
+          isButton
+            ? (e: React.MouseEvent<HTMLAnchorElement>) => onClick(e)
+            : undefined
+        }
+        className={cn('link')}
+      >
+        {classNameForIconType == 'arrow_type' && (
+          <ArrowLeft24X24 className={cn('icon')} />
+        )}
+        {classNameForIconType == 'close_type' && (
+          <IconClose24X24 className={cn('icon')} />
+        )}
+        {blindText && <span className={cn('blind')}>{blindText}</span>}
+      </a>
     </div>
   );
 };

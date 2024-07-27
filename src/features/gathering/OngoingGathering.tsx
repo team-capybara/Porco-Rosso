@@ -9,7 +9,6 @@ import ScrollPhotoList from './components/PhotoList/ScrollPhotoList';
 import RouteMap from './components/RouteMap/RouteMap';
 import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import PhotoList from './components/PhotoList/PhotoList';
-import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
 
@@ -19,6 +18,7 @@ const cn = classnames.bind(styles);
 const OngoingGathering = (props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
+  const [renderComponent, setRenderComponent] = useState<string>('PhotoList');
   const [moimId] = useState<number>(1); //props로 변경될 수 있음
 
   const openLeaveModal = () => {
@@ -27,6 +27,13 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
 
   const closeLeaveModal = () => {
     setLeaveModal(false);
+  };
+
+  const PhotoListBackNavigationClickHandler = (
+    e: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    e.preventDefault();
+    setRenderComponent('OngoingMain');
   };
 
   // 진행 중 모임 메인 화면
@@ -47,9 +54,9 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
         <section className={cn('section')}>
           <ParticipantList />
         </section>
-        <section className={cn('section')}>
+        {/* <section className={cn('section')}>
           <ScrollPhotoList />
-        </section>
+        </section> */}
         <section className={cn('section')}>
           <RouteMap moimId={moimId} />
         </section>
@@ -84,12 +91,14 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
         <BackNavigation
           classNameForIconType="arrow_type"
           blindText="이전으로"
+          isButton={true}
+          onClick={PhotoListBackNavigationClickHandler}
         />
         <div className={cn('wrap_gathering_title')}>
           <GatheringTitle title="순간 모음" description="42장의 사진" />
         </div>
         <div className={cn('wrap_photo_list')}>
-          <PhotoList />
+          <PhotoList moimeId={'1'} setRenderComponent={setRenderComponent} />
         </div>
       </>
     );
@@ -110,9 +119,9 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
             hasShareButton={true}
           />
         </div>
-        <div className={cn('wrap_photo_card')}>
+        {/* <div className={cn('wrap_photo_card')}>
           <PhotoCard />
-        </div>
+        </div> */}
         <div className={cn('wrap_scroll_photo_list')}>
           <ScrollPhotoList hiddenTitle={true} isMiniPhotoCard={true} />
         </div>
@@ -124,9 +133,9 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
 
   return (
     <div className={cn('ongoing_gathering')}>
-      {true && renderOngoingMain()}
-      {false && renderPhotoList()}
-      {false && renderPhotoDetail()}
+      {renderComponent === 'OngoingMain' && renderOngoingMain()}
+      {renderComponent === 'PhotoList' && renderPhotoList()}
+      {renderComponent === 'PhotoDetail' && renderPhotoDetail()}
       <OngoingFooter />
     </div>
   );

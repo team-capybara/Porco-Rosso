@@ -18,7 +18,7 @@ const cn = classnames.bind(styles);
 const OngoingGathering = (props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
-  const [renderComponent, setRenderComponent] = useState<string>('PhotoList');
+  const [renderComponent, setRenderComponent] = useState<string>('OngoingMain');
   const [moimId] = useState<number>(1); //props로 변경될 수 있음
 
   const openLeaveModal = () => {
@@ -54,9 +54,9 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
         <section className={cn('section')}>
           <ParticipantList />
         </section>
-        {/* <section className={cn('section')}>
+        <section className={cn('section')}>
           <ScrollPhotoList />
-        </section> */}
+        </section>
         <section className={cn('section')}>
           <RouteMap moimId={moimId} />
         </section>

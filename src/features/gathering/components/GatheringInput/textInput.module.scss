@@ -1,0 +1,32 @@
+.text_input {
+  margin: 0 16px;
+  .label {
+    display: block;
+  }
+  .input {
+    @include font-type('20-26', 700);
+    display: block;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    color: $gray-50;
+    caret-color: $green;
+    text-align: center;
+    &::placeholder,
+    &::-moz-placeholder,
+    &::-webkit-input-placeholder {
+      color: $gray-400;
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+  .count {
+    @include font-type('14-20');
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 2px solid $gray-50;
+    color: $gray-400;
+    text-align: center;
+  }
+}

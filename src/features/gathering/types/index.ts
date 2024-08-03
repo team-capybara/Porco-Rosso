@@ -29,4 +29,17 @@ export interface getMoimePhotoResponse {
   };
   total: number;
 }
+
+export interface MoimePhoto {
+  photoId: number;
+  url: string;
+  uploadedAt: string;
+  uploaderId: number;
+  uploaderProfile: string;
+  liked: boolean;
+  likes: number;
+}
+
+export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset';
+
 export interface CreateGatheringProps {}

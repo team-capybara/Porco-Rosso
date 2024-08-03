@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import classnames from 'classnames/bind';
-import { OngoingGatheringProps } from './types/index';
+import { OngoingGatheringProps, ongoingType } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import styles from './ongoingGathering.module.scss';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
@@ -18,7 +18,8 @@ const cn = classnames.bind(styles);
 const OngoingGathering = (props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
-  const [renderComponent, setRenderComponent] = useState<string>('OngoingMain');
+  const [renderComponent, setRenderComponent] =
+    useState<ongoingType>('OngoingMain');
   const [moimId] = useState<number>(1); //props로 변경될 수 있음
 
   const openLeaveModal = () => {
@@ -55,7 +56,11 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
           <ParticipantList />
         </section>
         <section className={cn('section')}>
-          <ScrollPhotoList />
+          <ScrollPhotoList
+            moimeId={'1'}
+            hiddenTitle={false}
+            isMiniPhotoCard={true}
+          />
         </section>
         <section className={cn('section')}>
           <RouteMap moimId={moimId} />
@@ -123,7 +128,11 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
           <PhotoCard />
         </div> */}
         <div className={cn('wrap_scroll_photo_list')}>
-          <ScrollPhotoList hiddenTitle={true} isMiniPhotoCard={true} />
+          <ScrollPhotoList
+            moimeId={'1'}
+            hiddenTitle={true}
+            isMiniPhotoCard={true}
+          />
         </div>
       </>
     );

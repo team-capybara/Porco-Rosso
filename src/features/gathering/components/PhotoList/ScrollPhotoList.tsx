@@ -4,7 +4,7 @@ import styles from './scrollPhotoList.module.scss';
 import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
 import HorizontalScrollWrapper from '../../../../common/components/HorizontalScrollWrapper/HorizontalScrollWrapper';
 import PhotoCard from './PhotoCard/PhotoCard';
-import { MoimePhoto } from './PhotoList';
+import { MoimePhoto } from '../../types';
 import { PhotoCardProps } from './PhotoList';
 import { getMoimePhoto } from '../../../../api/service/mockApi';
 import { getMoimePhotoResponse, Photo } from '../../types';
@@ -58,16 +58,9 @@ const ScrollPhotoList = ({
         el.photoId = el.photoId + cursorId;
       }
     });
-    // 개선고려지점 : if 문 제거해도 문제없는지 확인
-    if (moimePhotoLst.length !== 0) {
-      nextMoimePhotoLst = [...moimePhotoLst, ...resPhotoLst];
-    } else {
-      nextMoimePhotoLst = resPhotoLst;
-    }
-    console.warn(
-      'cursorId',
-      nextMoimePhotoLst[nextMoimePhotoLst.length - 1].photoId
-    );
+
+    nextMoimePhotoLst = [...moimePhotoLst, ...resPhotoLst];
+
     setCursorId(nextMoimePhotoLst[nextMoimePhotoLst.length - 1].photoId);
     setMoimePhotoLst(nextMoimePhotoLst);
     setLoading(false);
@@ -119,7 +112,6 @@ const ScrollPhotoList = ({
     likeLoadingLst.current = likeLoadingLst.current.filter(
       (el) => el !== photoId
     );
-    console.warn('LOCK 해제', photoId);
   }
 
   useEffect(() => {

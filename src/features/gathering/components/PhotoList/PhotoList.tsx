@@ -5,13 +5,18 @@ import styles from './photoList.module.scss';
 import PhotoCard from './PhotoCard/PhotoCard';
 import { getMoimePhoto } from '../../../../api/service/mockApi';
 import axios from 'axios';
-import { getMoimePhotoResponse, Photo } from '../../types';
+import {
+  getMoimePhotoResponse,
+  Photo,
+  MoimePhoto,
+  ongoingType,
+} from '../../types';
 
 const cn = classnames.bind(styles);
 
 interface PhotoListProps {
   moimeId: string;
-  setRenderComponent: React.Dispatch<React.SetStateAction<string>>;
+  setRenderComponent: React.Dispatch<React.SetStateAction<ongoingType>>;
 }
 
 export interface PhotoCardProps {
@@ -24,16 +29,6 @@ export interface PhotoCardProps {
     event: React.MouseEvent<HTMLButtonElement>,
     photoId: number
   ) => void;
-}
-
-export interface MoimePhoto {
-  photoId: number;
-  url: string;
-  uploadedAt: string;
-  uploaderId: number;
-  uploaderProfile: string;
-  liked: boolean;
-  likes: number;
 }
 
 const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
@@ -240,7 +235,7 @@ const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
                 left: 0,
                 behavior: 'smooth',
               });
-              setRenderComponent!('');
+              setRenderComponent!('reset');
               setTimeout(() => {
                 setRenderComponent!('PhotoList');
               }, 0);
@@ -300,7 +295,7 @@ const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
           }
         })}
       </ul>
-      <div style={{ height: '1000px', backgroundColor: 'red' }}></div>
+      <div style={{ height: '100px', backgroundColor: 'black' }}></div>
     </>
   );
 };

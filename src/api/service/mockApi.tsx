@@ -1,0 +1,26 @@
+import axios from 'axios';
+import { mockAxios } from '../config';
+import MockAdapter from 'axios-mock-adapter';
+import { getMoimePhotoResponse } from '../../features/gathering/types';
+
+const mock: MockAdapter = new MockAdapter(axios, { delayResponse: 2000 });
+
+export const getMoimePhoto = async (
+  moimId: string,
+  cursorId: number | null,
+  size: number
+): Promise<getMoimePhotoResponse> => {
+  const res = await mockAxios.get(
+    `mock/moims/${moimId}/photos?size=${size}&cursorId=${cursorId}`
+  );
+  const response: getMoimePhotoResponse = res.data;
+  return response;
+};
+
+mock.onGet('/moims/newPhoto/true').reply(200, {
+  isNew: true,
+});
+
+mock.onGet('/moims/newPhoto/false').reply(200, {
+  isNew: false,
+});

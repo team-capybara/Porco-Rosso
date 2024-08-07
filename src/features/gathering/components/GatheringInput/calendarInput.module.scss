@@ -1,0 +1,86 @@
+.calendar_input {
+  margin: 0 9px 16px;
+  .title_area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    .title {
+      @include font-type('16-22', 500);
+      padding: 8px 16px;
+      color: $gray-50;
+    }
+    .number {
+      font-weight: 400;
+    }
+  }
+  .button_area .button {
+    position: relative;
+    margin-right: 16px;
+    .icon {
+      width: 24px;
+      height: 24px;
+      color: $gray-50;
+    }
+    &.next {
+      transform: rotate(180deg);
+    }
+  }
+  .day_of_the_week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 8px;
+    .item {
+      @include font-type('16-20', 600);
+      color: $gray-400;
+      text-align: center;
+    }
+  }
+  .days_calendar {
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(7, 1fr);
+    .item {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+    }
+    .button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border-radius: 50%;
+      background-color: $gray-500;
+      .text {
+        @include font-type('16-22', 400);
+        position: relative;
+        color: $gray-50;
+      }
+      // 오늘인 경우
+      &.is_today .text {
+        line-height: 20px;
+        color: $green;
+        &::after {
+          position: absolute;
+          right: 50%;
+          bottom: -4px;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background-color: $green;
+          transform: translateX(50%);
+          content: '';
+        }
+      }
+      // 버튼 선택된 경우
+      &.active {
+        background-color: $green;
+        .text {
+          color: $gray-700;
+        }
+      }
+    }
+  }
+}

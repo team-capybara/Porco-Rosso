@@ -3,15 +3,20 @@ import styles from './participantList.module.scss';
 import IconPlus24X24 from '../../../../assets/svg/icon/IconPlus24X24';
 import IconCrown14X11 from '../../../../assets/svg/icon/IconCrown14X11';
 import HorizontalScrollWrapper from '../../../../common/components/HorizontalScrollWrapper/HorizontalScrollWrapper';
+import IconX12X12 from '../../../../assets/svg/icon/IconX12X12';
 
 const cn = classnames.bind(styles);
 
-const ParticipantList = () => {
+interface Props {
+  title?: string;
+}
+
+const ParticipantList = ({ title = '' }: Props) => {
   return (
     <div className={cn('participant_list')}>
       {/* todo: 페이지에 따라 title 분기 부탁드립니다. */}
-      <strong className={cn('title')}>참여한 친구 4명</strong>
-      <HorizontalScrollWrapper>
+      <strong className={cn('title')}>{title} 4명</strong>
+      <HorizontalScrollWrapper classNameForView="participant_list">
         <ul className={cn('people_list')}>
           <li className={cn('item')}>
             {/* todo: 버튼 클릭시, 친구추가 모달 노출됩니다.(작업 전) */}
@@ -41,6 +46,10 @@ const ParticipantList = () => {
                 </div>
               </div>
               <div className={cn('text')}>나</div>
+            </button>
+            {/* todo: 친구 삭제 버튼입니다 */}
+            <button type="button" className={cn('delete_button')}>
+              <IconX12X12 className={cn('icon')} />
             </button>
           </li>
           <li className={cn('item')}>

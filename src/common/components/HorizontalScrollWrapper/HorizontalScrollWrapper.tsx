@@ -6,12 +6,16 @@ const cn = classnames.bind(styles);
 
 interface Props {
   children?: ReactNode;
+  classNameForView?: '' | 'participant_list';
 }
 
-const HorizontalScrollWrapper = ({ children }: Props) => {
+const HorizontalScrollWrapper = ({
+  children,
+  classNameForView = '',
+}: Props) => {
   // todo: 모바일 터치 스크롤 이벤트 적용부탁드립니다.
   return (
-    <div className={cn('horizontal_scroll_wrapper')}>
+    <div className={cn('horizontal_scroll_wrapper', classNameForView)}>
       <div className={cn('inner')}>{children}</div>
     </div>
   );

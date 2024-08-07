@@ -52,7 +52,7 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
           />
         </div>
         <section className={cn('section')}>
-          <ParticipantList />
+          <ParticipantList title="참여한 친구" />
         </section>
         {/* <section className={cn('section')}>
           <ScrollPhotoList />

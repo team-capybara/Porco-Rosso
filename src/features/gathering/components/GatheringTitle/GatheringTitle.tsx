@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 import classnames from 'classnames/bind';
-import IconRefresh24X24 from '../../../../assets/svg/icon/IconRefresh24X24';
 import styles from './gatheringTitle.module.scss';
+import IconRefresh24X24 from '../../../../assets/svg/icon/IconRefresh24X24';
 import IconShare24X24 from '../../../../assets/svg/icon/IconShare24X24';
+import IconEdit16X162 from '../../../../assets/svg/icon/IconEdit16X162';
 
 const cn = classnames.bind(styles);
 
@@ -11,6 +12,7 @@ interface Props {
   description?: ReactNode;
   hasRefreshButton?: boolean;
   hasShareButton?: boolean;
+  classNameForPage?: '' | 'create_page' | 'invite_friends';
 }
 
 const GatheringTitle = ({
@@ -18,11 +20,19 @@ const GatheringTitle = ({
   description = '',
   hasRefreshButton = false,
   hasShareButton = false,
+  classNameForPage = '',
 }: Props) => {
-  // todo: 다른 페이지 작업 진행하면서 분기가 추가되어 수정될 수 있는 점 참고부탁드립니다.
   return (
     <div className={cn('gathering_title')}>
-      <strong className={cn('title')}>{title}</strong>
+      <strong className={cn('title')}>
+        {title}
+        {classNameForPage === 'create_page' && (
+          <button type="button" className={cn('edit_button')}>
+            <IconEdit16X162 className={cn('icon')} />
+            <span className="blind">수정</span>
+          </button>
+        )}
+      </strong>
       <div className={cn('description')}>{description}</div>
       {(hasRefreshButton || hasShareButton) && (
         <button type="button" className={cn('button')}>
@@ -38,6 +48,12 @@ const GatheringTitle = ({
               <span className={cn('blind')}>공유하기</span>
             </>
           )}
+        </button>
+      )}
+      {classNameForPage === 'invite_friends' && (
+        // todo: 친구 선택 시, disabled={false} 로 토글 부탁드립니다.
+        <button type="button" className={cn('button')} disabled={false}>
+          완료
         </button>
       )}
     </div>

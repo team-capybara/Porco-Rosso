@@ -30,3 +30,25 @@ export interface getMoimePhotoResponse {
   total: number;
 }
 export interface CreateGatheringProps {}
+
+export interface IGatheringInfo {
+  id: number;
+  title: string;
+  startedAt: string;
+  endedAt: string | null;
+  location: {
+    name: string;
+    latitude: number;
+    longitude: number;
+  };
+  status: string;
+  participants: Array<IParticipants>;
+  bestPhotoUrl: string | null; //완료된 모임에만 존재
+}
+
+export interface IParticipants {
+  userId: number;
+  nickname: string;
+  profileImageUrl: string;
+  isOwner: boolean;
+}

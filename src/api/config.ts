@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCookie } from '../common/utils/authUtils';
 
 export const mockAxios = axios.create({
-  baseURL: 'https://moime.app/',
+  baseURL: 'https://api.moime.app/',
   headers: {
     accept: '/',
     Authorization:
@@ -16,7 +16,7 @@ const mockToken =
 
 // 기본 설정을 가진 axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: 'https://moime.app/',
+  baseURL: 'https://api.moime.app/',
   timeout: 10000, // 10초
   headers: {
     'Content-Type': 'application/json',

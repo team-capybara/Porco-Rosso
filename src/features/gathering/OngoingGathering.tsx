@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classnames from 'classnames/bind';
 import { OngoingGatheringProps } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
@@ -11,15 +11,20 @@ import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import PhotoList from './components/PhotoList/PhotoList';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
+import { getGatheringInfo } from '../../api/service/gatheringApi';
+import { getDateFromDatetime } from '../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
 // 진행 중 모임
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const OngoingGathering = (props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
   const [renderComponent, setRenderComponent] = useState<string>('PhotoList');
   const [moimId] = useState<number>(1); //props로 변경될 수 있음
+  const { data: gatheringInfoData, refetch: refetchGatheringInfo } =
+    getGatheringInfo(1);
 
   const openLeaveModal = () => {
     setLeaveModal(true);
@@ -36,8 +41,14 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
     setRenderComponent('OngoingMain');
   };
 
+  useEffect(() => {
+    refetchGatheringInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // 진행 중 모임 메인 화면
   const renderOngoingMain = () => {
+    console.log(gatheringInfoData);
     return (
       <>
         <BackNavigation
@@ -46,19 +57,28 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
         />
         <div className={cn('wrap_gathering_title')}>
           <GatheringTitle
-            title="모이미 제목인데요오오오ㅗ오 ㅇ ㄹㄴㅇㄴㄹ ㄴㅇ ㄹㅇㄴ ㄹㅇㄴ"
-            description="2024년 5월 3일"
+            title={gatheringInfoData?.title}
+            description={getDateFromDatetime(gatheringInfoData?.startedAt)}
             hasRefreshButton={true}
+            onClickRefreshButton={() => refetchGatheringInfo()}
           />
         </div>
         <section className={cn('section')}>
-          <ParticipantList />
+          <ParticipantList
+            hasAddButton={true}
+            mode="read"
+            moimStart={true}
+            participantData={gatheringInfoData?.participants}
+          />
         </section>
         {/* <section className={cn('section')}>
           <ScrollPhotoList />
         </section> */}
         <section className={cn('section')}>
-          <RouteMap moimId={moimId} />
+          <RouteMap
+            locationSummary={gatheringInfoData?.location.name}
+            moimId={moimId}
+          />
         </section>
         <div className={cn('button_area')}>
           <button
@@ -129,7 +149,7 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
     );
   };
 
-  console.log(props);
+  // console.log(props);
 
   return (
     <div className={cn('ongoing_gathering')}>

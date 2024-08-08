@@ -1,17 +1,24 @@
 import classnames from 'classnames/bind';
 import styles from './nicknameInput.module.scss';
 import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
+import { NicknameInputProps } from '../../types';
 
 const cn = classnames.bind(styles);
 
-const NicknameInput = () => {
+const NicknameInput = ({ value, onChange }: NicknameInputProps) => {
   return (
     <div className={cn('nickname_input')}>
       <label htmlFor="nickname" className={cn('label')}>
         사용할 닉네임을 입력해주세요
       </label>
       <div className={cn('input_area')}>
-        <input type="text" id="nickname" className={cn('input')} />
+        <input
+          type="text"
+          id="nickname"
+          className={cn('input')}
+          value={value}
+          onChange={onChange}
+        />
         <span className={cn('icon_area')}>
           <ArrowLeft24X24 className={cn('arrow_icon')} />
         </span>

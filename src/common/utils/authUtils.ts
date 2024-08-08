@@ -19,13 +19,11 @@ const setCookie = (name: string, value: string, days: number) => {
   document.cookie = name + '=' + value + ';' + expires + ';path=/';
 };
 
-const getUrlParameter = (name: string) => {
-  name = name.replace(/[\\[]/, '\\[').replace(/[\]]/, '\\]');
-  const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-  const results = regex.exec(location.search);
-  return results === null
-    ? ''
-    : decodeURIComponent(results[1].replace(/\+/g, ' '));
+const getQueryStringValue = (key: string, url = window.location.href) => {
+  const urlObj = new URL(url);
+  const params = new URLSearchParams(urlObj.search);
+  // 특정 키의 값을 가져옵니다.
+  return params.get(key);
 };
 
-export { getCookie, setCookie, getUrlParameter };
+export { getCookie, setCookie, getQueryStringValue };

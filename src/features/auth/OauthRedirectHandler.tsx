@@ -1,18 +1,25 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { setCookie } from '../../common/utils/authUtils';
+import { getCookie } from '../../common/utils/authUtils';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const OauthRedirectHandler = () => {
+  //old bie 랜딩
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    setCookie(
-      'access_token',
-      'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiaXNzIjoiY2FweWJhcmEiLCJyb2xlcyI6IkFETUlOIiwiaWF0IjoxNzE1MDAyNDYzLCJleHAiOjE3MjI3Nzg0NjN9.eeDxdX6__dE0raAMdKbXt0fwsMfDTAww0TfJmflkEPyHZQar5DDi1WSPZbgQx9T7l25F4gFWsvTPz8IqumV-Kg',
-      7
-    );
-    navigate('/signup');
-  }, [navigate]);
+    const accessToken = getCookie('access_token');
+    console.log(accessToken, 'old bie access token 받아옴');
+
+    // 로그인 오류 처리
+    if (!accessToken) {
+      // 다시 로그인으로
+      navigate('/', { state: { from: location } });
+    } else {
+      // 앱 메인으로 브릿징
+      alert('앱 메인으로 브릿징 작업 필요');
+    }
+  }, [location, navigate]);
 
   return null;
 };

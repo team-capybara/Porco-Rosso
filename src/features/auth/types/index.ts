@@ -25,10 +25,12 @@ export interface NewProfileProps {
 export interface ProfileImageProps {
   value: string;
   setProfile: React.Dispatch<React.SetStateAction<string>>;
+  setIsProfileModify: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: (file: File) => void;
 }
 
 export interface NicknameInputProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  errMsg: string;
 }

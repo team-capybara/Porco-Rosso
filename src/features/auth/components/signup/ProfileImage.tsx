@@ -8,7 +8,12 @@ import heic2any from 'heic2any';
 
 const cn = classnames.bind(styles);
 
-const ProfileImage = ({ value, onChange, setProfile }: ProfileImageProps) => {
+const ProfileImage = ({
+  value,
+  onChange,
+  setProfile,
+  setIsProfileModify,
+}: ProfileImageProps) => {
   //heif convert 배포해서 테스트
   const heifConvert = async (file: File) => {
     try {
@@ -85,7 +90,7 @@ const ProfileImage = ({ value, onChange, setProfile }: ProfileImageProps) => {
       // 이미지 압축
       const options = {
         maxSizeMB: 0.2, // 사진 용량 max 200kb 제한
-        maxWidthOrHeight: 450, // resolution 450 * 450 제한
+        maxWidthOrHeight: 440, // resolution 440 * 440 제한
         useWebWorker: true,
       };
 
@@ -96,7 +101,10 @@ const ProfileImage = ({ value, onChange, setProfile }: ProfileImageProps) => {
         type: compressedBlob.type,
       });
 
+      console.log(blobToFile, 'blobtofile');
+
       onChange(blobToFile);
+      setIsProfileModify(true);
     }
   };
   return (

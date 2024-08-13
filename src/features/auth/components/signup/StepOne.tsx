@@ -4,6 +4,7 @@ import styles from './stepOne.module.scss';
 import ProfileImage from './ProfileImage';
 import NicknameInput from './NicknameInput';
 import { NewProfileProps } from '../../types';
+import { textInputValidation } from '../../../../common/utils/authUtils';
 
 const cn = classnames.bind(styles);
 
@@ -13,17 +14,44 @@ const StepOne = ({ userProfile, updateProfile, onSave }: NewProfileProps) => {
     updateProfile.newProfile
   );
   const [nickname, setNickname] = useState<string>(userProfile.nickname);
+  const [errMsg, setErrMsg] = useState<string>('');
+  const [isProfileModify, setIsProfileModify] = useState<boolean>(false);
 
   const handleProfileChange = (file: File) => {
     setNewProfile(file);
   };
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(event.target.value);
+    const nameInput = event.target.value;
+    setNickname(nameInput);
+    const errorMsg = textInputValidation(nameInput);
+    setErrMsg(errorMsg);
   };
 
-  const handleSave = () => {
-    onSave({ newProfile, nickname });
+  // URL을 파일로 변환하는 함수
+  const urlToFile = async (url: string, filename: string, mimeType: string) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], filename, { type: mimeType });
+  };
+
+  const handleSave = async () => {
+    // 닉네임 밸리데이션 미통과
+    if (errMsg) {
+      return;
+    }
+    if (isProfileModify) {
+      console.log('프로필 사진 바뀌었음');
+      onSave({ newProfile, nickname });
+    } else {
+      console.log('프로필 사진 안바뀌었음');
+      const convertedFile = await urlToFile(
+        profile,
+        'profile-image.jpg',
+        'image/jpeg'
+      );
+      onSave({ newProfile: convertedFile, nickname });
+    }
   };
 
   return (
@@ -38,10 +66,15 @@ const StepOne = ({ userProfile, updateProfile, onSave }: NewProfileProps) => {
           value={profile}
           onChange={handleProfileChange}
           setProfile={setProfile}
+          setIsProfileModify={setIsProfileModify}
         />
       </div>
       <div className={cn('wrap_nickname_input')}>
-        <NicknameInput value={nickname} onChange={handleNicknameChange} />
+        <NicknameInput
+          value={nickname}
+          onChange={handleNicknameChange}
+          errMsg={errMsg}
+        />
       </div>
       <div className={cn('wrap_next_step_link')}>
         {/* 버튼은 '다음' 1가지로 유지하되,

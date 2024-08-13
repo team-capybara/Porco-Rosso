@@ -5,7 +5,7 @@ import { NicknameInputProps } from '../../types';
 
 const cn = classnames.bind(styles);
 
-const NicknameInput = ({ value, onChange }: NicknameInputProps) => {
+const NicknameInput = ({ value, onChange, errMsg }: NicknameInputProps) => {
   return (
     <div className={cn('nickname_input')}>
       <label htmlFor="nickname" className={cn('label')}>
@@ -23,7 +23,8 @@ const NicknameInput = ({ value, onChange }: NicknameInputProps) => {
           <ArrowLeft24X24 className={cn('arrow_icon')} />
         </span>
       </div>
-      <p className={cn('description')}>2~20자, 영문 소문자/한글 입력 가능</p>
+      <p className={cn('description')}>1~15자, 영문/한글/숫자 입력 가능</p>
+      {errMsg && <p>{errMsg}</p>}
     </div>
   );
 };

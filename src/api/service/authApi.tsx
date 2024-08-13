@@ -16,7 +16,7 @@ import { UpdateProfile } from '../../features/auth/types';
 
 const getUserInfo = async () => {
   try {
-    const response = await apiClient.get('/external/users/my');
+    const response = await apiClient.get('/users/my');
     console.log(response.data, '뭐징');
     return response.data;
   } catch (error) {
@@ -38,9 +38,10 @@ const updateProfile = async ({
   const formProps = Object.fromEntries(formData);
   console.log(formProps, 'form데이터 찍어보기');
   try {
-    const response = await apiClient.post('/external/users/my', formData, {
+    const response = await apiClient.post('/users/my', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Cache-Control': 'no-cache',
       },
     });
     return response.data;

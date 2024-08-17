@@ -4,6 +4,7 @@ import IconPlus24X24 from '../../../../assets/svg/icon/IconPlus24X24';
 import IconCrown14X11 from '../../../../assets/svg/icon/IconCrown14X11';
 import HorizontalScrollWrapper from '../../../../common/components/HorizontalScrollWrapper/HorizontalScrollWrapper';
 import { IParticipants } from '../../types';
+import IconX12X12 from '../../../../assets/svg/icon/IconX12X12';
 
 const cn = classnames.bind(styles);
 
@@ -22,7 +23,7 @@ const ParticipantList = (props: Props) => {
         {props.moimStart ? '참여한' : '모일'} 친구{' '}
         {props.participantData?.length ?? 0}명
       </strong>
-      <HorizontalScrollWrapper>
+      <HorizontalScrollWrapper>  // <HorizontalScrollWrapper classNameForView="participant_list">
         <ul className={cn('people_list')}>
           {props.hasAddButton && (
             <li className={cn('item')}>
@@ -80,6 +81,10 @@ const ParticipantList = (props: Props) => {
                 </div>
               </div>
               <div className={cn('text')}>나</div>
+            </button>
+            {/* todo: 친구 삭제 버튼입니다 */}
+            <button type="button" className={cn('delete_button')}>
+              <IconX12X12 className={cn('icon')} />
             </button>
           </li>
           <li className={cn('item')}>

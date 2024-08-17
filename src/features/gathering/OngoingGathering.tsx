@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import classnames from 'classnames/bind';
-import { OngoingGatheringProps } from './types/index';
+import { OngoingGatheringProps, ongoingType } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import styles from './ongoingGathering.module.scss';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
@@ -21,7 +21,8 @@ const cn = classnames.bind(styles);
 const OngoingGathering = (props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
-  const [renderComponent, setRenderComponent] = useState<string>('PhotoList');
+  const [renderComponent, setRenderComponent] =
+    useState<ongoingType>('OngoingMain');
   const [moimId] = useState<number>(1); //props로 변경될 수 있음
   const { data: gatheringInfoData, refetch: refetchGatheringInfo } =
     getGatheringInfo(1);
@@ -68,12 +69,15 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
             hasAddButton={true}
             mode="read"
             moimStart={true}
-            participantData={gatheringInfoData?.participants}
+            participantData={gatheringInfoData?.participants}         
+        </section>
+        <section className={cn('section')}>
+          <ScrollPhotoList
+            moimeId={'1'}
+            hiddenTitle={false}
+            isMiniPhotoCard={true}
           />
         </section>
-        {/* <section className={cn('section')}>
-          <ScrollPhotoList />
-        </section> */}
         <section className={cn('section')}>
           <RouteMap
             locationSummary={gatheringInfoData?.location.name}
@@ -143,7 +147,11 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
           <PhotoCard />
         </div> */}
         <div className={cn('wrap_scroll_photo_list')}>
-          <ScrollPhotoList hiddenTitle={true} isMiniPhotoCard={true} />
+          <ScrollPhotoList
+            moimeId={'1'}
+            hiddenTitle={true}
+            isMiniPhotoCard={true}
+          />
         </div>
       </>
     );

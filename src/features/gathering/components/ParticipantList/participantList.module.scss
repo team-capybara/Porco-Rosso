@@ -9,6 +9,7 @@
     padding: 0 16px;
   }
   .item {
+    position: relative;
     display: inline-block;
     width: 56px;
     vertical-align: top;
@@ -77,6 +78,23 @@
     .icon {
       width: 14px;
       height: 11px;
+      color: $gray-50;
+    }
+  }
+  .delete_button {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: $gray-500;
+    .icon {
+      width: 12px;
+      height: 12px;
       color: $gray-50;
     }
   }

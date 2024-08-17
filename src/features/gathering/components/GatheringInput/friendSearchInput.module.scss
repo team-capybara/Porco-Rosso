@@ -1,0 +1,35 @@
+.freind_search_input {
+  position: relative;
+  padding: 17px 64px 17px 20px;
+  border-radius: 30px;
+  background-color: $gray-500;
+  .input {
+    @include font-type('16-22', 600);
+    display: block;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    color: $gray-50;
+    caret-color: $green;
+    &::placeholder,
+    &::-moz-placeholder,
+    &::-webkit-input-placeholder {
+      color: $gray-400;
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+  .search_button {
+    position: absolute;
+    top: 16px;
+    right: 26px;
+    padding: 10px 6px;
+    margin: -10px -6px;
+    .icon {
+      width: 24px;
+      height: 24px;
+      color: $gray-700;
+    }
+  }
+}

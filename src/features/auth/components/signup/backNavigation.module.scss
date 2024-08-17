@@ -11,15 +11,25 @@
     height: 56px;
     padding: 0 20px;
     background-color: $gray-700;
-    .link {
-      display: block;
-      margin: -8px;
-      padding: 8px;
-    }
-    .icon {
-      width: 24px;
-      height: 24px;
-      color: $gray-50;
+  }
+  .link {
+    display: block;
+    margin: -8px;
+    padding: 8px;
+  }
+  .icon {
+    width: 24px;
+    height: 24px;
+    color: $gray-50;
+  }
+  .next_link {
+    @include font-type('16-22', 500);
+    display: block;
+    margin: -8px 0 -8px auto;
+    padding: 8px 0;
+    color: $gray-400;
+    &:focus {
+      text-decoration: none;
     }
   }
 }

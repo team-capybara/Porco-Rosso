@@ -16,21 +16,24 @@ declare global {
 }
 
 interface RouteMapProps {
+  locationSummary?: string;
   moimId: number;
 }
 const RouteMap = (props: RouteMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null); //map이 들어가야 할 DOM
   const mapInstance = useRef<any>(); //map 객체 kakao.maps.Map
 
-  const { isLoading, data } = getMapLngLat(props.moimId);
+  const { isLoading, data, refetch } = getMapLngLat(props.moimId);
 
   // 첫 렌더링 시 지도 생성
   useEffect(() => {
+    refetch();
     mapInstance.current = new kakao.maps.Map(mapContainer.current!, {
       center: new kakao.maps.LatLng(33.450701, 126.570667), // 중심점 (추후 bound처리 때문에 의미X)
       draggable: false, // 드래그 막기
       zoomEnabled: false, // 줌 막기
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 데이터 로딩 끝나면 bound 처리
@@ -67,13 +70,13 @@ const RouteMap = (props: RouteMapProps) => {
     <div className={cn('route_map')}>
       <div className={cn('title_area')}>
         <strong className={cn('title')}>장소</strong>
-        <div className={cn('description')}>강남구 근처</div>
+        <div className={cn('description')}>{props.locationSummary}</div>
       </div>
       <div className={cn('map_area')}>
         <div
           id="map"
           ref={mapContainer}
-          style={{ width: '100%', height: '100%' }}
+          style={{ position: 'sticky', width: '100%', height: '100%' }}
         ></div>
       </div>
     </div>

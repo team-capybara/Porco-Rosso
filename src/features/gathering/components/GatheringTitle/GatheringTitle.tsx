@@ -11,7 +11,9 @@ interface Props {
   title?: string;
   description?: ReactNode;
   hasRefreshButton?: boolean;
+  onClickRefreshButton?: () => void;
   hasShareButton?: boolean;
+  onClickShareButton?: () => void;
   classNameForPage?: '' | 'create_page' | 'invite_friends';
 }
 
@@ -19,7 +21,9 @@ const GatheringTitle = ({
   title = '',
   description = '',
   hasRefreshButton = false,
+  onClickRefreshButton,
   hasShareButton = false,
+  onClickShareButton,
   classNameForPage = '',
 }: Props) => {
   return (
@@ -38,13 +42,19 @@ const GatheringTitle = ({
         <button type="button" className={cn('button')}>
           {hasRefreshButton && (
             <>
-              <IconRefresh24X24 className={cn('icon')} />
+              <IconRefresh24X24
+                className={cn('icon')}
+                onClick={onClickRefreshButton} // 새로고침 버튼 눌렀을 때 새로고침 돌아가는거 같은 이벤트 넣어야할지
+              />
               <span className={cn('blind')}>새로고침</span>
             </>
           )}
           {hasShareButton && (
             <>
-              <IconShare24X24 className={cn('icon')} />
+              <IconShare24X24
+                className={cn('icon')}
+                onClick={onClickShareButton}
+              />
               <span className={cn('blind')}>공유하기</span>
             </>
           )}

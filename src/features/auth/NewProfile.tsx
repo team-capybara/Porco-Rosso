@@ -1,4 +1,7 @@
-// import { useEffect } from 'react';
+import {
+  // useEffect,
+  useState,
+} from 'react';
 import { UpdateProfile } from './types/index';
 import classnames from 'classnames/bind';
 import styles from './newProfile.module.scss';
@@ -7,6 +10,7 @@ import StepOne from './components/signup/StepOne';
 import { getUserInfo, updateProfile } from '../../api/service/authApi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserProfile } from './types/index';
+import StepThree from './components/signup/StepThree';
 // import { useLocation, useNavigate } from 'react-router-dom';
 // import { getCookie } from '../../common/utils/authUtils';
 
@@ -14,6 +18,7 @@ const cn = classnames.bind(styles);
 
 const NewProfile = () => {
   const queryClient = useQueryClient();
+  const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false);
   // const navigate = useNavigate();
   // const location = useLocation();
 
@@ -52,7 +57,9 @@ const NewProfile = () => {
   console.log(userData, 'userData에요요요용');
 
   const handleSave = (updatedProfile: UpdateProfile) => {
+    console.log('이게 다 동시에');
     mutation.mutate(updatedProfile);
+    setSignUpSuccess(true);
   };
 
   return (
@@ -60,17 +67,23 @@ const NewProfile = () => {
       <div>
         {/* todo: StepOne, StepTwo, StepThree 상황에 맞게 노출부탁드립니다. */}
         {userData ? (
-          <StepOne
-            userProfile={userData}
-            updateProfile={{
-              newProfile: null,
-              nickname: userData.nickname,
-            }} // 초기값을 전달
-            onSave={handleSave}
-          />
+          <>
+            {!signUpSuccess && (
+              <StepOne
+                userProfile={userData}
+                updateProfile={{
+                  newProfile: null,
+                  nickname: userData.nickname,
+                }} // 초기값을 전달
+                onSave={handleSave}
+              />
+            )}
+            {signUpSuccess && <StepThree />}
+          </>
         ) : (
           <div>No user data available</div>
         )}
+
         {/* <StepThree /> */}
       </div>
     </div>

@@ -33,4 +33,5 @@ export interface NicknameInputProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   errMsg: string;
+  isFocus: boolean;
 }

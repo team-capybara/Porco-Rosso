@@ -16,12 +16,14 @@ const StepOne = ({ userProfile, updateProfile, onSave }: NewProfileProps) => {
   const [nickname, setNickname] = useState<string>(userProfile.nickname);
   const [errMsg, setErrMsg] = useState<string>('');
   const [isProfileModify, setIsProfileModify] = useState<boolean>(false);
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
   const handleProfileChange = (file: File) => {
     setNewProfile(file);
   };
 
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsFocus(false);
     const nameInput = event.target.value;
     setNickname(nameInput);
     const errorMsg = textInputValidation(nameInput);
@@ -38,6 +40,9 @@ const StepOne = ({ userProfile, updateProfile, onSave }: NewProfileProps) => {
   const handleSave = async () => {
     // 닉네임 밸리데이션 미통과
     if (errMsg) {
+      console.log('ㅎㅎ');
+      console.log(isFocus, 'isFoucs');
+      setIsFocus(true);
       return;
     }
     if (isProfileModify) {
@@ -74,6 +79,7 @@ const StepOne = ({ userProfile, updateProfile, onSave }: NewProfileProps) => {
           value={nickname}
           onChange={handleNicknameChange}
           errMsg={errMsg}
+          isFocus={isFocus}
         />
       </div>
       <div className={cn('wrap_next_step_link')}>

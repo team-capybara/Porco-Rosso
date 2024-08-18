@@ -28,7 +28,7 @@ const getQueryStringValue = (key: string, url = window.location.href) => {
 
 const textInputValidation = (input: string) => {
   // 허용된 문자: 한글, 영어, 숫자, 공백, 특수 문자 (!@#^%_$), 이모지
-  const validCharacters = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9!@#^%_$\s\p{Emoji}]+$/u;
+  const validCharacters = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9!@#^%_$\s]+$/u;
   if (input.trim() === '') {
     return '닉네임이 공백만으로 이루어질 수 없습니다.';
   }

@@ -1,10 +1,10 @@
 import classnames from 'classnames/bind';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
-import PhotoList from './components/PhotoList/PhotoList';
+// import PhotoList from './components/PhotoList/PhotoList';
 import styles from './endedGathering.module.scss';
-import ScrollPhotoList from './components/PhotoList/ScrollPhotoList';
-import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
+// import ScrollPhotoList from './components/PhotoList/ScrollPhotoList';
+// import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
 
 const cn = classnames.bind(styles);
 
@@ -29,9 +29,7 @@ const EndedGathering = () => {
             hasRefreshButton={true}
           />
         </div>
-        <div className={cn('wrap_photo_list')}>
-          <PhotoList />
-        </div>
+        <div className={cn('wrap_photo_list')}>{/* <PhotoList /> */}</div>
       </>
     );
   };
@@ -50,11 +48,9 @@ const EndedGathering = () => {
             description="2024년 5월 3일"
           />
         </div>
-        <div className={cn('wrap_photo_card')}>
-          <PhotoCard />
-        </div>
+        <div className={cn('wrap_photo_card')}>{/* <PhotoCard /> */}</div>
         <div className={cn('wrap_scroll_photo_list')}>
-          <ScrollPhotoList hiddenTitle={true} isMiniPhotoCard={true} />
+          {/* <ScrollPhotoList hiddenTitle={true} isMiniPhotoCard={true} /> */}
         </div>
       </>
     );

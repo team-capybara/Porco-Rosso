@@ -1,11 +1,24 @@
+import { useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './nicknameInput.module.scss';
-import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
+// import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
 import { NicknameInputProps } from '../../types';
 
 const cn = classnames.bind(styles);
 
-const NicknameInput = ({ value, onChange, errMsg }: NicknameInputProps) => {
+const NicknameInput = ({
+  value,
+  onChange,
+  errMsg,
+  isFocus,
+}: NicknameInputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (isFocus) {
+      console.log(isFocus, 'isFocus');
+      inputRef.current?.focus();
+    }
+  }, [isFocus]);
   return (
     <div className={cn('nickname_input')}>
       <label htmlFor="nickname" className={cn('label')}>
@@ -18,10 +31,11 @@ const NicknameInput = ({ value, onChange, errMsg }: NicknameInputProps) => {
           className={cn('input')}
           value={value}
           onChange={onChange}
+          ref={inputRef}
         />
-        <span className={cn('icon_area')}>
+        {/* <span className={cn('icon_area')}>
           <ArrowLeft24X24 className={cn('arrow_icon')} />
-        </span>
+        </span> */}
       </div>
       <p className={cn('description')}>1~15자, 영문/한글/숫자 입력 가능</p>
       {errMsg && <p>{errMsg}</p>}

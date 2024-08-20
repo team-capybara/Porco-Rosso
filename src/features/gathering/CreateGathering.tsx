@@ -8,10 +8,13 @@ import ParticipantList from './components/ParticipantList/ParticipantList';
 import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs';
 import FriendSearchInput from './components/GatheringInput/FriendSearchInput';
 import FriendSearchList from './components/GatheringInput/FriendSearchList';
+import { getGatheringInfo } from '../../api/service/gatheringApi';
 
 const cn = classnames.bind(styles);
 
 const CreateGathering = (props: CreateGatheringProps) => {
+  const { data: gatheringInfoData } = getGatheringInfo(1);
+
   // 모임 제목 입력
   const renderTextInput = () => {
     return (
@@ -35,7 +38,12 @@ const CreateGathering = (props: CreateGatheringProps) => {
           classNameForPage="create_page"
         />
         <div className={cn('wrap_participant_list')}>
-          <ParticipantList title="모일 친구" />
+          <ParticipantList
+            hasAddButton={true}
+            mode="read"
+            moimStart={true}
+            participantData={gatheringInfoData?.participants}
+          />
         </div>
         <div className={cn('wrap_gathiering_info_inputs')}>
           <GatheringInfoInputs />
@@ -68,7 +76,12 @@ const CreateGathering = (props: CreateGatheringProps) => {
           classNameForPage="invite_friends"
         />
         <div className={cn('wrap_participant_list')}>
-          <ParticipantList title="모일 친구" />
+          <ParticipantList
+            hasAddButton={true}
+            mode="read"
+            moimStart={true}
+            participantData={gatheringInfoData?.participants}
+          />
         </div>
         <div className={cn('wrap_friend_search_input')}>
           <strong className={cn('title')}>

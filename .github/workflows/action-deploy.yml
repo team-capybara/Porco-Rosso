@@ -59,15 +59,18 @@ jobs:
           echo "Version parts: ${version_parts[@]}"  # 버전 번호 부분별로 출력
           case "${{ env.VERSION_BUMP }}" in
             major)
+               echo "Bumping major version"
               ((version_parts[0]++))
               version_parts[1]=0
               version_parts[2]=0
               ;;
             minor)
+              echo "Bumping minor version"
               ((version_parts[1]++))
               version_parts[2]=0
               ;;
             patch)
+               echo "Bumping patch version"
               ((version_parts[2]++))
               ;;
             *)
@@ -76,6 +79,7 @@ jobs:
               ;;
           esac
           new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+          echo "New version: $new_version"
 
           # 새로운 버전 저장
           echo $new_version > version.txt

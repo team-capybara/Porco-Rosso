@@ -52,9 +52,11 @@ jobs:
         if [ "${{ env.VERSION_BUMP }}" != "none" ]; then
           # 현재 버전 가져오기
           current_version=$(cat version.txt)
+          echo "Current version: $current_version"
 
           # 버전 번호 증가
           IFS='.' read -r -a version_parts <<< "$current_version"
+          echo "Version parts: ${version_parts[@]}"  # 버전 번호 부분별로 출력
           case "${{ env.VERSION_BUMP }}" in
             major)
               ((version_parts[0]++))

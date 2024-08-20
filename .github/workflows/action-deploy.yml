@@ -72,6 +72,7 @@ jobs:
             patch)
                echo "Bumping patch version"
               ((version_parts[2]++))
+              echo "New version parts after bump: ${version_parts[@]}
               ;;
             *)
               echo "Invalid version bump type. Use none, major, minor, or patch."

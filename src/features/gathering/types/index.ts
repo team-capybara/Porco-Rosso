@@ -40,7 +40,7 @@ export interface MoimePhoto {
   likes: number;
 }
 
-export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset';
+export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset'; // reset => 리렌더링을 위해서
 
 export interface CreateGatheringProps {}
 

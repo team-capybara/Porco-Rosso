@@ -69,7 +69,8 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
             hasAddButton={true}
             mode="read"
             moimStart={true}
-            participantData={gatheringInfoData?.participants}         
+            participantData={gatheringInfoData?.participants}
+          />
         </section>
         <section className={cn('section')}>
           <ScrollPhotoList

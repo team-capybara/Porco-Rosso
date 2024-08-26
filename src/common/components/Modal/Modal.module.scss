@@ -1,0 +1,22 @@
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  .inner {
+    position: absolute;
+    top: 50%;
+    right: 23px;
+    left: 23px;
+    padding: 16px 12px;
+    border-radius: 12px;
+    background-color: white;
+    transform: translateY(-50%);
+  }
+}

@@ -1,0 +1,48 @@
+.location_search_input {
+  margin: 0 16px;
+  .title {
+    @include font-type('16-22', 600);
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    color: $gray-50;
+    .icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+      color: $gray-50;
+    }
+  }
+  .label {
+    display: flex;
+    height: 56px;
+    padding: 16px 20px;
+    border-radius: 30px;
+    background-color: $gray-500;
+    box-sizing: border-box;
+    .input {
+      @include font-type('16-22', 600);
+      flex: 1 1 auto;
+      border: none;
+      background-color: transparent;
+      color: $gray-50;
+      caret-color: $green;
+      &::placeholder,
+      &::-moz-placeholder,
+      &::-webkit-input-placeholder {
+        color: $gray-400;
+      }
+      &:focus {
+        outline: none;
+      }
+    }
+    .icon {
+      flex: none;
+      width: 24px;
+      height: 24px;
+      margin-left: 14px;
+      transform: rotate(180deg);
+      color: $gray-700;
+    }
+  }
+}

@@ -1,0 +1,42 @@
+.nickname_input {
+  .label {
+    @include font-type('16-22', 600);
+    display: block;
+    color: $gray-50;
+    margin-bottom: 12px;
+  }
+  .input_area {
+    position: relative;
+  }
+  .input {
+    @include font-type('16-22', 600);
+    display: block;
+    width: 100%;
+    height: 56px;
+    padding: 0 64px 0 20px;
+    box-sizing: border-box;
+    border-radius: 40px;
+    border: none;
+    background-color: $gray-500;
+    color: rgba($gray-50, 0.3);
+    &:focus {
+      outline: none;
+    }
+  }
+  .icon_area {
+    position: absolute;
+    top: 16px;
+    right: 26px;
+  }
+  .arrow_icon {
+    width: 24px;
+    height: 24px;
+    color: $gray-700;
+    transform: rotate(180deg);
+  }
+  .description {
+    @include font-type('14-24', 500);
+    margin-top: 12px;
+    color: $gray-400;
+  }
+}

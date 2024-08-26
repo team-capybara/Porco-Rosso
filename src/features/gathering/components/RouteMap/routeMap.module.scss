@@ -1,0 +1,20 @@
+.route_map {
+  .title_area {
+    padding: 0 16px 12px;
+  }
+  .title {
+    @include font-type('16-22', 600);
+    display: block;
+    color: $gray-50;
+  }
+  .description {
+    @include font-type('14-24', 500);
+    color: $gray-400;
+  }
+  .map_area {
+    overflow: hidden;
+    height: 180px;
+    margin: 0 16px;
+    border-radius: 12px;
+  }
+}

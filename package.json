@@ -29,12 +29,22 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.35.1",
+    "axios": "^1.7.2",
+    "axios-mock-adapter": "^1.22.0",
+    "browser-image-compression": "^2.0.2",
+    "classnames": "^2.5.1",
+    "heic2any": "^0.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.23.1"
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.23.1",
+    "sass": "^1.77.4",
+    "stylelint-order": "^6.0.4",
+    "svgo": "^3.3.2"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.35.6",
+    "@tanstack/react-query-devtools": "^5.45.1",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",

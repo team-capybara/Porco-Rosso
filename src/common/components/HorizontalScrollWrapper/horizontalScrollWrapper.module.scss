@@ -1,0 +1,16 @@
+.horizontal_scroll_wrapper {
+  .inner {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  // 참여자 목록 취소 버튼
+  &.participant_list .inner {
+    margin-top: -4px;
+    padding-top: 4px;
+  }
+}

@@ -8,7 +8,7 @@ const cn = classnames.bind(styles);
 interface Props {
   title?: ReactNode;
   description?: ReactNode;
-  buttonText: string;
+  buttonText?: string;
 }
 
 const ErrorPage = ({

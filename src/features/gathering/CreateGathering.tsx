@@ -9,6 +9,7 @@ import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs
 import FriendSearchInput from './components/GatheringInput/FriendSearchInput';
 import FriendSearchList from './components/GatheringInput/FriendSearchList';
 import { getGatheringInfo } from '../../api/service/gatheringApi';
+import CalendarInput from './components/GatheringInput/CalendarInput';
 
 const cn = classnames.bind(styles);
 
@@ -48,6 +49,7 @@ const CreateGathering = (props: CreateGatheringProps) => {
         <div className={cn('wrap_gathiering_info_inputs')}>
           <GatheringInfoInputs />
         </div>
+        <CalendarInput />
         <div className={cn('wrap_create_button')}>
           {/* Markup todo: 모임 생성하기 버튼 상단에 버튼 색상으로 선 생기는 이슈 검토하기 */}
           <div className={cn('inner')}>

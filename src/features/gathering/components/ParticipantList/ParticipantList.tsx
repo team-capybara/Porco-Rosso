@@ -23,7 +23,8 @@ const ParticipantList = (props: Props) => {
         {props.moimStart ? '참여한' : '모일'} 친구{' '}
         {props.participantData?.length ?? 0}명
       </strong>
-      <HorizontalScrollWrapper>  // <HorizontalScrollWrapper classNameForView="participant_list">
+      <HorizontalScrollWrapper>
+        {/* <HorizontalScrollWrapper classNameForView="participant_list"> */}
         <ul className={cn('people_list')}>
           {props.hasAddButton && (
             <li className={cn('item')}>
@@ -83,10 +84,10 @@ const ParticipantList = (props: Props) => {
               <div className={cn('text')}>나</div>
             </button>
             {/* todo: 친구 삭제 버튼입니다 */}
-            <button type="button" className={cn('delete_button')}>
-              <IconX12X12 className={cn('icon')} />
-            </button>
-          </li>
+          <button type="button" className={cn('delete_button')}>
+            <IconX12X12 className={cn('icon')} />
+          </button>
+          {/* </li> */}
           <li className={cn('item')}>
             <button type="button" className={cn('button')}>
               <div className={cn('thumbnail_area')}>
@@ -100,7 +101,7 @@ const ParticipantList = (props: Props) => {
               </div>
               <div className={cn('text')}>맥주사랑이린</div>
             </button>
-          </li> */}
+          </li>
         </ul>
       </HorizontalScrollWrapper>
     </div>

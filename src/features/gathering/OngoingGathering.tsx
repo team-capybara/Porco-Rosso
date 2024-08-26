@@ -18,7 +18,7 @@ const cn = classnames.bind(styles);
 
 // 진행 중 모임
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const OngoingGathering = (props: OngoingGatheringProps) => {
+const OngoingGathering = (_props: OngoingGatheringProps) => {
   // todo: 마크업 테스트용 코드입니다. 개발 시 제거해도 무방합니다.
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
   const [renderComponent, setRenderComponent] =
@@ -69,7 +69,8 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
             hasAddButton={true}
             mode="read"
             moimStart={true}
-            participantData={gatheringInfoData?.participants}         
+            participantData={gatheringInfoData?.participants}
+          />
         </section>
         <section className={cn('section')}>
           <ScrollPhotoList

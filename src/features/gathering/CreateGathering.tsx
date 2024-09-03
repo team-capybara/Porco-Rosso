@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import classnames from 'classnames/bind';
 import { CreateGatheringProps } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
@@ -9,12 +10,35 @@ import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs
 import FriendSearchInput from './components/GatheringInput/FriendSearchInput';
 import FriendSearchList from './components/GatheringInput/FriendSearchList';
 import { getGatheringInfo } from '../../api/service/gatheringApi';
-import CalendarInput from './components/GatheringInput/CalendarInput';
+import { CreateGatheringData, ChangeHandler } from './types/index';
+import { formatDateToYYYYMMDD } from '../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
 const CreateGathering = (props: CreateGatheringProps) => {
+  // T는 CreateGatheringData로 설정되며, key와 value의 타입이 CreateGatheringData의 프로퍼티와 일치하게 됨
+  // CreateGatheringData의 키값에 따라 각각의 타입을 모두 추론할 수 있게 맵핑해주는 제네릭
   const { data: gatheringInfoData } = getGatheringInfo(1);
+
+  const today = new Date();
+  const initialDate = formatDateToYYYYMMDD(today);
+  const [gatheringData, setGatheringData] = useState<CreateGatheringData>({
+    title: '',
+    participantIds: [],
+    startedAt: initialDate,
+    location: { name: '', latitude: 0, longitude: 0 },
+  });
+
+  const handleChange: ChangeHandler<CreateGatheringData> = (key, value) => {
+    setGatheringData((prevData) => ({
+      ...prevData,
+      [key]: value,
+    }));
+  };
+
+  useEffect(() => {
+    console.log('Current gatheringData:', gatheringData);
+  }, [gatheringData]);
 
   // 모임 제목 입력
   const renderTextInput = () => {
@@ -47,9 +71,11 @@ const CreateGathering = (props: CreateGatheringProps) => {
           />
         </div>
         <div className={cn('wrap_gathiering_info_inputs')}>
-          <GatheringInfoInputs />
+          <GatheringInfoInputs
+            gatheringData={gatheringData}
+            onChange={handleChange}
+          />
         </div>
-        <CalendarInput />
         <div className={cn('wrap_create_button')}>
           {/* Markup todo: 모임 생성하기 버튼 상단에 버튼 색상으로 선 생기는 이슈 검토하기 */}
           <div className={cn('inner')}>

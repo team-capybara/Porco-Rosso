@@ -8,10 +8,12 @@ import {
   getMonthSet,
   getToday,
 } from '../../../../common/utils/calendarUtils';
+import { CalendarInputProps } from '../../types';
+import { formatDateToYYYYMMDD } from '../../../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
-const CalendarInput = () => {
+const CalendarInput = ({ onChange }: CalendarInputProps) => {
   const today = getToday();
   const [selectedDate, setSelectedDate] = useState<Date>(today);
   const [currentMonthYear, setCurrentMonthYear] = useState({
@@ -37,7 +39,9 @@ const CalendarInput = () => {
     setCurrentMonthYear({ month: nextMonth, year: nextYear });
   };
   const handleDateSelect = (date: Date) => {
+    console.log(date, 'date');
     setSelectedDate(date);
+    onChange(formatDateToYYYYMMDD(date));
   };
 
   const isToday = (date: Date) => date.toDateString() === today.toDateString();

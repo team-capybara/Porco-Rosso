@@ -65,3 +65,28 @@ export interface IParticipants {
   profileImageUrl: string;
   isOwner: boolean;
 }
+
+export interface GatheringLocation {
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface CreateGatheringData {
+  title: string;
+  participantIds: number[]; // 참가자의 ID 목록
+  startedAt: string; // 모임 시작 시간 (ISO 8601 형식)
+  location: GatheringLocation; // 모임 장소
+}
+
+export interface CalendarInputProps {
+  value: string; // Assuming the date is in ISO string format
+  onChange: (date: string) => void;
+}
+
+export type ChangeHandler<T> = (key: keyof T, value: T[keyof T]) => void;
+
+export interface GatheringInfoInputsProps {
+  gatheringData: CreateGatheringData;
+  onChange: ChangeHandler<CreateGatheringData>;
+}

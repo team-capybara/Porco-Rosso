@@ -8,10 +8,14 @@ import Layer from '../../../../common/components/Layer/Layer';
 import IconCalendar18X18 from '../../../../assets/svg/icon/IconCalendar18X18';
 import IconClock18X18 from '../../../../assets/svg/icon/IconClock18X18';
 import IconLocation18X18 from '../../../../assets/svg/icon/IconLocation18X18';
+import { GatheringInfoInputsProps } from '../../types';
 
 const cn = classnames.bind(styles);
 
-const GatheringInfoInputs = () => {
+const GatheringInfoInputs = ({
+  gatheringData,
+  onChange,
+}: GatheringInfoInputsProps) => {
   return (
     <div className={cn('gathering_info_inputs')}>
       {/* 날짜 */}
@@ -55,9 +59,14 @@ const GatheringInfoInputs = () => {
         </button>
       </div>
       {/* Layer 활성화 시, 기존 화면 비활성화 부탁드립니다. */}
-      {false && (
+      {true && (
         <Layer classNameForView="location_search_input">
-          {false && <CalendarInput />}
+          {true && (
+            <CalendarInput
+              value={gatheringData.startedAt}
+              onChange={(date: string) => onChange('startedAt', date)}
+            />
+          )}
           {false && <TimeInput />}
           {true && <LocationSearchInput />}
           {/* todo: 날짜, 시간 케이스에서만 노출부탁드립니다. */}

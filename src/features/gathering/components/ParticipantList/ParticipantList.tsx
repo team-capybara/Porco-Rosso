@@ -16,6 +16,10 @@ interface Props {
 }
 
 const ParticipantList = (props: Props) => {
+  //모임 수정에서 삭제버튼 클릭 시 수행할 함수
+  const onClickDeleteButton = (data: IParticipants) => {
+    console.log(data);
+  };
   return (
     <div className={cn('participant_list')}>
       {/* todo: 페이지에 따라 title 분기 부탁드립니다. */}
@@ -23,7 +27,7 @@ const ParticipantList = (props: Props) => {
         {props.moimStart ? '참여한' : '모일'} 친구{' '}
         {props.participantData?.length ?? 0}명
       </strong>
-      <HorizontalScrollWrapper>  // <HorizontalScrollWrapper classNameForView="participant_list">
+      <HorizontalScrollWrapper classNameForView="participant_list">
         <ul className={cn('people_list')}>
           {props.hasAddButton && (
             <li className={cn('item')}>
@@ -60,6 +64,15 @@ const ParticipantList = (props: Props) => {
                       </div>
                     )}
                   </div>
+                  {props.mode == 'update' && (
+                    <button
+                      type="button"
+                      className={cn('delete_button')}
+                      onClick={() => onClickDeleteButton(data)}
+                    >
+                      <IconX12X12 className={cn('icon')} />
+                    </button>
+                  )}
                   <div className={cn('text')}>{data.nickname}</div>
                 </button>
               </li>
@@ -83,11 +96,11 @@ const ParticipantList = (props: Props) => {
               <div className={cn('text')}>나</div>
             </button>
             {/* todo: 친구 삭제 버튼입니다 */}
-            <button type="button" className={cn('delete_button')}>
-              <IconX12X12 className={cn('icon')} />
-            </button>
-          </li>
-          <li className={cn('item')}>
+          <button type="button" className={cn('delete_button')}>
+            <IconX12X12 className={cn('icon')} />
+          </button>
+          <li className={cn('item')}></li>
+          {/* <li className={cn('item')}>
             <button type="button" className={cn('button')}>
               <div className={cn('thumbnail_area')}>
                 <div className={cn('thumbnail')}>
@@ -98,6 +111,9 @@ const ParticipantList = (props: Props) => {
                   />
                 </div>
               </div>
+              <button type="button" className={cn('delete_button')}>
+                <IconX12X12 className={cn('icon')} />
+              </button>
               <div className={cn('text')}>맥주사랑이린</div>
             </button>
           </li> */}

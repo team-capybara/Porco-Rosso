@@ -65,20 +65,24 @@ const tempGatheringInfoData = {
 };
 
 // {moimId}의 정보 조회
-export const getGatheringInfo = (moimId: number) => {
+export const getGatheringInfo = (moimId: number): IGatheringInfo => {
+  console.log(moimId);
+  // return axios.get('/moims/1').then(() => {
+  //     // });
+  return tempGatheringInfoData;
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { isLoading, isFetching, data, isError, error, refetch } = useQuery({
-    queryKey: ['get-gathering-info', moimId],
-    queryFn: () => {
-      return tempGatheringInfoData;
-      // return axios.get('/moims/1').then(() => {
-      // });
-    },
-    select: (data): IGatheringInfo => {
-      console.log(data);
-      return data;
-    },
-    enabled: false,
-  });
-  return { isLoading, isFetching, data, isError, error, refetch };
+  // const { isLoading, isFetching, data, isError, error, refetch } = useQuery({
+  //   queryKey: ['get-gathering-info', moimId],
+  //   queryFn: () => {
+  //     return tempGatheringInfoData;
+  //     // return axios.get('/moims/1').then(() => {
+  //     // });
+  //   },
+  //   select: (data): IGatheringInfo => {
+  //     console.log(data);
+  //     return data;
+  //   },
+  //   enabled: false,
+  // });
+  // return { isLoading, isFetching, data, isError, error, refetch };
 };

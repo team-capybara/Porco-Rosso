@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import classnames from 'classnames/bind';
-import { OngoingGatheringProps, ongoingType } from './types/index';
+import {
+  IGatheringInfo,
+  OngoingGatheringProps,
+  ongoingType,
+} from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import styles from './ongoingGathering.module.scss';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
@@ -24,8 +28,12 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
   const [moimId] = useState<number>(1); //props로 변경될 수 있음
-  const { data: gatheringInfoData, refetch: refetchGatheringInfo } =
-    getGatheringInfo(1);
+  const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
+
+  const setGatheringInfoDataFunc = () => {
+    setGatheringInfoData(getGatheringInfo(1));
+    console.log(gatheringInfoData);
+  };
 
   const openLeaveModal = () => {
     setLeaveModal(true);
@@ -43,7 +51,7 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
   };
 
   useEffect(() => {
-    refetchGatheringInfo();
+    setGatheringInfoDataFunc();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -61,7 +69,7 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
             title={gatheringInfoData?.title}
             description={getDateFromDatetime(gatheringInfoData?.startedAt)}
             hasRefreshButton={true}
-            onClickRefreshButton={() => refetchGatheringInfo()}
+            onClickRefreshButton={() => setGatheringInfoDataFunc()}
           />
         </div>
         <section className={cn('section')}>
@@ -69,7 +77,8 @@ const OngoingGathering = (props: OngoingGatheringProps) => {
             hasAddButton={true}
             mode="read"
             moimStart={true}
-            participantData={gatheringInfoData?.participants}         
+            participantData={gatheringInfoData?.participants}
+          />
         </section>
         <section className={cn('section')}>
           <ScrollPhotoList

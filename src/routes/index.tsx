@@ -10,6 +10,7 @@ import NotificationPage from '../features/notification/NotificationPage';
 import StatisticsPage from '../features/statistics/StatisticsPage';
 import OauthRedirectHandler from '../features/auth/OauthRedirectHandler';
 import CreateGathering from '../features/gathering/CreateGathering';
+import ErrorPage from '../features/error/ErrorPage';
 
 const AppRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const AppRoutes = () => {
       <Route path="/mypage" element={<MypagePage />} />
       <Route path="/notification" element={<NotificationPage />} />
       <Route path="/statistics" element={<StatisticsPage />} />
+      <Route path="/error" element={<ErrorPage />} />
     </Routes>
   );
 };

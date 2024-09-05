@@ -27,6 +27,7 @@ const ParticipantList = (props: Props) => {
         {props.moimStart ? '참여한' : '모일'} 친구{' '}
         {props.participantData?.length ?? 0}명
       </strong>
+      {/* <HorizontalScrollWrapper>  //  */}
       <HorizontalScrollWrapper classNameForView="participant_list">
         <ul className={cn('people_list')}>
           {props.hasAddButton && (
@@ -78,7 +79,7 @@ const ParticipantList = (props: Props) => {
               </li>
             );
           })}
-          {/* <li className={cn('item')}>
+          {/* < className={cn('item')}>
             <button type="button" className={cn('button')}>
               <div className={cn('thumbnail_area')}>
                 <div className={cn('thumbnail')}>
@@ -100,23 +101,22 @@ const ParticipantList = (props: Props) => {
             <IconX12X12 className={cn('icon')} />
           </button>
           <li className={cn('item')}></li>
-          {/* <li className={cn('item')}>
-            <button type="button" className={cn('button')}>
-              <div className={cn('thumbnail_area')}>
-                <div className={cn('thumbnail')}>
-                  <img
-                    src="src/assets/png/test_image.png"
-                    alt=""
-                    className={cn('image')}
-                  />
-                </div>
+
+          <button type="button" className={cn('button')}>
+            <div className={cn('thumbnail_area')}>
+              <div className={cn('thumbnail')}>
+                <img
+                  src="src/assets/png/test_image.png"
+                  alt=""
+                  className={cn('image')}
+                />
               </div>
-              <button type="button" className={cn('delete_button')}>
-                <IconX12X12 className={cn('icon')} />
-              </button>
-              <div className={cn('text')}>맥주사랑이린</div>
+            </div>
+            <button type="button" className={cn('delete_button')}>
+              <IconX12X12 className={cn('icon')} />
             </button>
-          </li> */}
+            <div className={cn('text')}>맥주사랑이린</div>
+          </button>
         </ul>
       </HorizontalScrollWrapper>
     </div>

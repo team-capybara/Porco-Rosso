@@ -28,7 +28,7 @@ const ParticipantList = (props: Props) => {
         {props.participantData?.length ?? 0}명
       </strong>
       {/* <HorizontalScrollWrapper>  //  */}
-      <HorizontalScrollWrapper classNameForView="participant_list">
+      <HorizontalScrollWrapper>
         <ul className={cn('people_list')}>
           {props.hasAddButton && (
             <li className={cn('item')}>
@@ -79,7 +79,8 @@ const ParticipantList = (props: Props) => {
               </li>
             );
           })}
-          {/* < className={cn('item')}>
+
+          {/* <li className={cn('item')}>
             <button type="button" className={cn('button')}>
               <div className={cn('thumbnail_area')}>
                 <div className={cn('thumbnail')}>
@@ -89,34 +90,13 @@ const ParticipantList = (props: Props) => {
                     className={cn('image')}
                   />
                 </div>
-                <div className={cn('crown_icon')}>
-                  <IconCrown14X11 className={cn('icon')} />
-                  <span className={cn('blind')}>방장</span>
-                </div>
               </div>
-              <div className={cn('text')}>나</div>
+              <button type="button" className={cn('delete_button')}>
+                <IconX12X12 className={cn('icon')} />
+              </button>
+              <div className={cn('text')}>맥주사랑이린</div>
             </button>
-            {/* todo: 친구 삭제 버튼입니다 */}
-          <button type="button" className={cn('delete_button')}>
-            <IconX12X12 className={cn('icon')} />
-          </button>
-          <li className={cn('item')}></li>
-
-          <button type="button" className={cn('button')}>
-            <div className={cn('thumbnail_area')}>
-              <div className={cn('thumbnail')}>
-                <img
-                  src="src/assets/png/test_image.png"
-                  alt=""
-                  className={cn('image')}
-                />
-              </div>
-            </div>
-            <button type="button" className={cn('delete_button')}>
-              <IconX12X12 className={cn('icon')} />
-            </button>
-            <div className={cn('text')}>맥주사랑이린</div>
-          </button>
+          </li> */}
         </ul>
       </HorizontalScrollWrapper>
     </div>

@@ -30,8 +30,9 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   const [moimId] = useState<number>(1); //props로 변경될 수 있음
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
 
-  const setGatheringInfoDataFunc = () => {
-    setGatheringInfoData(getGatheringInfo(1));
+  const setGatheringInfoDataFunc = async () => {
+    const response = await getGatheringInfo(moimId);
+    setGatheringInfoData(response);
     console.log(gatheringInfoData);
   };
 

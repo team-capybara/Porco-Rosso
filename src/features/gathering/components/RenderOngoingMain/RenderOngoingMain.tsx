@@ -39,6 +39,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
 
   useEffect(() => {
     setGatheringInfoDataFunc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   console.log(gatheringInfoData);
   return (

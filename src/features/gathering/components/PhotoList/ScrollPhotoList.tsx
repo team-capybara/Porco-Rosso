@@ -4,7 +4,7 @@ import styles from './scrollPhotoList.module.scss';
 import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
 import HorizontalScrollWrapper from '../../../../common/components/HorizontalScrollWrapper/HorizontalScrollWrapper';
 import PhotoCard from './PhotoCard/PhotoCard';
-import { MoimePhoto } from '../../types';
+import { MoimePhoto, ongoingType } from '../../types';
 import { PhotoCardProps } from './PhotoList';
 import { getMoimePhoto } from '../../../../api/service/mockApi';
 import { getMoimePhotoResponse, Photo } from '../../types';
@@ -15,12 +15,14 @@ interface Props {
   hiddenTitle?: boolean;
   isMiniPhotoCard?: boolean;
   moimeId: string;
+  setRenderComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
 }
 
 const ScrollPhotoList = ({
   hiddenTitle = false,
   isMiniPhotoCard = false,
   moimeId = '0',
+  setRenderComponent = () => {},
 }: Props) => {
   const size: number = 18;
 
@@ -152,7 +154,13 @@ const ScrollPhotoList = ({
         <div className={cn('title_area')}>
           <div className={cn('main_title')}>
             <strong className={cn('title')}>순간 모음</strong>
-            <button type="button" className={cn('button')}>
+            <button
+              type="button"
+              className={cn('button')}
+              onClick={() => {
+                setRenderComponent('PhotoList');
+              }}
+            >
               <ArrowLeft24X24 className={cn('arrow_icon')} />
               <span className={cn('blind')}>더보기</span>
             </button>

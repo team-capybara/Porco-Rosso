@@ -12,6 +12,7 @@ interface Props {
   hasAddButton: boolean; // 추가하기 버튼 유무
   mode: 'read' | 'update'; //친구목록 모드 (확인, 수정)
   moimStart: boolean; //모임 시작 여부
+  owner?: IParticipants; //모임장 정보
   participantData?: Array<IParticipants>; //친구목록 데이터
 }
 
@@ -42,6 +43,30 @@ const ParticipantList = (props: Props) => {
               </button>
             </li>
           )}
+          {props.owner && (
+            <li key={props.owner.userId} className={cn('item')}>
+              {/* todo: 버튼 클릭시, 유저 프로필 모달 노출됩니다.(작업 전) */}
+              <button type="button" className={cn('button')}>
+                <div className={cn('thumbnail_area')}>
+                  <div className={cn('thumbnail')}>
+                    <img
+                      src={
+                        props.owner.profileImageUrl ??
+                        'src/assets/png/test_image.png'
+                      }
+                      alt=""
+                      className={cn('image')}
+                    />
+                  </div>
+                  <div className={cn('crown_icon')}>
+                    <IconCrown14X11 className={cn('icon')} />
+                    <span className={cn('blind')}>방장</span>
+                  </div>
+                </div>
+                <div className={cn('text')}>{props.owner.nickname}</div>
+              </button>
+            </li>
+          )}
           {props.participantData?.map((data: IParticipants) => {
             return (
               <li key={data.userId} className={cn('item')}>
@@ -58,12 +83,6 @@ const ParticipantList = (props: Props) => {
                         className={cn('image')}
                       />
                     </div>
-                    {data.isOwner && ( //방장인 경우
-                      <div className={cn('crown_icon')}>
-                        <IconCrown14X11 className={cn('icon')} />
-                        <span className={cn('blind')}>방장</span>
-                      </div>
-                    )}
                   </div>
                   {props.mode == 'update' && (
                     <button

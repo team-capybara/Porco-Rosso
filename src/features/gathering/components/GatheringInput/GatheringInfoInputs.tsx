@@ -15,6 +15,7 @@ const cn = classnames.bind(styles);
 const GatheringInfoInputs = ({
   gatheringData,
   onChange,
+  onPlaceSelect,
 }: GatheringInfoInputsProps) => {
   return (
     <div className={cn('gathering_info_inputs')}>
@@ -61,14 +62,14 @@ const GatheringInfoInputs = ({
       {/* Layer 활성화 시, 기존 화면 비활성화 부탁드립니다. */}
       {true && (
         <Layer classNameForView="location_search_input">
-          {true && (
+          {false && (
             <CalendarInput
               value={gatheringData.startedAt}
               onChange={(date: string) => onChange('startedAt', date)}
             />
           )}
           {false && <TimeInput />}
-          {true && <LocationSearchInput />}
+          {true && <LocationSearchInput onPlaceSelect={onPlaceSelect} />}
           {/* todo: 날짜, 시간 케이스에서만 노출부탁드립니다. */}
           {true && (
             <div className={cn('wrap_confirm_button')}>

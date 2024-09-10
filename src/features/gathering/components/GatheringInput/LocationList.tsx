@@ -1,129 +1,37 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import classnames from 'classnames/bind';
 import styles from './locationList.module.scss';
 
 const cn = classnames.bind(styles);
 
-const LocationList = () => {
-  // 장소 검색 결과 리스트
-  // todo: 작업 완료 후, 스크롤 안되면 마크업에 요청주세요 !
-  console.log('LocationList');
+interface LocationListProps {
+  places: any[]; // 상위 컴포넌트에서 전달받은 장소 리스트
+  onPlaceSelect: (place: any) => void; // 장소 선택 시 호출되는 함수
+}
+
+const LocationList = ({ places, onPlaceSelect }: LocationListProps) => {
   return (
     <div className={cn('location_list')}>
       <ul className={cn('inner_list')}>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
-        <li className={cn('item')}>
-          <button className={cn('button')}>
-            <strong className={cn('title')}>스타벅스 강남 1호점</strong>
-            <p className={cn('location')}>서울시 서초구</p>
-          </button>
-        </li>
+        {places.length > 0 ? (
+          places.map((place, index) => (
+            <li key={index} className={cn('item')}>
+              <button
+                className={cn('button')}
+                onClick={() => onPlaceSelect(place)}
+              >
+                <strong className={cn('title')}>{place.place_name}</strong>
+                <p className={cn('location')}>
+                  {place.road_address_name || place.address_name}
+                </p>
+              </button>
+            </li>
+          ))
+        ) : (
+          <li className={cn('item')}>
+            <p>검색 결과가 없습니다.</p>
+          </li>
+        )}
       </ul>
     </div>
   );

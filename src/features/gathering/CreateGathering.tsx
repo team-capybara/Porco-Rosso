@@ -36,6 +36,14 @@ const CreateGathering = (props: CreateGatheringProps) => {
     }));
   };
 
+  const handleLocationSelect = (location: {
+    name: string;
+    latitude: number;
+    longitude: number;
+  }) => {
+    handleChange('location', location); // 장소 데이터 변경
+  };
+
   useEffect(() => {
     console.log('Current gatheringData:', gatheringData);
   }, [gatheringData]);
@@ -74,6 +82,7 @@ const CreateGathering = (props: CreateGatheringProps) => {
           <GatheringInfoInputs
             gatheringData={gatheringData}
             onChange={handleChange}
+            onPlaceSelect={handleLocationSelect}
           />
         </div>
         <div className={cn('wrap_create_button')}>

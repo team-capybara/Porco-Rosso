@@ -89,4 +89,9 @@ export type ChangeHandler<T> = (key: keyof T, value: T[keyof T]) => void;
 export interface GatheringInfoInputsProps {
   gatheringData: CreateGatheringData;
   onChange: ChangeHandler<CreateGatheringData>;
+  onPlaceSelect: (location: {
+    name: string;
+    latitude: number;
+    longitude: number;
+  }) => void;
 }

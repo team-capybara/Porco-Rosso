@@ -25,6 +25,7 @@ const CreateGathering = (props: CreateGatheringProps) => {
   };
   useEffect(() => {
     setGatheringInfoDataFunc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 모임 제목 입력

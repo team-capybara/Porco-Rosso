@@ -1,5 +1,5 @@
 import classnames from 'classnames/bind';
-import { CreateGatheringProps } from './types/index';
+import { CreateGatheringProps, IGatheringInfo } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import TextInput from './components/GatheringInput/TextInput';
 import styles from './createGathering.module.scss';
@@ -9,11 +9,23 @@ import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs
 import FriendSearchInput from './components/GatheringInput/FriendSearchInput';
 import FriendSearchList from './components/GatheringInput/FriendSearchList';
 import { getGatheringInfo } from '../../api/service/gatheringApi';
+import { useEffect, useState } from 'react';
 
 const cn = classnames.bind(styles);
 
 const CreateGathering = (props: CreateGatheringProps) => {
-  const { data: gatheringInfoData } = getGatheringInfo(1);
+  // 모임정보 조회하는 getGatheringInfo를 react query에서 async/await로 변경했습니다.
+  // 모임정보 조회 response 타입이 변경되었습니다. owner(모임장) 파라미터가 추가되었습니다.
+  // const { data: gatheringInfoData } = getGatheringInfo(1);
+  const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
+  const setGatheringInfoDataFunc = async () => {
+    const response: IGatheringInfo = await getGatheringInfo(1);
+    setGatheringInfoData(response);
+    console.log(gatheringInfoData);
+  };
+  useEffect(() => {
+    setGatheringInfoDataFunc();
+  }, []);
 
   // 모임 제목 입력
   const renderTextInput = () => {

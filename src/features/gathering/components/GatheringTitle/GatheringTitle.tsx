@@ -15,6 +15,7 @@ interface Props {
   hasShareButton?: boolean;
   onClickShareButton?: () => void;
   classNameForPage?: '' | 'create_page' | 'invite_friends';
+  onClickEditButton?: () => void;
 }
 
 const GatheringTitle = ({
@@ -25,13 +26,18 @@ const GatheringTitle = ({
   hasShareButton = false,
   onClickShareButton,
   classNameForPage = '',
+  onClickEditButton,
 }: Props) => {
   return (
     <div className={cn('gathering_title')}>
       <strong className={cn('title')}>
         {title}
         {classNameForPage === 'create_page' && (
-          <button type="button" className={cn('edit_button')}>
+          <button
+            type="button"
+            className={cn('edit_button')}
+            onClick={onClickEditButton}
+          >
             <IconEdit16X162 className={cn('icon')} />
             <span className="blind">수정</span>
           </button>

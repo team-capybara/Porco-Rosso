@@ -31,6 +31,7 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
         } else {
           // alert('검색 결과가 없습니다.');
           setPlaces([]); // 검색 결과 없을 때 places 초기화
+          // 장소 검색결과가 없습니다를 띄워줘야할듯
         }
       });
     } else {

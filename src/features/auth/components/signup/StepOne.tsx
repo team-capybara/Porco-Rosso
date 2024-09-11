@@ -26,7 +26,7 @@ const StepOne = ({ userProfile, updateProfile, onSave }: NewProfileProps) => {
     setIsFocus(false);
     const nameInput = event.target.value;
     setNickname(nameInput);
-    const errorMsg = textInputValidation(nameInput);
+    const errorMsg = textInputValidation(nameInput, 'withoutEmoji');
     setErrMsg(errorMsg);
   };
 

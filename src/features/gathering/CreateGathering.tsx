@@ -11,7 +11,7 @@ import FriendSearchInput from './components/GatheringInput/FriendSearchInput';
 import FriendSearchList from './components/GatheringInput/FriendSearchList';
 import { getGatheringInfo } from '../../api/service/gatheringApi';
 import { CreateGatheringData, ChangeHandler } from './types/index';
-import { formatDateToYYYYMMDD } from '../../common/utils/dateUtils';
+// import { formatDateToYYYYMMDD } from '../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
@@ -20,14 +20,16 @@ const CreateGathering = (props: CreateGatheringProps) => {
   // CreateGatheringData의 키값에 따라 각각의 타입을 모두 추론할 수 있게 맵핑해주는 제네릭
   const { data: gatheringInfoData } = getGatheringInfo(1);
 
-  const today = new Date();
-  const initialDate = formatDateToYYYYMMDD(today);
+  // const today = new Date();
+  // const initialDate = formatDateToYYYYMMDD(today);
   const [gatheringData, setGatheringData] = useState<CreateGatheringData>({
     title: '',
     participantIds: [],
-    startedAt: initialDate,
+    startedAt: '',
     location: { name: '', latitude: 0, longitude: 0 },
   });
+
+  const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
 
   const handleChange: ChangeHandler<CreateGatheringData> = (key, value) => {
     setGatheringData((prevData) => ({
@@ -44,6 +46,17 @@ const CreateGathering = (props: CreateGatheringProps) => {
     handleChange('location', location); // 장소 데이터 변경
   };
 
+  const handleTextInputOpen = () => {
+    setTextInputOpen(true);
+  };
+
+  const textInputBackNavClickHandler = (
+    e: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    e.preventDefault();
+    setTextInputOpen(false);
+  };
+
   useEffect(() => {
     console.log('Current gatheringData:', gatheringData);
   }, [gatheringData]);
@@ -52,9 +65,18 @@ const CreateGathering = (props: CreateGatheringProps) => {
   const renderTextInput = () => {
     return (
       <>
-        <BackNavigation classNameForIconType="close_type" hasNext={true} />
+        <BackNavigation
+          classNameForIconType="close_type"
+          hasNext={true}
+          isButton={true}
+          onClick={textInputBackNavClickHandler}
+          blindText="이전으로"
+        />
         <div className={cn('wrap_text_input')}>
-          <TextInput />
+          <TextInput
+            value={gatheringData.title} // 현재 제목을 입력 필드에 표시
+            onChange={(value: string) => handleChange('title', value)} // 제목 변경 처리
+          />
         </div>
       </>
     );
@@ -66,9 +88,10 @@ const CreateGathering = (props: CreateGatheringProps) => {
       <>
         <BackNavigation classNameForIconType="close_type" />
         <GatheringTitle
-          title="제목 없는 모임"
+          title={gatheringData.title || '제목 없는 모임'}
           description="정보를 채우고 모임을 시작해보세요."
           classNameForPage="create_page"
+          onClickEditButton={handleTextInputOpen}
         />
         <div className={cn('wrap_participant_list')}>
           <ParticipantList
@@ -135,9 +158,9 @@ const CreateGathering = (props: CreateGatheringProps) => {
   console.log(props);
   return (
     <div className={cn('create_gathering')}>
-      {renderTextInput()}
-      {renderCreateMain()}
-      {renderInviteFriends()}
+      {textInputOpen && renderTextInput()}
+      {!textInputOpen && renderCreateMain()}
+      {!textInputOpen && renderInviteFriends()}
     </div>
   );
 };

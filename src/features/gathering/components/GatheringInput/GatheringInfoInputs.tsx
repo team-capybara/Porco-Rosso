@@ -9,6 +9,7 @@ import IconCalendar18X18 from '../../../../assets/svg/icon/IconCalendar18X18';
 import IconClock18X18 from '../../../../assets/svg/icon/IconClock18X18';
 import IconLocation18X18 from '../../../../assets/svg/icon/IconLocation18X18';
 import { GatheringInfoInputsProps } from '../../types';
+import { getDateFromDatetime } from '../../../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
@@ -17,6 +18,7 @@ const GatheringInfoInputs = ({
   onChange,
   onPlaceSelect,
 }: GatheringInfoInputsProps) => {
+  const { startedAt } = gatheringData;
   return (
     <div className={cn('gathering_info_inputs')}>
       {/* 날짜 */}
@@ -26,14 +28,24 @@ const GatheringInfoInputs = ({
           날짜
         </strong>
         {/* todo: 입력이 활성화된 경우, 'active' 클래스 활성화부탁드립니다.  */}
-        <button type="button" className={cn('button', { active: true })}>
-          {/* <span className={cn('text')}>날짜를 선택해 주세요</span> */}
+        <button
+          type="button"
+          className={cn('button', { active: startedAt ? true : false })}
+        >
+          {startedAt ? (
+            <span className={cn('text')}>
+              <span className={cn('number')}>
+                {getDateFromDatetime(startedAt)}
+              </span>
+              {/* 큰 차이 없다면 위 처럼 파싱된 날짜로 바로 나타내는게 심플할 거 같은데 어떻게 생각하시나용?*/}
+              {/* <span className={cn('number')}>2024</span>년{' '}
+              <span className={cn('number')}>5</span>월{' '}
+              <span className={cn('number')}>3</span>일 */}
+            </span>
+          ) : (
+            <span className={cn('text')}>날짜를 선택해 주세요</span>
+          )}
           {/* todo: 숫자의 경우 span.number로 감싸주세요. */}
-          <span className={cn('text')}>
-            <span className={cn('number')}>2024</span>년{' '}
-            <span className={cn('number')}>5</span>월{' '}
-            <span className={cn('number')}>3</span>일
-          </span>
           <ArrowLeft24X24 className={cn('icon')} />
         </button>
       </div>
@@ -60,7 +72,7 @@ const GatheringInfoInputs = ({
         </button>
       </div>
       {/* Layer 활성화 시, 기존 화면 비활성화 부탁드립니다. */}
-      {true && (
+      {false && (
         <Layer classNameForView="location_search_input">
           {false && (
             <CalendarInput
@@ -69,7 +81,7 @@ const GatheringInfoInputs = ({
             />
           )}
           {false && <TimeInput />}
-          {true && <LocationSearchInput onPlaceSelect={onPlaceSelect} />}
+          {false && <LocationSearchInput onPlaceSelect={onPlaceSelect} />}
           {/* todo: 날짜, 시간 케이스에서만 노출부탁드립니다. */}
           {true && (
             <div className={cn('wrap_confirm_button')}>

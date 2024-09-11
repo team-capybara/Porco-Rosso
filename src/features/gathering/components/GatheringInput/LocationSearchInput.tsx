@@ -19,32 +19,24 @@ interface LocationSearchInputProps {
 const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
   const [searchInput, setSearchInput] = useState('');
   const [places, setPlaces] = useState<any[]>([]);
-  const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
 
   // 카카오 API 로드 확인
   useEffect(() => {
-    if (window.kakao && window.kakao.maps) {
-      setIsKakaoLoaded(true);
+    if (searchInput.trim()) {
+      // 검색어가 있을 때만 검색 실행
+      const ps = new kakao.maps.services.Places();
+      ps.keywordSearch(searchInput, (data: any[], status: any) => {
+        if (status === kakao.maps.services.Status.OK) {
+          setPlaces(data);
+        } else {
+          // alert('검색 결과가 없습니다.');
+          setPlaces([]); // 검색 결과 없을 때 places 초기화
+        }
+      });
     } else {
-      console.error('카카오 API가 로드되지 않았습니다.');
+      setPlaces([]); // 검색어가 비었을 때 검색 결과 초기화
     }
-  }, []);
-
-  const searchPlaces = () => {
-    if (!isKakaoLoaded) {
-      console.error('카카오 API가 아직 로드되지 않았습니다.');
-      return;
-    }
-
-    const ps = new window.kakao.maps.services.Places();
-    ps.keywordSearch(searchInput, (data: any[], status: any) => {
-      if (status === window.kakao.maps.services.Status.OK) {
-        setPlaces(data);
-      } else {
-        alert('검색 결과가 없습니다.');
-      }
-    });
-  };
+  }, [searchInput]);
 
   const handlePlaceSelect = (place: any) => {
     const location = {
@@ -52,6 +44,7 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
       latitude: parseFloat(place.y),
       longitude: parseFloat(place.x),
     };
+    console.log(location, 'location 잘 선택되나');
     onPlaceSelect(location); // 상위 컴포넌트로 장소 정보 전달
   };
 
@@ -71,7 +64,6 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
         />
         <ArrowLeft24X24 className={cn('icon')} />
       </label>
-      <button onClick={searchPlaces}>검색</button>
 
       {/* 검색 결과 리스트 */}
       <LocationList places={places} onPlaceSelect={handlePlaceSelect} />

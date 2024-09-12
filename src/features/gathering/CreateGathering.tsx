@@ -11,6 +11,7 @@ import FriendSearchInput from './components/GatheringInput/FriendSearchInput';
 import FriendSearchList from './components/GatheringInput/FriendSearchList';
 import { getGatheringInfo } from '../../api/service/gatheringApi';
 import { CreateGatheringData, ChangeHandler } from './types/index';
+import { textInputValidation } from '../../common/utils/authUtils';
 // import { formatDateToYYYYMMDD } from '../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
@@ -31,6 +32,16 @@ const CreateGathering = (props: CreateGatheringProps) => {
 
   const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
 
+  const checkTextInputValid = (input: string) => {
+    const errorMsg = textInputValidation(input, 'withEmoji');
+    // 밸리데이션 통과
+    if (!errorMsg) {
+      setTextInputOpen(false);
+    } else {
+      alert(errorMsg); // 추후 토스트 공통화 후 토스트로 바꿈
+    }
+  };
+
   const handleChange: ChangeHandler<CreateGatheringData> = (key, value) => {
     setGatheringData((prevData) => ({
       ...prevData,
@@ -44,6 +55,13 @@ const CreateGathering = (props: CreateGatheringProps) => {
     longitude: number;
   }) => {
     handleChange('location', location); // 장소 데이터 변경
+  };
+
+  const handleTimeSelect = (time: string) => {
+    handleChange(
+      'startedAt',
+      `${gatheringData.startedAt.slice(0, 8)}${time}00`
+    ); // yyyyMMdd + hhmm00 초는 입력 안 받으므로 00
   };
 
   const handleTextInputOpen = () => {
@@ -78,6 +96,17 @@ const CreateGathering = (props: CreateGatheringProps) => {
             onChange={(value: string) => handleChange('title', value)} // 제목 변경 처리
           />
         </div>
+        {/* 버튼 위치 마크업 필요 */}
+        <div className={cn('wrap_confirm_button')}>
+          <button
+            type="button"
+            className={cn('confirm_button')}
+            style={{ color: 'white' }}
+            onClick={() => checkTextInputValid(gatheringData.title)}
+          >
+            확인
+          </button>
+        </div>
       </>
     );
   };
@@ -106,6 +135,7 @@ const CreateGathering = (props: CreateGatheringProps) => {
             gatheringData={gatheringData}
             onChange={handleChange}
             onPlaceSelect={handleLocationSelect}
+            onTimeSelect={handleTimeSelect}
           />
         </div>
         <div className={cn('wrap_create_button')}>

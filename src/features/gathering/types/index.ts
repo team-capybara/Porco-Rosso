@@ -94,4 +94,5 @@ export interface GatheringInfoInputsProps {
     latitude: number;
     longitude: number;
   }) => void;
+  onTimeSelect: (time: string) => void;
 }

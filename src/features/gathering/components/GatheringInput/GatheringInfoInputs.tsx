@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import classnames from 'classnames/bind';
 import LocationSearchInput from './LocationSearchInput';
 import TimeInput from './TimeInput';
@@ -13,12 +14,47 @@ import { getDateFromDatetime } from '../../../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
+interface OpenState {
+  dateOpen: boolean;
+  timeOpen: boolean;
+  locationOpen: boolean;
+}
+
 const GatheringInfoInputs = ({
   gatheringData,
   onChange,
   onPlaceSelect,
+  onTimeSelect,
 }: GatheringInfoInputsProps) => {
   const { startedAt } = gatheringData;
+  const [isOpen, setIsOpen] = useState<OpenState>({
+    dateOpen: false,
+    timeOpen: false,
+    locationOpen: false,
+  });
+  const [okType, setOkType] = useState<string>('');
+
+  const { dateOpen, timeOpen, locationOpen } = isOpen;
+
+  const handleGatheringInfoLayerOpen = (key: keyof OpenState) => {
+    setIsOpen({
+      dateOpen: false,
+      timeOpen: false,
+      locationOpen: false,
+      [key]: true, // 선택한 키만 true로 설정
+    });
+    setOkType(key);
+  };
+
+  const handleGatheringInfoLayerClose = (key: keyof OpenState) => {
+    setIsOpen((prev) => ({
+      ...prev,
+      [key]: false, // 선택한 key만 false로 설정
+    }));
+    setOkType('');
+    console.log(startedAt, 'startedAt');
+  };
+
   return (
     <div className={cn('gathering_info_inputs')}>
       {/* 날짜 */}
@@ -31,6 +67,7 @@ const GatheringInfoInputs = ({
         <button
           type="button"
           className={cn('button', { active: startedAt ? true : false })}
+          onClick={() => handleGatheringInfoLayerOpen('dateOpen')}
         >
           {startedAt ? (
             <span className={cn('text')}>
@@ -55,7 +92,11 @@ const GatheringInfoInputs = ({
           <IconClock18X18 className={cn('icon')} />
           시간
         </strong>
-        <button type="button" className={cn('button')}>
+        <button
+          type="button"
+          className={cn('button')}
+          onClick={() => handleGatheringInfoLayerOpen('timeOpen')}
+        >
           <span className={cn('text')}>시간을 선택해 주세요</span>
           <ArrowLeft24X24 className={cn('icon')} />
         </button>
@@ -66,26 +107,38 @@ const GatheringInfoInputs = ({
           <IconLocation18X18 className={cn('icon')} />
           장소
         </strong>
-        <button type="button" className={cn('button')}>
+        <button
+          type="button"
+          className={cn('button')}
+          onClick={() => handleGatheringInfoLayerOpen('locationOpen')}
+        >
           <span className={cn('text')}>장소를 선택해 주세요</span>
           <ArrowLeft24X24 className={cn('icon')} />
         </button>
       </div>
       {/* Layer 활성화 시, 기존 화면 비활성화 부탁드립니다. */}
-      {false && (
+      {(dateOpen || locationOpen || timeOpen) && (
         <Layer classNameForView="location_search_input">
-          {false && (
+          {dateOpen && (
             <CalendarInput
               value={gatheringData.startedAt}
               onChange={(date: string) => onChange('startedAt', date)}
             />
           )}
-          {false && <TimeInput />}
-          {false && <LocationSearchInput onPlaceSelect={onPlaceSelect} />}
+          {timeOpen && <TimeInput onChange={onTimeSelect} />}
+          {locationOpen && (
+            <LocationSearchInput onPlaceSelect={onPlaceSelect} />
+          )}
           {/* todo: 날짜, 시간 케이스에서만 노출부탁드립니다. */}
-          {true && (
+          {(timeOpen || dateOpen) && (
             <div className={cn('wrap_confirm_button')}>
-              <button type="button" className={cn('confirm_button')}>
+              <button
+                type="button"
+                className={cn('confirm_button')}
+                onClick={() =>
+                  handleGatheringInfoLayerClose(okType as keyof OpenState)
+                }
+              >
                 확인
               </button>
             </div>

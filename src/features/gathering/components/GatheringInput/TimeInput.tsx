@@ -9,93 +9,70 @@ interface TimeInputProps {
   onChange: (time: string) => void; // 시간 변경 시 호출할 함수
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TimeInput = ({ onChange }: TimeInputProps) => {
-  const hours = [
-    '00',
-    '01',
-    '02',
-    '03',
-    '04',
-    '05',
-    '06',
-    '07',
-    '08',
-    '09',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20',
-    '21',
-    '22',
-    '23',
-  ];
+  const hours = Array.from({ length: 24 }, (_, index) =>
+    String(index).padStart(2, '0')
+  ); // '00'부터 '23'까지 생성
 
   const minutes = ['00', '15', '30', '45'];
 
   const [selectedHour, setSelectedHour] = useState<string>('00');
   const [selectedMinute, setSelectedMinute] = useState<string>('00');
 
-  const hourRef = useRef<HTMLUListElement>(null);
-  const minuteRef = useRef<HTMLUListElement>(null);
+  const hourRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const minuteRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const wrapTimeRef = useRef<HTMLDivElement | null>(null);
 
-  const totalHours = [...hours, ...hours, ...hours]; // 무한 스크롤 효과를 위한 3번 반복
-  const totalMinutes = [
-    ...minutes,
-    ...minutes,
-    ...minutes,
-    ...minutes,
-    ...minutes,
-  ];
-
-  const ITEM_HEIGHT = 48; // 각 시간/분 아이템의 높이
-  const VISIBLE_ITEMS = 3; // 화면에 보이는 아이템 수
-
-  // 포커싱된 인덱스 계산 함수
-  const calculateFocusedIndex = (scrollPosition: number, itemCount: number) => {
-    const rawIndex = Math.round(scrollPosition / ITEM_HEIGHT) % itemCount;
-    return rawIndex >= 0 ? rawIndex : rawIndex + itemCount;
-  };
-
-  // 시간 스크롤 핸들러
-  const handleHourScroll = () => {
-    if (hourRef.current) {
-      const scrollTop = hourRef.current.scrollTop;
-      const focusedIndex = calculateFocusedIndex(scrollTop, hours.length);
-      setSelectedHour(hours[focusedIndex]);
-    }
-  };
-
-  // 분 스크롤 핸들러
-  const handleMinuteScroll = () => {
-    if (minuteRef.current) {
-      const scrollTop = minuteRef.current.scrollTop;
-      const focusedIndex = calculateFocusedIndex(scrollTop, minutes.length);
-      setSelectedMinute(minutes[focusedIndex]);
-    }
-  };
-
-  // 시간 초기화 (중앙에 위치)
+  // IntersectionObserver를 사용하여 현재 보이는 항목을 active 상태로 설정
   useEffect(() => {
-    if (hourRef.current) {
-      hourRef.current.scrollTop = hours.length * ITEM_HEIGHT; // 중앙에 위치
-    }
-    if (minuteRef.current) {
-      minuteRef.current.scrollTop = minutes.length * ITEM_HEIGHT; // 중앙에 위치
-    }
-  }, [hours.length, minutes.length]);
+    const observerOptions = {
+      root: wrapTimeRef.current,
+      threshold: [1],
+      rootMargin: '0px 0px',
+    };
 
-  // 서버에 시간 업데이트 로직
-  useEffect(() => {
-    const time = `${selectedHour}${selectedMinute}`; // hhmm 형태로 반환
-    onChange(time);
-  }, [selectedHour, selectedMinute, onChange]);
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        const target = entry.target as HTMLLIElement;
+        const button = target.querySelector('button');
+        if (entry.isIntersecting) {
+          console.log('최초 마운트');
+          button?.classList.add(cn('active'));
+          const selectedValue = button?.innerText;
+
+          if (selectedValue?.endsWith('시')) {
+            setSelectedHour(selectedValue.replace('시', '') || '00');
+          } else if (selectedValue?.endsWith('분')) {
+            setSelectedMinute(selectedValue.replace('분', '') || '00');
+          }
+        } else {
+          console.log('어디가 시행되지?');
+          button?.classList.remove(cn('active'));
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      handleIntersection,
+      observerOptions
+    );
+
+    // 각 시간과 분 리스트 아이템에 대해 observe 실행
+    hourRefs.current.forEach((hourRef) => {
+      if (hourRef) observer.observe(hourRef);
+    });
+    minuteRefs.current.forEach((minuteRef) => {
+      if (minuteRef) observer.observe(minuteRef);
+    });
+
+    return () => observer.disconnect();
+  }, [selectedHour, selectedMinute]); // 최초 마운트 시에만 실행 , 이거 초기마운트에만 실행하려면,초기값 어떻게 세팅할지 생각해야함, 인터섹팅해야만 액티브 클래스가 활성화되기떄문에, 아래처럼 초기에 active 직접 적용해줘도, intersecting 기능이 활성화되면서 active 클래스가 사라지거나 함.. 왜...?
+
+  // // 선택된 시간 및 분이 변경될 때 상위 컴포넌트로 전달
+  // useEffect(() => {
+  //   onChange(`${selectedHour}:${selectedMinute}`);
+  // }, [selectedHour, selectedMinute, onChange]);
 
   return (
     <div className={cn('time_input')}>
@@ -103,23 +80,18 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
         <IconClock18X18 className={cn('icon')} />
         시간
       </strong>
-      <div className={cn('wrap_time')}>
+      <div className={cn('wrap_time')} ref={wrapTimeRef}>
         {/* 시간 선택 리스트 */}
-        <ul
-          className={cn('time_list')}
-          ref={hourRef}
-          onScroll={handleHourScroll}
-          style={{
-            overflowY: 'scroll',
-            height: `${ITEM_HEIGHT * VISIBLE_ITEMS}px`,
-          }}
-        >
-          {totalHours.map((hour, index) => (
+        <ul className={cn('time_list')}>
+          {hours.map((hour, index) => (
             <li
-              className={cn('item', { active: selectedHour === hour })}
+              className={cn('item')}
               key={`hour_${index}`}
+              ref={(el) => (hourRefs.current[index] = el)} // 각 시간 항목을 ref에 저장
             >
-              <button className={cn('button')}>
+              <button
+                className={cn('button', { active: selectedHour === hour })}
+              >
                 {hour}
                 <span className="blind">시</span>
               </button>
@@ -128,21 +100,16 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
         </ul>
 
         {/* 분 선택 리스트 */}
-        <ul
-          className={cn('time_list')}
-          ref={minuteRef}
-          onScroll={handleMinuteScroll}
-          style={{
-            overflowY: 'scroll',
-            height: `${ITEM_HEIGHT * VISIBLE_ITEMS}px`,
-          }}
-        >
-          {totalMinutes.map((minute, index) => (
+        <ul className={cn('time_list')}>
+          {minutes.map((minute, index) => (
             <li
-              className={cn('item', { active: selectedMinute === minute })}
+              className={cn('item')}
               key={`minute_${index}`}
+              ref={(el) => (minuteRefs.current[index] = el)} // 각 분 항목을 ref에 저장
             >
-              <button className={cn('button')}>
+              <button
+                className={cn('button', { active: selectedMinute === minute })}
+              >
                 {minute}
                 <span className="blind">분</span>
               </button>

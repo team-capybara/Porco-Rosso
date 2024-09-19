@@ -30,6 +30,8 @@ const CreateGathering = (props: CreateGatheringProps) => {
     location: { name: '', latitude: 0, longitude: 0 },
   });
 
+  const [timeData, setTimeData] = useState<string>('');
+
   const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
 
   const checkTextInputValid = (input: string) => {
@@ -58,10 +60,12 @@ const CreateGathering = (props: CreateGatheringProps) => {
   };
 
   const handleTimeSelect = (time: string) => {
-    handleChange(
-      'startedAt',
-      `${gatheringData.startedAt.slice(0, 8)}${time}00`
-    ); // yyyyMMdd + hhmm00 초는 입력 안 받으므로 00
+    setTimeData(`${time}00`);
+    // console.log(`${gatheringData.startedAt.slice(0, 8)}${time}00`, '세팅확인');
+    // handleChange(
+    //   'startedAt',
+    //   `${gatheringData.startedAt.slice(0, 8)}${time}00`
+    // ); // yyyyMMdd + hhmm00 초는 입력 안 받으므로 00
   };
 
   const handleTextInputOpen = () => {
@@ -136,6 +140,7 @@ const CreateGathering = (props: CreateGatheringProps) => {
             onChange={handleChange}
             onPlaceSelect={handleLocationSelect}
             onTimeSelect={handleTimeSelect}
+            timeData={timeData}
           />
         </div>
         <div className={cn('wrap_create_button')}>

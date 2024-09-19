@@ -95,4 +95,5 @@ export interface GatheringInfoInputsProps {
     longitude: number;
   }) => void;
   onTimeSelect: (time: string) => void;
+  timeData: string;
 }

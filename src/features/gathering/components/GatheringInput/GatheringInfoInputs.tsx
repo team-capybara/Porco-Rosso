@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classnames from 'classnames/bind';
 import LocationSearchInput from './LocationSearchInput';
 import TimeInput from './TimeInput';
@@ -25,8 +25,9 @@ const GatheringInfoInputs = ({
   onChange,
   onPlaceSelect,
   onTimeSelect,
+  timeData,
 }: GatheringInfoInputsProps) => {
-  const { startedAt } = gatheringData;
+  const { startedAt, location } = gatheringData;
   const [isOpen, setIsOpen] = useState<OpenState>({
     dateOpen: false,
     timeOpen: false,
@@ -52,8 +53,13 @@ const GatheringInfoInputs = ({
       [key]: false, // 선택한 key만 false로 설정
     }));
     setOkType('');
-    console.log(startedAt, 'startedAt');
+    console.log(gatheringData, 'gatheringData');
+    console.log(timeData, 'timedata');
   };
+
+  useEffect(() => {
+    handleGatheringInfoLayerClose(okType as keyof OpenState);
+  }, [location]);
 
   return (
     <div className={cn('gathering_info_inputs')}>
@@ -97,7 +103,14 @@ const GatheringInfoInputs = ({
           className={cn('button')}
           onClick={() => handleGatheringInfoLayerOpen('timeOpen')}
         >
-          <span className={cn('text')}>시간을 선택해 주세요</span>
+          {timeData ? (
+            // 마크업 font color 수정 부탁드립니다
+            <span className={cn('number')} style={{ color: 'white' }}>
+              {timeData.slice(0, 2) + '시 ' + timeData.slice(2, 4) + '분'}
+            </span>
+          ) : (
+            <span className={cn('text')}>시간을 선택해 주세요</span>
+          )}
           <ArrowLeft24X24 className={cn('icon')} />
         </button>
       </div>
@@ -112,7 +125,14 @@ const GatheringInfoInputs = ({
           className={cn('button')}
           onClick={() => handleGatheringInfoLayerOpen('locationOpen')}
         >
-          <span className={cn('text')}>장소를 선택해 주세요</span>
+          {location ? (
+            // 마크업 font color 수정 부탁드립니다
+            <span className={cn('number')} style={{ color: 'white' }}>
+              {location.name}
+            </span>
+          ) : (
+            <span className={cn('text')}>장소를 선택해 주세요</span>
+          )}
           <ArrowLeft24X24 className={cn('icon')} />
         </button>
       </div>

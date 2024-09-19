@@ -9,7 +9,6 @@ interface TimeInputProps {
   onChange: (time: string) => void; // 시간 변경 시 호출할 함수
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TimeInput = ({ onChange }: TimeInputProps) => {
   const hours = Array.from({ length: 24 }, (_, index) =>
     String(index).padStart(2, '0')
@@ -29,25 +28,23 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
     const observerOptions = {
       root: wrapTimeRef.current,
       threshold: [1],
-      rootMargin: '0px 0px',
     };
 
     const handleIntersection = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
-        const target = entry.target as HTMLLIElement;
+        // const target = entry.target as HTMLLIElement;
+        const target = entry.target;
         const button = target.querySelector('button');
         if (entry.isIntersecting) {
-          console.log('최초 마운트');
           button?.classList.add(cn('active'));
           const selectedValue = button?.innerText;
-
+          console.log(selectedValue, 'selectedvalue');
           if (selectedValue?.endsWith('시')) {
-            setSelectedHour(selectedValue.replace('시', '') || '00');
+            setSelectedHour(selectedValue.replace('시', '').trim() || '00');
           } else if (selectedValue?.endsWith('분')) {
-            setSelectedMinute(selectedValue.replace('분', '') || '00');
+            setSelectedMinute(selectedValue.replace('분', '').trim() || '00');
           }
         } else {
-          console.log('어디가 시행되지?');
           button?.classList.remove(cn('active'));
         }
       });
@@ -67,12 +64,12 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
     });
 
     return () => observer.disconnect();
-  }, [selectedHour, selectedMinute]); // 최초 마운트 시에만 실행 , 이거 초기마운트에만 실행하려면,초기값 어떻게 세팅할지 생각해야함, 인터섹팅해야만 액티브 클래스가 활성화되기떄문에, 아래처럼 초기에 active 직접 적용해줘도, intersecting 기능이 활성화되면서 active 클래스가 사라지거나 함.. 왜...?
+  }, [selectedHour, selectedMinute]); //observer장착은 최초마운트 시에만 하면 되는데, 초기값 세팅이 안되는 현상 때문에 일단 리렌더링으로 해결 -> 최적화 필요
 
-  // // 선택된 시간 및 분이 변경될 때 상위 컴포넌트로 전달
-  // useEffect(() => {
-  //   onChange(`${selectedHour}:${selectedMinute}`);
-  // }, [selectedHour, selectedMinute, onChange]);
+  // 선택된 시간 및 분이 변경될 때 상위 컴포넌트로 전달
+  useEffect(() => {
+    onChange(`${selectedHour}${selectedMinute}`);
+  }, [selectedHour, selectedMinute]);
 
   return (
     <div className={cn('time_input')}>

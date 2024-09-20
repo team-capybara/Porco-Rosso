@@ -69,6 +69,7 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
   // 선택된 시간 및 분이 변경될 때 상위 컴포넌트로 전달
   useEffect(() => {
     onChange(`${selectedHour}${selectedMinute}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHour, selectedMinute]);
 
   return (

@@ -1,6 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { mockAxios } from '../config';
-import { IGatheringInfo } from '../../features/gathering/types';
+import {
+  IGatheringInfo,
+  GetFriendsListRes,
+} from '../../features/gathering/types';
+import apiClient from '../config';
 
 // 진행중모임 - 지도 좌표
 export const getMapLngLat = (moimId: number) => {
@@ -81,4 +85,22 @@ export const getGatheringInfo = (moimId: number) => {
     enabled: false,
   });
   return { isLoading, isFetching, data, isError, error, refetch };
+};
+
+// 모임 생성 관련 api
+export const getFriendsList = async (
+  keyword: string,
+  cursorId: number | null,
+  size: number
+): Promise<GetFriendsListRes> => {
+  try {
+    const response = await apiClient.get<GetFriendsListRes>(
+      `/users/friends/followings?size=${size}&cursorId=${cursorId || ''}&keyword=${keyword}`
+    );
+    console.log(response.data, '친구목록 불러오기');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    throw error;
+  }
 };

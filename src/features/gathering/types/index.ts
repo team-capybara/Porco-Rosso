@@ -97,3 +97,22 @@ export interface GatheringInfoInputsProps {
   onTimeSelect: (time: string) => void;
   timeData: string;
 }
+
+export type Friend = {
+  friendId: number;
+  userId: number;
+  targetId: number;
+  targetNickname: string;
+  targetProfile: string;
+  friendCreatedAt: string;
+};
+
+type Cursor = {
+  cursorId: number;
+};
+
+export interface GetFriendsListRes {
+  data: Array<Friend>;
+  last: boolean;
+  cursorId: Cursor | null;
+}

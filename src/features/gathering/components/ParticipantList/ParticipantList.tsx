@@ -13,9 +13,12 @@ interface Props {
   mode: 'read' | 'update'; //친구목록 모드 (확인, 수정)
   moimStart: boolean; //모임 시작 여부
   participantData?: Array<IParticipants>; //친구목록 데이터
+  onClickAddButton?: (type: string) => void;
 }
 
 const ParticipantList = (props: Props) => {
+  const { onClickAddButton, participantData } = props;
+  console.log(participantData, 'participantData');
   return (
     <div className={cn('participant_list')}>
       {/* todo: 페이지에 따라 title 분기 부탁드립니다. */}
@@ -29,7 +32,11 @@ const ParticipantList = (props: Props) => {
           {props.hasAddButton && (
             <li className={cn('item')}>
               {/* todo: 버튼 클릭시, 친구추가 모달 노출됩니다.(작업 전) */}
-              <button type="button" className={cn('button')}>
+              <button
+                type="button"
+                className={cn('button')}
+                onClick={() => onClickAddButton?.('open')}
+              >
                 <span className={cn('plus_icon')}>
                   <IconPlus24X24 className={cn('icon')} />
                 </span>
@@ -88,7 +95,7 @@ const ParticipantList = (props: Props) => {
               <IconX12X12 className={cn('icon')} />
             </button>
           </li> */}
-          <li className={cn('item')}>
+          {/* <li className={cn('item')}>
             <button type="button" className={cn('button')}>
               <div className={cn('thumbnail_area')}>
                 <div className={cn('thumbnail')}>
@@ -101,7 +108,7 @@ const ParticipantList = (props: Props) => {
               </div>
               <div className={cn('text')}>맥주사랑이린</div>
             </button>
-          </li>
+          </li> */}
         </ul>
       </HorizontalScrollWrapper>
     </div>

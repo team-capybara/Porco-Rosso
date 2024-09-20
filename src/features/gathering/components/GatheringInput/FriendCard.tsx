@@ -1,24 +1,31 @@
 import classnames from 'classnames/bind';
 import styles from './friendCard.module.scss';
+import { Friend } from '../../types';
 
 const cn = classnames.bind(styles);
+interface FriendCardProps {
+  friend: Friend; // 친구 정보
+  isSelected: boolean; // 친구가 선택되었는지 여부
+  onClick: () => void; // 클릭 핸들러
+}
 
-const FriendCard = () => {
-  // 친구 카드
-  console.log('FriendCard');
+const FriendCard = ({ friend, isSelected, onClick }: FriendCardProps) => {
   return (
-    // todo: 버튼 선택된 경우, '.selected' 클래스 추가 및 선택됨 블라인드 텍스트 추가 부탁드립니다.
-    <button type="button" className={cn('friend_card', { selected: true })}>
+    <button
+      type="button"
+      className={cn('friend_card', { selected: isSelected })}
+      onClick={onClick}
+    >
       <div className={cn('thumbnail')}>
         <img
-          src="src/assets/png/test_image.png"
-          alt=""
+          src={friend.targetProfile}
+          alt={friend.targetNickname}
           className={cn('image')}
         />
       </div>
-      <strong className={cn('nickname')}>닉네임입니다아아</strong>
+      <strong className={cn('nickname')}>{friend.targetNickname}</strong>
       <div className={cn('mark')} />
-      <span className="blind">선택됨</span>
+      {isSelected && <span className="blind">선택됨</span>}
     </button>
   );
 };

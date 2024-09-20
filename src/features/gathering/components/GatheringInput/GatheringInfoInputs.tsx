@@ -59,6 +59,7 @@ const GatheringInfoInputs = ({
 
   useEffect(() => {
     handleGatheringInfoLayerClose(okType as keyof OpenState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   return (
@@ -125,7 +126,7 @@ const GatheringInfoInputs = ({
           className={cn('button')}
           onClick={() => handleGatheringInfoLayerOpen('locationOpen')}
         >
-          {location ? (
+          {location.name ? (
             // 마크업 font color 수정 부탁드립니다
             <span className={cn('number')} style={{ color: 'white' }}>
               {location.name}

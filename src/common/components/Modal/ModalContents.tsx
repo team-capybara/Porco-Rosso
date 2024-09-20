@@ -1,11 +1,12 @@
 import classnames from 'classnames/bind';
 import styles from './modalContents.module.scss';
+import { ReactNode } from 'react';
 
 const cn = classnames.bind(styles);
 
 interface Props {
   title: string;
-  description?: string;
+  description?: ReactNode;
   firstButton: string;
   onClickFirstButton: () => void;
   secondButton?: string;

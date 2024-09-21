@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCookie } from '../common/utils/authUtils';
 
 export const mockAxios = axios.create({
-  baseURL: 'https://api.moime.app/external',
+  baseURL: 'https://api.moime.app',
   headers: {
     accept: '/',
     Authorization:

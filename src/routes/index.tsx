@@ -26,7 +26,7 @@ const AppRoutes = () => {
       <Route path="/mypage" element={<MypagePage />} />
       <Route path="/notification" element={<NotificationPage />} />
       <Route path="/statistics" element={<StatisticsPage />} />
-      <Route path="/error" element={<ErrorPage />} />
+      <Route path="/error" element={<ErrorPage buttonText={'ERROR'} />} />
     </Routes>
   );
 };

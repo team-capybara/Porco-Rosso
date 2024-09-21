@@ -42,6 +42,13 @@ export interface MoimePhoto {
 
 export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset'; // reset => 리렌더링을 위해서
 
+export type moimStatus =
+  | 'CREATED'
+  | 'ONGOING'
+  | 'FINISHED'
+  | 'COMPLETED'
+  | 'FAILED';
+
 export interface CreateGatheringProps {}
 
 export interface IGatheringInfo {
@@ -54,7 +61,8 @@ export interface IGatheringInfo {
     latitude: number;
     longitude: number;
   };
-  status: string;
+  status: moimStatus;
+  owner: IParticipants;
   participants: Array<IParticipants>;
   bestPhotoUrl: string | null; //완료된 모임에만 존재
 }

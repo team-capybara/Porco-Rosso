@@ -46,7 +46,13 @@ const PhotoCard = memo(
     // console.warn('rendered');
     return (
       <div className={cn('photo_card')}>
-        <div className={cn('thumbnail')}>
+        <div
+          className={cn('thumbnail')}
+          onClick={() => {
+            console.log(photoId);
+          }}
+          aria-hidden="true"
+        >
           <img src={photoUrl} alt="/" className={cn('image')} />
         </div>
         {/* todo: 좋아요 된 경우, 'active' 클래스 활성화부탁드립니다. */}

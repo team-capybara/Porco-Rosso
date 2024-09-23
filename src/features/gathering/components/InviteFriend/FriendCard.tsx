@@ -7,14 +7,21 @@ interface FriendCardProps {
   friend: Friend; // 친구 정보
   isSelected: boolean; // 친구가 선택되었는지 여부
   onClick: () => void; // 클릭 핸들러
+  moimStart: boolean; // 친구가 선택되었는지 여부
 }
 
-const FriendCard = ({ friend, isSelected, onClick }: FriendCardProps) => {
+const FriendCard = ({
+  friend,
+  isSelected,
+  onClick,
+  moimStart,
+}: FriendCardProps) => {
   return (
     <button
       type="button"
       className={cn('friend_card', { selected: isSelected })}
       onClick={onClick}
+      disabled={moimStart && isSelected}
     >
       <div className={cn('thumbnail')}>
         <img

@@ -116,3 +116,12 @@ export interface GetFriendsListRes {
   last: boolean;
   cursorId: Cursor | null;
 }
+
+export interface InviteFriendsProps {
+  setLayerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  moimStart: boolean;
+  setParticipantDataList: React.Dispatch<React.SetStateAction<IParticipants[]>>;
+  selectedFriends: number[];
+  setSelectedFriends: React.Dispatch<React.SetStateAction<number[]>>;
+  moimId?: number; //모임 생성 단계에서는 모임 아이디 발급 전
+}

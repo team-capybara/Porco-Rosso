@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import classnames from 'classnames/bind';
 import { CreateGatheringProps } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
@@ -7,21 +7,12 @@ import styles from './createGathering.module.scss';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
 import ParticipantList from './components/ParticipantList/ParticipantList';
 import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs';
-import FriendSearchInput from './components/GatheringInput/FriendSearchInput';
-import FriendSearchList from './components/GatheringInput/FriendSearchList';
-import {
-  // getGatheringInfo,
-  getFriendsList,
-} from '../../api/service/gatheringApi';
-import {
-  CreateGatheringData,
-  ChangeHandler,
-  GetFriendsListRes,
-} from './types/index';
+import { CreateGatheringData, ChangeHandler } from './types/index';
 import { textInputValidation } from '../../common/utils/authUtils';
 import { useQuery } from '@tanstack/react-query';
 import { getUserInfo } from '../../api/service/authApi';
 import { IParticipants } from '../gathering/types/index';
+import InviteFriends from './components/InviteFriend/InviteFriends';
 
 // import { formatDateToYYYYMMDD } from '../../common/utils/dateUtils';
 
@@ -42,14 +33,7 @@ const CreateGathering = (props: CreateGatheringProps) => {
   });
 
   const [timeData, setTimeData] = useState<string>('');
-  const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색어 상태 관리
-  const [cursorId, setCursorId] = useState<number | null>(null); // 커서 관리
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
-  const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
-
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const loadMoreRef = useRef<HTMLDivElement | null>(null); // 감지할 대상 (페이지 하단)
-
   const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
   const [participantDataList, setParticipantDataList] = useState<
     IParticipants[]
@@ -126,10 +110,6 @@ const CreateGathering = (props: CreateGatheringProps) => {
     return '';
   };
 
-  // const handleInviteFriendClose = () => {
-  //   setInviteFriendOpen(false);
-  // };
-
   const textInputBackNavClickHandler = (
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
@@ -137,130 +117,9 @@ const CreateGathering = (props: CreateGatheringProps) => {
     setTextInputOpen(false);
   };
 
-  const inviteFriendBackNavClickHandler = (
-    e: React.MouseEvent<HTMLAnchorElement>
-  ) => {
-    e.preventDefault();
-    setInviteFriendOpen(false);
-  };
-
   useEffect(() => {
     console.log('Current gatheringData:', gatheringData);
   }, [gatheringData]);
-
-  const useFriendSearch = (
-    keyword: string,
-    cursorId: number | null,
-    size: number
-  ) => {
-    const {
-      data: friendsData, // 가져온 친구 목록 데이터
-      isLoading, // 데이터 로딩 중 상태
-      isFetching, // 추가 데이터 요청 중 상태
-      isError, // 에러 상태
-      error, // 발생한 에러 객체
-    } = useQuery<GetFriendsListRes>({
-      queryKey: ['friendsList', keyword, cursorId, size], // 쿼리 키 명시
-      queryFn: () => getFriendsList(keyword, cursorId, size), // 쿼리 함수 명시
-      enabled: inviteFriendOpen, // 검색어가 있을 때만 쿼리가 실행되도록 설정
-      // keepPreviousData: true, // 무한 스크롤 시 이전 데이터를 유지
-      // staleTime: 1000 * 60 * 5, // 데이터가 5분 동안 신선하다고 간주됨
-    });
-
-    return { friendsData, isLoading, isFetching, isError, error };
-  };
-
-  // React Query로 친구 목록 데이터 가져오기
-  const {
-    friendsData,
-    isLoading,
-    isFetching,
-    isError,
-    // error
-  } = useFriendSearch(searchKeyword, cursorId, 10);
-
-  // 검색어 변경 처리
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(event.target.value);
-    setCursorId(null); // 검색 시 커서를 초기화
-  };
-
-  // 친구 선택 처리
-  const handleFriendSelect = (friendId: number) => {
-    setSelectedFriends((prevSelected) => {
-      const isAlreadySelected = prevSelected.includes(friendId);
-
-      const updatedSelectedFriends = isAlreadySelected
-        ? prevSelected.filter((id) => id !== friendId) // 이미 선택된 친구는 해제
-        : [...prevSelected, friendId]; // 선택되지 않은 친구는 추가
-
-      // friendsData에서 선택된 친구 찾기
-      const selectedFriend = friendsData?.data.find(
-        (friend) => friend.friendId === friendId
-      );
-
-      if (selectedFriend) {
-        setParticipantDataList((prevList) => {
-          if (isAlreadySelected) {
-            // 선택 해제된 경우 participantDataList에서 해당 친구를 제거
-            return prevList.filter(
-              (participant) => participant.userId !== friendId
-            );
-          }
-
-          // 이미 추가된 경우는 중복 방지, 추가되지 않은 경우만 추가
-          const isAlreadyAdded = prevList.some(
-            (participant) => participant.userId === selectedFriend.friendId
-          );
-
-          if (!isAlreadyAdded) {
-            return [
-              ...prevList,
-              {
-                userId: selectedFriend.friendId,
-                nickname: selectedFriend.targetNickname,
-                profileImageUrl: selectedFriend.targetProfile,
-                isOwner: false, // 친구는 owner가 아니므로 false
-              },
-            ];
-          }
-
-          return prevList; // 이미 추가된 경우 그대로 반환
-        });
-      }
-
-      return updatedSelectedFriends; // selectedFriends 상태 업데이트
-    });
-  };
-
-  useEffect(() => {
-    console.log(selectedFriends, 'selectedFriends');
-    console.log(participantDataList, 'participantDataList');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFriends]);
-
-  // 스크롤 끝에 도달했을 때 다음 페이지 로드
-  useEffect(() => {
-    if (isFetchingNextPage || !friendsData || friendsData.last === true) return;
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && friendsData.cursorId) {
-        setIsFetchingNextPage(true);
-        setCursorId(friendsData.cursorId.cursorId || null); // cursorId가 null일 수 있으므로 안전하게 처리
-      }
-    });
-
-    if (loadMoreRef.current) {
-      observerRef.current.observe(loadMoreRef.current);
-    }
-
-    return () => {
-      if (observerRef.current && loadMoreRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        observerRef.current.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [friendsData, isFetchingNextPage]);
 
   // 모임 제목 입력
   const renderTextInput = () => {
@@ -340,61 +199,21 @@ const CreateGathering = (props: CreateGatheringProps) => {
     );
   };
 
-  // 친구 초대 화면
-  const renderInviteFriends = () => {
-    return (
-      <>
-        <BackNavigation
-          classNameForIconType="close_type"
-          hasNext={true}
-          isButton={true}
-          onClick={inviteFriendBackNavClickHandler}
-          blindText="이전으로"
-        />
-        <GatheringTitle
-          title="함께 모일 친구"
-          description="모임에 초대할 친구를 추가해보세요."
-          classNameForPage="invite_friends"
-        />
-        <div className={cn('wrap_participant_list')}>
-          <ParticipantList
-            hasAddButton={false}
-            mode="read"
-            moimStart={false}
-            participantData={participantDataList}
-          />
-        </div>
-        <div className={cn('wrap_friend_search_input')}>
-          <strong className={cn('title')}>
-            내친구
-            <span className={cn('count')}>{friendsData?.data?.length}명</span>
-          </strong>
-          <FriendSearchInput onChange={handleSearchChange} />
-        </div>
-        <div className={cn('friend_search_list')}>
-          {isLoading || isFetching ? (
-            <div>로딩 중...</div>
-          ) : isError ? (
-            <div>에러 발생</div>
-          ) : (
-            <FriendSearchList
-              friends={friendsData?.data || []}
-              selectedFriends={selectedFriends}
-              onFriendSelect={handleFriendSelect}
-            />
-          )}
-        </div>
-        {/* <FriendSearchList /> */}
-      </>
-    );
-  };
-
   console.log(props);
   return (
     <div className={cn('create_gathering')}>
       {textInputOpen && renderTextInput()}
       {!textInputOpen && !inviteFriendOpen && renderCreateMain()}
-      {!textInputOpen && inviteFriendOpen && renderInviteFriends()}
+      {!textInputOpen && inviteFriendOpen && (
+        // 친구 초대 공통으로 사용해야해서 컴포넌트화 진행
+        <InviteFriends
+          moimStart={false}
+          setLayerOpen={setInviteFriendOpen}
+          setParticipantDataList={setParticipantDataList}
+          selectedFriends={selectedFriends}
+          setSelectedFriends={setSelectedFriends}
+        />
+      )}
     </div>
   );
 };

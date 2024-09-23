@@ -16,6 +16,7 @@ interface Props {
   onClickShareButton?: () => void;
   classNameForPage?: '' | 'create_page' | 'invite_friends';
   onClickEditButton?: () => void;
+  onClickFinishButton?: () => void;
 }
 
 const GatheringTitle = ({
@@ -27,6 +28,7 @@ const GatheringTitle = ({
   onClickShareButton,
   classNameForPage = '',
   onClickEditButton,
+  onClickFinishButton,
 }: Props) => {
   return (
     <div className={cn('gathering_title')}>
@@ -68,7 +70,12 @@ const GatheringTitle = ({
       )}
       {classNameForPage === 'invite_friends' && (
         // todo: 친구 선택 시, disabled={false} 로 토글 부탁드립니다.
-        <button type="button" className={cn('button')} disabled={false}>
+        <button
+          type="button"
+          className={cn('button')}
+          disabled={false}
+          onClick={onClickFinishButton}
+        >
           완료
         </button>
       )}

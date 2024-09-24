@@ -18,12 +18,13 @@ const cn = classnames.bind(styles);
 
 // 프롭 속성 : 친구 추가 팝업 노출 상태 조절, 추가된 친구 목록 조절, 모임 상태, 모임아이디, 선택된 친구 아이디리스트 및 선택된 친구 목록 조절
 const InviteFriends = ({
-  setParticipantDataList, // 모임 정보 내 참가자 목록 리스트
-  setLayerOpen,
   moimId,
   moimStart,
+  participantData,
   selectedFriends,
+  setLayerOpen,
   setSelectedFriends,
+  setParticipantDataList, // 모임 정보 내 참가자 목록 리스트
 }: InviteFriendsProps) => {
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색어 상태 관리
   const [cursorId, setCursorId] = useState<number | null>(null); // 커서 관리
@@ -76,6 +77,10 @@ const InviteFriends = ({
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
     e.preventDefault();
+    // 진행중 모임일 땐 모달 끄면 선택된 친구 초기화
+    if (moimStart) {
+      setSelectedFriends([]);
+    }
     setLayerOpen(false);
   };
 
@@ -116,8 +121,10 @@ const InviteFriends = ({
         return prevList;
       };
 
-      // participantDataList와 selectedFriendsData를 동일한 로직으로 처리
-      setParticipantDataList((prevList) => updateList(prevList));
+      // 진행 전 모임일땐, 바로바로 변경사항 반영
+      if (!moimStart) {
+        setParticipantDataList((prevList) => updateList(prevList));
+      }
       setSelectedFriendsData((prevList) => updateList(prevList));
 
       // selectedFriends 상태 업데이트
@@ -128,7 +135,7 @@ const InviteFriends = ({
   };
 
   useEffect(() => {
-    // 모임 생성 및 수정 단계에서는 선택된 친구 데이터를 바로 수정 및 확인해야 하므로, 초기 렌더 시 데이터 한번 세팅
+    // 모임 생성 및 수정 단계(진행전 모임)에서는 선택된 친구 데이터를 바로 수정 및 확인해야 하므로, 초기 렌더 시 데이터 한번 세팅
     if (!moimStart && selectedFriends.length) {
       const selectedData = friendsData?.data
         .filter((friend) => selectedFriends.includes(friend.friendId))
@@ -169,13 +176,27 @@ const InviteFriends = ({
     };
   }, [friendsData, isFetchingNextPage]);
 
+  const inviteFriendValidation = () => {
+    const totalFriendCnt = selectedFriends.length + participantData.length;
+    if (totalFriendCnt > 11) {
+      alert('친구는 최대 11명까지만 초대 가능'); // 토스트로 변경
+      return false;
+    }
+    return true;
+  };
+
   const handleFinishButton = () => {
-    // 진행중 모임 (바로 서버로 진행중 모임에 친구 추가 api 요청, api 추가해야함)
-    if (moimStart) {
-      alert('진행 중 모임에서 친구 추가 후 완료 누름');
-      console.log(moimId, 'moimId 필요할걸');
-      // 진행전 모임 (밸리데이션 밑 화면 닫기)
-    } else {
+    if (inviteFriendValidation()) {
+      if (moimStart) {
+        alert('진행 중 모임에서 친구 추가 후 완료 누름');
+        // 진행 중 모임일땐 완료 버튼 눌렀을 때만, 참가자 목록 업데이트 가능
+        // 완료 버튼 자체가 participantData의 변화를 의미
+        setParticipantDataList((prevList) => [
+          ...prevList,
+          ...selectedFriendsData,
+        ]);
+        console.log(moimId, 'moimId 필요할걸');
+      }
       setLayerOpen(false);
     }
   };
@@ -221,6 +242,7 @@ const InviteFriends = ({
             selectedFriends={selectedFriends}
             onFriendSelect={handleFriendSelect}
             moimStart={moimStart}
+            participantData={participantData}
           />
         )}
       </div>

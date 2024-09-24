@@ -97,6 +97,7 @@ const CalendarInput = ({ onChange }: CalendarInputProps) => {
                     { active: isSelected(date) }
                   )}
                   onClick={() => handleDateSelect(date)}
+                  disabled={beforeToday}
                 >
                   <span className={cn('text')}>
                     {currentMonth ? date.getDate() : null}

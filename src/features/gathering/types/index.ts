@@ -42,8 +42,6 @@ export interface MoimePhoto {
 
 export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset'; // reset => 리렌더링을 위해서
 
-export interface CreateGatheringProps {}
-
 export interface IGatheringInfo {
   id: number;
   title: string;
@@ -124,4 +122,5 @@ export interface InviteFriendsProps {
   selectedFriends: number[];
   setSelectedFriends: React.Dispatch<React.SetStateAction<number[]>>;
   moimId?: number; //모임 생성 단계에서는 모임 아이디 발급 전
+  participantData: IParticipants[];
 }

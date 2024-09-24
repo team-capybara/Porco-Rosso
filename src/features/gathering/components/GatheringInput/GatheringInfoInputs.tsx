@@ -10,7 +10,10 @@ import IconCalendar18X18 from '../../../../assets/svg/icon/IconCalendar18X18';
 import IconClock18X18 from '../../../../assets/svg/icon/IconClock18X18';
 import IconLocation18X18 from '../../../../assets/svg/icon/IconLocation18X18';
 import { GatheringInfoInputsProps } from '../../types';
-import { getDateFromDatetime } from '../../../../common/utils/dateUtils';
+import {
+  getDateFromDatetime,
+  formatDateToYYYYMMDD,
+} from '../../../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
@@ -48,13 +51,17 @@ const GatheringInfoInputs = ({
   };
 
   const handleGatheringInfoLayerClose = (key: keyof OpenState) => {
+    // 날짜 기본값 오늘로 설정
+    if (okType === 'dateOpen' && !startedAt) {
+      const today = new Date();
+      const defaultDate = formatDateToYYYYMMDD(today);
+      onChange('startedAt', defaultDate);
+    }
     setIsOpen((prev) => ({
       ...prev,
       [key]: false, // 선택한 key만 false로 설정
     }));
     setOkType('');
-    console.log(gatheringData, 'gatheringData');
-    console.log(timeData, 'timedata');
   };
 
   useEffect(() => {

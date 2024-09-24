@@ -6,8 +6,9 @@ const cn = classnames.bind(styles);
 interface FriendCardProps {
   friend: Friend; // 친구 정보
   isSelected: boolean; // 친구가 선택되었는지 여부
+  disabled: boolean; // 이미 모임에 있는 친구인지 여부
   onClick: () => void; // 클릭 핸들러
-  moimStart: boolean; // 친구가 선택되었는지 여부
+  moimStart: boolean;
 }
 
 const FriendCard = ({
@@ -15,13 +16,14 @@ const FriendCard = ({
   isSelected,
   onClick,
   moimStart,
+  disabled,
 }: FriendCardProps) => {
   return (
     <button
       type="button"
       className={cn('friend_card', { selected: isSelected })}
       onClick={onClick}
-      disabled={moimStart && isSelected}
+      disabled={moimStart && disabled}
     >
       <div className={cn('thumbnail')}>
         <img

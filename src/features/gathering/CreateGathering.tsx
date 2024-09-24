@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import classnames from 'classnames/bind';
-import { CreateGatheringProps } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import TextInput from './components/GatheringInput/TextInput';
 import styles from './createGathering.module.scss';
@@ -14,17 +13,13 @@ import { getUserInfo } from '../../api/service/authApi';
 import { IParticipants } from '../gathering/types/index';
 import InviteFriends from './components/InviteFriend/InviteFriends';
 
-// import { formatDateToYYYYMMDD } from '../../common/utils/dateUtils';
-
 const cn = classnames.bind(styles);
 
-const CreateGathering = (props: CreateGatheringProps) => {
+const CreateGathering = () => {
   // T는 CreateGatheringData로 설정되며, key와 value의 타입이 CreateGatheringData의 프로퍼티와 일치하게 됨
   // CreateGatheringData의 키값에 따라 각각의 타입을 모두 추론할 수 있게 맵핑해주는 제네릭
   // const { data: gatheringInfoData } = getGatheringInfo(1);
 
-  // const today = new Date();
-  // const initialDate = formatDateToYYYYMMDD(today);
   const [gatheringData, setGatheringData] = useState<CreateGatheringData>({
     title: '',
     participantIds: [],
@@ -155,11 +150,12 @@ const CreateGathering = (props: CreateGatheringProps) => {
 
   // 모임 생성 메인 화면
   const renderCreateMain = () => {
+    const { title, location, startedAt } = gatheringData;
     return (
       <>
         <BackNavigation classNameForIconType="close_type" />
         <GatheringTitle
-          title={gatheringData.title || '제목 없는 모임'}
+          title={title || '제목 없는 모임'}
           description="정보를 채우고 모임을 시작해보세요."
           classNameForPage="create_page"
           onClickEditButton={handleTextInputOpen}
@@ -189,7 +185,7 @@ const CreateGathering = (props: CreateGatheringProps) => {
             <button
               type="button"
               className={cn('create_button')}
-              disabled={false}
+              disabled={!(title && location.name && startedAt)}
             >
               모임 생성하기
             </button>
@@ -199,7 +195,6 @@ const CreateGathering = (props: CreateGatheringProps) => {
     );
   };
 
-  console.log(props);
   return (
     <div className={cn('create_gathering')}>
       {textInputOpen && renderTextInput()}
@@ -207,11 +202,12 @@ const CreateGathering = (props: CreateGatheringProps) => {
       {!textInputOpen && inviteFriendOpen && (
         // 친구 초대 공통으로 사용해야해서 컴포넌트화 진행
         <InviteFriends
-          moimStart={false}
-          setLayerOpen={setInviteFriendOpen}
+          moimStart={true}
+          participantData={participantDataList}
           setParticipantDataList={setParticipantDataList}
           selectedFriends={selectedFriends}
           setSelectedFriends={setSelectedFriends}
+          setLayerOpen={setInviteFriendOpen}
         />
       )}
     </div>

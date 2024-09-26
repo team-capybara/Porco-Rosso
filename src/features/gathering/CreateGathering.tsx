@@ -12,6 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getUserInfo } from '../../api/service/authApi';
 import { IParticipants } from '../gathering/types/index';
 import InviteFriends from './components/InviteFriend/InviteFriends';
+import { createMoim } from '../../api/service/gatheringApi';
 
 const cn = classnames.bind(styles);
 
@@ -105,6 +106,33 @@ const CreateGathering = () => {
     return '';
   };
 
+  const handleMoimCreateBtn = () => {
+    // 최종 검증
+    const errorMsg = textInputValidation(gatheringData.title, 'withEmoji');
+    // 밸리데이션 통과
+    if (errorMsg) {
+      alert(errorMsg); // 공통 모달 띄움
+      return;
+    }
+
+    // 모임생성 전 한번더 검증
+    if (participantDataList.length > 11) {
+      alert('공통 모달 띄움, 친구는 최대 11명까지만 초대할 수 잇어요');
+      return;
+    }
+
+    handleChange(
+      'startedAt',
+      `${gatheringData.startedAt.slice(0, 8)}${timeData}00`
+    ); // yyyyMMdd + hhmm00 초는 입력 안 받으므로 00
+
+    const ids = participantDataList.map((participant) => participant.userId);
+    handleChange('participantIds', ids);
+
+    console.log(gatheringData, 'gatheringData제출할거임');
+    createMoim(gatheringData);
+  };
+
   const textInputBackNavClickHandler = (
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
@@ -186,6 +214,7 @@ const CreateGathering = () => {
               type="button"
               className={cn('create_button')}
               disabled={!(title && location.name && startedAt)}
+              onClick={handleMoimCreateBtn}
             >
               모임 생성하기
             </button>

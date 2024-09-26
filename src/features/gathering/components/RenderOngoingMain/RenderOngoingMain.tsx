@@ -77,7 +77,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
           </section>
           <section className={cn('section')}>
             <RouteMap
-              locationSummary={gatheringInfoData?.location.name}
+              locationSummary={gatheringInfoData?.location}
               moimId={moimId}
             />
           </section>

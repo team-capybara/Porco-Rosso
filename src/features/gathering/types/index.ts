@@ -51,16 +51,31 @@ export type moimStatus =
 
 export interface CreateGatheringProps {}
 
+export interface mapPoint {
+  latitude: number;
+  longitude: number;
+  logtitude: number;
+}
+
+export interface mapDataInfo {
+  bound: {
+    max: mapPoint;
+    min: mapPoint;
+  };
+  data: mapPoint[];
+  total: number;
+}
+
+export interface gatheringInfoLocation extends mapPoint {
+  name: string;
+}
+
 export interface IGatheringInfo {
   id: number;
   title: string;
   startedAt: string;
   endedAt: string | null;
-  location: {
-    name: string;
-    latitude: number;
-    longitude: number;
-  };
+  location: gatheringInfoLocation;
   status: moimStatus;
   owner: IParticipants;
   participants: Array<IParticipants>;

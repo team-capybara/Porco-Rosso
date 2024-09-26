@@ -26,7 +26,7 @@ const ParticipantList = (props: Props) => {
       {/* todo: 페이지에 따라 title 분기 부탁드립니다. */}
       <strong className={cn('title')}>
         {props.moimStart ? '참여한' : '모일'} 친구{' '}
-        {props.participantData?.length ?? 0}명
+        {props.participantData ? props.participantData?.length + 1 : 0}명
       </strong>
       {/* <HorizontalScrollWrapper>  //  */}
       <HorizontalScrollWrapper>

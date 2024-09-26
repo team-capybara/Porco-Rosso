@@ -80,6 +80,7 @@ const RouteMap = (props: RouteMapProps) => {
 
     // 점 그리기
     makeCircle(polyline.getLength());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   // 점 그리기

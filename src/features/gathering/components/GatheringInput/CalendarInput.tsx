@@ -9,17 +9,25 @@ import {
   getToday,
 } from '../../../../common/utils/calendarUtils';
 import { CalendarInputProps } from '../../types';
-import { formatDateToYYYYMMDD } from '../../../../common/utils/dateUtils';
+import {
+  formatDateToYYYYMMDD,
+  parseYYYYMMDDToDate,
+} from '../../../../common/utils/dateUtils';
 
 const cn = classnames.bind(styles);
 
-const CalendarInput = ({ onChange }: CalendarInputProps) => {
+const CalendarInput = ({ value, onChange }: CalendarInputProps) => {
   const today = getToday();
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    value ? parseYYYYMMDDToDate(value) : today
+  );
   const [currentMonthYear, setCurrentMonthYear] = useState({
     month: today.getMonth() + 1,
     year: today.getFullYear(),
   });
+
+  const oneYearFromToday = new Date(today);
+  oneYearFromToday.setFullYear(today.getFullYear() + 1);
 
   const { month, year } = currentMonthYear;
   const datesInMonth: DateInfo[] = getDatesInMonthDisplay(month, year);
@@ -38,8 +46,15 @@ const CalendarInput = ({ onChange }: CalendarInputProps) => {
     const nextYear = nextDate.getFullYear();
     setCurrentMonthYear({ month: nextMonth, year: nextYear });
   };
-  const handleDateSelect = (date: Date) => {
-    console.log(date, 'date');
+  const handleDateSelect = (date: Date, beforeToday?: boolean) => {
+    if (beforeToday && !isToday(date)) {
+      alert('모임은 오늘 이후로만 만들 수 있어요'); // 토스트로 바꿔야함
+      return;
+    }
+    if (date > today && !isWithinValidRange(date)) {
+      alert('모임 생성 날짜는 오늘 기준 최대 1년 뒤를 초과할 수 없음.');
+      return;
+    }
     setSelectedDate(date);
     onChange(formatDateToYYYYMMDD(date));
   };
@@ -49,8 +64,10 @@ const CalendarInput = ({ onChange }: CalendarInputProps) => {
   const isSelected = (date: Date) =>
     date.toDateString() === selectedDate.toDateString();
 
+  const isWithinValidRange = (date: Date) =>
+    date >= today && date <= oneYearFromToday;
+
   // 날짜 수정 화살표 누를 시 나오는 모달
-  console.log('CalendarInput');
   return (
     <div className={cn('calendar_input')}>
       <div className={cn('title_area')}>
@@ -82,9 +99,7 @@ const CalendarInput = ({ onChange }: CalendarInputProps) => {
         <ul className={cn('days_calendar')}>
           {datesInMonth.map((day) => {
             const { date, currentMonth, beforeToday } = day;
-            console.log(date, currentMonth, beforeToday);
-            // const todayClass = isToday(date) ? 'is_today' : '';
-            // const activeClass = isSelected(date) ? 'active' : '';
+            const isDateDisabled = !currentMonth;
             return (
               <li className={cn('item')} key={date.toISOString()}>
                 {/* todo: 해당 날짜가 오늘인 경우, 'is_today' 클래스 활성화 부탁드립니다. */}
@@ -94,10 +109,10 @@ const CalendarInput = ({ onChange }: CalendarInputProps) => {
                   className={cn(
                     'button',
                     { is_today: isToday(date) },
-                    { active: isSelected(date) }
+                    { active: isSelected(date) && currentMonth }
                   )}
-                  onClick={() => handleDateSelect(date)}
-                  disabled={beforeToday}
+                  onClick={() => handleDateSelect(date, beforeToday)}
+                  disabled={isDateDisabled}
                 >
                   <span className={cn('text')}>
                     {currentMonth ? date.getDate() : null}

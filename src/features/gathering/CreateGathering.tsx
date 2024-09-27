@@ -8,11 +8,14 @@ import ParticipantList from './components/ParticipantList/ParticipantList';
 import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs';
 import { CreateGatheringData, ChangeHandler } from './types/index';
 import { textInputValidation } from '../../common/utils/authUtils';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { getUserInfo } from '../../api/service/authApi';
 import { IParticipants } from '../gathering/types/index';
 import InviteFriends from './components/InviteFriend/InviteFriends';
 import { createMoim } from '../../api/service/gatheringApi';
+import Modal from '../../common/components/Modal/Modal';
+import ModalContents from '../../common/components/Modal/ModalContents';
+import { goMainAfterCreateMoim } from '../../bridge/gatheringBridge.ts';
 
 const cn = classnames.bind(styles);
 
@@ -35,6 +38,8 @@ const CreateGathering = () => {
     IParticipants[]
   >([]);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
+  const [chkModalOpen, setChkModalOpen] = useState<boolean>(false);
+  const [moimCreateRes, setMoimCreateRes] = useState<string>('');
 
   const checkTextInputValid = (input: string) => {
     const errorMsg = textInputValidation(input, 'withEmoji');
@@ -44,6 +49,10 @@ const CreateGathering = () => {
     } else {
       alert(errorMsg); // 추후 토스트 공통화 후 토스트로 바꿈
     }
+  };
+
+  const handleChkModalClose = () => {
+    setChkModalOpen(false);
   };
 
   const handleChange: ChangeHandler<CreateGatheringData> = (key, value) => {
@@ -106,31 +115,50 @@ const CreateGathering = () => {
     return '';
   };
 
+  const mutation = useMutation({
+    mutationFn: createMoim,
+    onSuccess: () => {
+      // 성공 시 처리할 로직
+      // setSignUpSuccess(true); // 모임 생성 성공 시 성공 상태 설정
+      setMoimCreateRes('success');
+      setChkModalOpen(true);
+      console.log('모임 생성 성공');
+    },
+    onError: (error) => {
+      // 실패 시 처리할 로직
+      console.error('모임 생성 실패:', error);
+    },
+  });
+
   const handleMoimCreateBtn = () => {
     // 최종 검증
     const errorMsg = textInputValidation(gatheringData.title, 'withEmoji');
     // 밸리데이션 통과
     if (errorMsg) {
-      alert(errorMsg); // 공통 모달 띄움
+      setMoimCreateRes('fail');
+      setChkModalOpen(true);
+      // alert(errorMsg); // 공통 모달 띄움
       return;
     }
 
     // 모임생성 전 한번더 검증
     if (participantDataList.length > 11) {
-      alert('공통 모달 띄움, 친구는 최대 11명까지만 초대할 수 잇어요');
+      setMoimCreateRes('fail');
+      setChkModalOpen(true);
+      // alert('공통 모달 띄움, 친구는 최대 11명까지만 초대할 수 잇어요');
       return;
     }
 
-    handleChange(
-      'startedAt',
-      `${gatheringData.startedAt.slice(0, 8)}${timeData}00`
-    ); // yyyyMMdd + hhmm00 초는 입력 안 받으므로 00
+    const updatedGatheringData = {
+      ...gatheringData,
+      startedAt: `${gatheringData.startedAt.slice(0, 8)}${timeData}`,
+      participantIds: participantDataList.map(
+        (participant) => participant.userId
+      ),
+    };
 
-    const ids = participantDataList.map((participant) => participant.userId);
-    handleChange('participantIds', ids);
-
-    console.log(gatheringData, 'gatheringData제출할거임');
-    createMoim(gatheringData);
+    console.log(updatedGatheringData, '제출할 데이터');
+    mutation.mutate(updatedGatheringData);
   };
 
   const textInputBackNavClickHandler = (
@@ -143,6 +171,32 @@ const CreateGathering = () => {
   useEffect(() => {
     console.log('Current gatheringData:', gatheringData);
   }, [gatheringData]);
+
+  const renderCreateMoimChkModal = (chkStatus: string) => {
+    if (chkStatus === 'success') {
+      return (
+        <Modal>
+          <ModalContents
+            title="모임을 생성했어요!"
+            description="모임 시작 전까지 친구들을 꼭 초대해주세요."
+            firstButton="메인 화면으로 가기"
+            onClickFirstButton={goMainAfterCreateMoim}
+          />
+        </Modal>
+      );
+    } else if (chkStatus === 'fail') {
+      return (
+        <Modal>
+          <ModalContents
+            title="모임 생성에 실패했어요."
+            description="특정에러 구분해서 알려줌"
+            firstButton="확인"
+            onClickFirstButton={handleChkModalClose}
+          />
+        </Modal>
+      );
+    }
+  };
 
   // 모임 제목 입력
   const renderTextInput = () => {
@@ -210,6 +264,7 @@ const CreateGathering = () => {
           {/* Markup todo: 모임 생성하기 버튼 상단에 버튼 색상으로 선 생기는 이슈 검토하기 */}
           <div className={cn('inner')}>
             {/* todo: 날짜, 시간, 장소 입력된 경우, disabled={false} 토글 부탁드려요 */}
+            {/* disabled일때 버튼 색이 어둡거나, ui에 변경이 있어야 할듯 */}
             <button
               type="button"
               className={cn('create_button')}
@@ -231,7 +286,7 @@ const CreateGathering = () => {
       {!textInputOpen && inviteFriendOpen && (
         // 친구 초대 공통으로 사용해야해서 컴포넌트화 진행
         <InviteFriends
-          moimStart={true}
+          moimStart={false}
           participantData={participantDataList}
           setParticipantDataList={setParticipantDataList}
           selectedFriends={selectedFriends}
@@ -239,6 +294,7 @@ const CreateGathering = () => {
           setLayerOpen={setInviteFriendOpen}
         />
       )}
+      {chkModalOpen && renderCreateMoimChkModal(moimCreateRes)}
     </div>
   );
 };

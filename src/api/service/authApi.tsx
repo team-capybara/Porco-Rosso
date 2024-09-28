@@ -51,4 +51,14 @@ const updateProfile = async ({
   }
 };
 
-export { getUserInfo, updateProfile };
+const userLogout = async () => {
+  try {
+    const response = await apiClient.post('/users/logout');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    throw error; // 에러 처리 (필요에 따라 사용)
+  }
+};
+
+export { getUserInfo, updateProfile, userLogout };

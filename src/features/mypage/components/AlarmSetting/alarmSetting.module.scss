@@ -39,5 +39,13 @@
       background-color: $gray-50;
       content: '';
     }
+
+    &.off {
+      background-color: $gray-300; // off 상태의 배경색
+      &::after {
+        right: auto;
+        left: 2px; // 핸들을 왼쪽으로 이동
+      }
+    }
   }
 }

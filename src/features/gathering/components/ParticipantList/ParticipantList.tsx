@@ -38,8 +38,8 @@ const ParticipantList = (props: Props) => {
                 <span className={cn('plus_icon')}>
                   <IconPlus24X24 className={cn('icon')} />
                 </span>
-                {/* todo: "추가하기" 텍스트 노출되는지 아닌지 확인 필요 */}
-                <span className={cn('text')}>추가하기</span>
+                {/* "추가하기" 텍스트 노출 X */}
+                {/* <span className={cn('text')}>추가하기</span> */}
               </button>
             </li>
           )}

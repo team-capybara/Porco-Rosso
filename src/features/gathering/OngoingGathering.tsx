@@ -31,7 +31,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
       {renderComponent === 'PhotoDetail' && (
         <RenderPhotoDetail setRenderComponent={setRenderComponent} />
       )}
-      <OngoingFooter />
+      <OngoingFooter moimId={moimId} />
     </div>
   );
 };

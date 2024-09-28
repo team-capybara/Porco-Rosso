@@ -112,7 +112,9 @@ const ProfileImage = ({
       <div className={cn('inner')}>
         {/* 이미지 태그에 프로필 사진이 들어가야 합니다. 마크업 부탁드립니다 */}
         {/* 이미지 정사각형 제한은 없어서, 정사각형이 아닌 이미지도 들어갈 수 있습니다 */}
-        <img src={value} alt="" style={{ width: '20px', height: '20px' }} />
+        <div className={cn('thumbnail')}>
+          <img src={value} alt="" className={cn('image')} />
+        </div>
         <label htmlFor="profile_file" className={cn('label')}>
           <span className={cn('icon_area')}>
             <IconEdit16X16 className={cn('icon')} />

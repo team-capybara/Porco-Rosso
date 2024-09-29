@@ -15,7 +15,7 @@
   }
   .wrap_time {
     overflow: hidden;
-    height: 114px;
+    height: 110px;
     margin: 0 -4px;
   }
   .time_list {
@@ -29,8 +29,14 @@
     &::-webkit-scrollbar {
       display: none;
     }
+    .item:first-child {
+      margin-top: 10px;
+    }
+    .item:last-child {
+      margin-bottom: 10px;
+    }
     .item + .item {
-      margin-top: 8px;
+      margin-top: 15px;
     }
     .button {
       @include font-type('20-24');
@@ -39,8 +45,11 @@
       width: 100%;
       height: 48px;
       border-radius: 30px;
-      background-color: $gray-500;
+      // background-color: $gray-500;
       color: $gray-50;
+      &.active {
+        background-color: $gray-500;
+      }
     }
   }
 }

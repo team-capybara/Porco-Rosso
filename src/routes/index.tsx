@@ -11,6 +11,7 @@ import StatisticsPage from '../features/statistics/StatisticsPage';
 import OauthRedirectHandler from '../features/auth/OauthRedirectHandler';
 import CreateGathering from '../features/gathering/CreateGathering';
 import ErrorPage from '../features/error/ErrorPage';
+import MemoryGathering from '../features/gathering/MemoryGathering';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
       <Route path="/upcoming-gathering" element={<UpcomingGathering />} />
       <Route path="/ongoing-gathering" element={<OngoingGathering />} />
       <Route path="/ended-gathering" element={<EndedGathering />} />
+      <Route path="/memory-gathering" element={<MemoryGathering />} />
       <Route path="/share" element={<Share />} />
       <Route path="/mypage" element={<MypagePage />} />
       <Route path="/notification" element={<NotificationPage />} />

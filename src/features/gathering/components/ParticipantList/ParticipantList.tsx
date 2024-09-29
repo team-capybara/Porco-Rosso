@@ -29,7 +29,7 @@ const ParticipantList = (props: Props) => {
       {/* todo: 페이지에 따라 title 분기 부탁드립니다. */}
       <strong className={cn('title')}>
         {props.moimStart ? '참여한' : '모일'} 친구{' '}
-        {props.participantData?.length ?? 0}명
+        {props.participantData ? props.participantData?.length + 1 : 0}명
       </strong>
       {/* <HorizontalScrollWrapper>  //  */}
       <HorizontalScrollWrapper>
@@ -45,8 +45,8 @@ const ParticipantList = (props: Props) => {
                 <span className={cn('plus_icon')}>
                   <IconPlus24X24 className={cn('icon')} />
                 </span>
-                {/* todo: "추가하기" 텍스트 노출되는지 아닌지 확인 필요 */}
-                <span className={cn('text')}>추가하기</span>
+                {/* "추가하기" 텍스트 노출 X */}
+                {/* <span className={cn('text')}>추가하기</span> */}
               </button>
             </li>
           )}

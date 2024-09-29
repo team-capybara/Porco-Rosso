@@ -9,17 +9,30 @@ import RouteMap from '../RouteMap/RouteMap';
 import Modal from '../../../../common/components/Modal/Modal';
 import ModalContents from '../../../../common/components/Modal/ModalContents';
 import { useEffect, useState } from 'react';
-import { IGatheringInfo, ongoingType } from '../../types';
+import {
+  IGatheringInfo,
+  memoryType,
+  moimStatusType,
+  ongoingType,
+} from '../../types';
 import { getGatheringInfo } from '../../../../api/service/gatheringApi';
 
 const cn = classnames.bind(styles);
 
 interface RenderOngoingMainProps {
   moimId: number;
-  setRenderComponent: React.Dispatch<React.SetStateAction<ongoingType>>;
+  moimStatus: moimStatusType;
+  // 추후 두 개 합쳐도 될듯
+  setRenderOngoingComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
+  setRenderMemoryComponent?: React.Dispatch<React.SetStateAction<memoryType>>;
 }
 const RenderOngoingMain = (props: RenderOngoingMainProps) => {
-  const { moimId, setRenderComponent } = props;
+  const {
+    moimId,
+    moimStatus,
+    setRenderOngoingComponent,
+    // setRenderMemoryComponent,
+  } = props;
   const [leaveModal, setLeaveModal] = useState<boolean>(false);
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
 
@@ -28,6 +41,9 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     setGatheringInfoData(response);
     console.log(gatheringInfoData);
   };
+
+  // 모임 종료 후 생성된 추억 조회 내 공유하기 버튼
+  const shareMemory = () => {};
 
   const openLeaveModal = () => {
     setLeaveModal(true);
@@ -54,8 +70,10 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
             <GatheringTitle
               title={gatheringInfoData?.title}
               description={getDateFromDatetime(gatheringInfoData?.startedAt)}
-              hasRefreshButton={true}
+              hasRefreshButton={moimStatus === 'ONGOING' ? true : false}
+              hasShareButton={moimStatus === 'COMPLETED' ? true : false}
               onClickRefreshButton={() => setGatheringInfoDataFunc()}
+              onClickShareButton={() => shareMemory()}
             />
           </div>
           <section className={cn('section')}>
@@ -72,24 +90,26 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
               moimeId={'1'}
               hiddenTitle={false}
               isMiniPhotoCard={true}
-              setRenderComponent={setRenderComponent}
+              setRenderComponent={setRenderOngoingComponent}
             />
           </section>
           <section className={cn('section')}>
             <RouteMap
-              locationSummary={gatheringInfoData?.location.name}
+              locationSummary={gatheringInfoData?.location}
               moimId={moimId}
             />
           </section>
-          <div className={cn('button_area')}>
-            <button
-              type="button"
-              className={cn('end_button')}
-              onClick={openLeaveModal}
-            >
-              모임 종료
-            </button>
-          </div>
+          {moimStatus === 'ONGOING' && (
+            <div className={cn('button_area')}>
+              <button
+                type="button"
+                className={cn('end_button')}
+                onClick={openLeaveModal}
+              >
+                모임 종료
+              </button>
+            </div>
+          )}
           {leaveModal && (
             <Modal>
               <ModalContents

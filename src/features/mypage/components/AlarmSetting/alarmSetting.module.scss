@@ -1,0 +1,43 @@
+.alarm_setting {
+  .title {
+    @include font-type('24-30');
+    display: block;
+    padding: 0 16px 36px;
+    color: $gray-50;
+  }
+  .section {
+    padding: 32px 0 28px;
+    border-top: 2px solid $gray-500;
+  }
+  .section_title {
+    @include font-type('20-26', 700);
+    padding: 4px 16px;
+    color: $gray-50;
+  }
+  .item {
+    @include font-type('16-22', 600);
+    overflow: hidden;
+    margin-top: 20px;
+    padding: 4px 16px;
+    color: $gray-50;
+  }
+  .toggle_button {
+    float: right;
+    position: relative;
+    width: 44px;
+    height: 24px;
+    margin-left: 5px;
+    border-radius: 40px;
+    background-color: #23b36b;
+    &::after {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: $gray-50;
+      content: '';
+    }
+  }
+}

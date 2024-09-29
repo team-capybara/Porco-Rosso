@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { getCookie } from '../../common/utils/authUtils';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { goMain } from '../../bridge/authBridge';
+// import { goMain } from '../../bridge/authBridge';
 
 const OauthRedirectHandler = () => {
   //old bie 랜딩
@@ -18,8 +18,9 @@ const OauthRedirectHandler = () => {
       navigate('/', { state: { from: location } });
     } else {
       // 앱 메인으로 브릿징
-      alert('앱 메인으로 브릿징 작업 필요');
-      goMain(accessToken);
+      // alert('앱 메인으로 브릿징 작업 필요');
+      // goMain(accessToken);
+      navigate('/signup', { state: { from: location } });
     }
   }, [location, navigate]);
 

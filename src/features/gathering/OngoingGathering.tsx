@@ -14,7 +14,7 @@ const cn = classnames.bind(styles);
 const OngoingGathering = (_props: OngoingGatheringProps) => {
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
-  const [moimId] = useState<number>(1); //props로 변경될 수 있음
+  const [moimId] = useState<number>(16); //props로 변경될 수 있음
 
   return (
     <div className={cn('ongoing_gathering')}>

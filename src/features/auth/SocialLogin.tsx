@@ -19,7 +19,7 @@ const SocialLogin = () => {
           href="https://api.moime.app/oauth2/authorization/kakao"
           className={cn('link', 'google')}
         >
-          {/* 카카오 로그인으로 변경 마크업 필요 */}
+          {/* to markup : 카카오 로그인으로 변경 마크업 필요 */}
           <IconGoogle24X24 className={cn('icon')} />
           Continue with Kakao
         </a>

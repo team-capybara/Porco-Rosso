@@ -63,3 +63,13 @@ export const createMoim = async (
     throw error;
   }
 };
+
+export const deleteMoim = async (moimId: number) => {
+  try {
+    const response = await apiClient.delete(`/moims/${moimId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error delete Moim : ', error);
+    throw error;
+  }
+};

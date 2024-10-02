@@ -4,6 +4,8 @@ import styles from './ongoingGathering.module.scss';
 import RenderOngoingMain from './components/RenderOngoingMain/RenderOngoingMain';
 import Share from './Share';
 import { memoryType } from './types';
+import { getmoimId } from '../../common/utils/queryString';
+import { useLocation } from 'react-router-dom';
 
 const cn = classnames.bind(styles);
 
@@ -13,7 +15,7 @@ interface MemoryGatheringProps {}
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MemoryGathering = (_props: MemoryGatheringProps) => {
   const [renderComponent, setRenderComponent] = useState<memoryType>('Memory');
-  const [moimId] = useState<number>(1); //props로 변경될 수 있음
+  const [moimId] = useState<number>(getmoimId(useLocation()));
 
   return (
     <div className={cn('ongoing_gathering')}>

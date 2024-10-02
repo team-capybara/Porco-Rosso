@@ -1,17 +1,8 @@
 import classnames from 'classnames/bind';
 import styles from './modalContents.module.scss';
-import { ReactNode } from 'react';
+import { ModalContentsProps } from '../../../features/gathering/types';
 
 const cn = classnames.bind(styles);
-
-interface Props {
-  title: string;
-  description?: ReactNode;
-  firstButton: string;
-  onClickFirstButton: () => void;
-  secondButton?: string;
-  onClickSecondButton?: () => void;
-}
 
 const ModalContents = ({
   title = '',
@@ -20,7 +11,7 @@ const ModalContents = ({
   onClickFirstButton,
   secondButton = '',
   onClickSecondButton,
-}: Props) => {
+}: ModalContentsProps) => {
   return (
     <div className={cn('modal_contents')}>
       <div className={cn('title_area')}>

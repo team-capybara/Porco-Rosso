@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export interface UpcomingGatheringProps {}
 
 export interface OngoingGatheringProps {}
@@ -9,6 +11,15 @@ export interface PicturePickProps {}
 export interface ShareProps {}
 
 export interface GalleryGridProps {}
+
+export interface ModalContentsProps {
+  title: string;
+  description?: ReactNode;
+  firstButton: string;
+  onClickFirstButton: () => void;
+  secondButton?: string;
+  onClickSecondButton?: () => void;
+}
 
 export interface Photo {
   liked: boolean;

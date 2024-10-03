@@ -64,12 +64,24 @@ export const createMoim = async (
   }
 };
 
+// 모임 삭제
 export const deleteMoim = async (moimId: number) => {
   try {
     const response = await apiClient.delete(`/moims/${moimId}`);
     return response.data;
   } catch (error) {
     console.error('Error delete Moim : ', error);
+    throw error;
+  }
+};
+
+// 모임 상태 확인
+export const getMoimStatus = async (moimId: number) => {
+  try {
+    const response = await apiClient.get(`/moims/${moimId}/status`);
+    return response.data;
+  } catch (error) {
+    console.error('Error get Moim Status : ', error);
     throw error;
   }
 };

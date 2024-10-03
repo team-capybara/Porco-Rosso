@@ -11,9 +11,10 @@ const cn = classnames.bind(styles);
 interface OngoingFooterProps {
   moimId: number;
   setModal: React.Dispatch<React.SetStateAction<ModalContentsProps | null>>;
+  checkMoimOngoingStatus: () => void;
 }
 const OngoingFooter = (props: OngoingFooterProps) => {
-  const { moimId, setModal } = props;
+  const { moimId, setModal, checkMoimOngoingStatus } = props;
 
   const exitYesOrNoModal: ModalContentsProps = {
     title: '모임을 나갈까요?',
@@ -34,12 +35,13 @@ const OngoingFooter = (props: OngoingFooterProps) => {
     firstButton: '삭제',
     secondButton: '추억 남기기',
     onClickFirstButton: () => {
-      // TODO : 삭제 api 호출
+      checkMoimOngoingStatus();
       deleteMoim(moimId);
       onPopBridge();
       setModal(null);
     },
     onClickSecondButton: () => {
+      checkMoimOngoingStatus();
       // TODO : 추억 남기기 api 호출
       onPopBridge();
       setModal(null);
@@ -54,7 +56,10 @@ const OngoingFooter = (props: OngoingFooterProps) => {
         <button
           type="button"
           className={cn('button', 'camera')}
-          onClick={() => onNavigateCamera(moimId)}
+          onClick={() => {
+            checkMoimOngoingStatus();
+            onNavigateCamera(moimId);
+          }}
         >
           <IconCamera24X24 className={cn('icon')} />
           촬영하기
@@ -63,6 +68,7 @@ const OngoingFooter = (props: OngoingFooterProps) => {
           type="button"
           className={cn('button', 'out')}
           onClick={() => {
+            checkMoimOngoingStatus();
             exitMoim();
           }}
         >

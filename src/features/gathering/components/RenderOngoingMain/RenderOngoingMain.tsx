@@ -24,6 +24,7 @@ interface RenderOngoingMainProps {
   moimId: number;
   moimStatus: moimStatusType;
   setModal?: React.Dispatch<React.SetStateAction<ModalContentsProps | null>>;
+  checkMoimOngoingStatus?: () => void;
   // 추후 두 개 합쳐도 될듯
   setRenderOngoingComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
   setRenderMemoryComponent?: React.Dispatch<React.SetStateAction<memoryType>>;
@@ -33,6 +34,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     moimId,
     moimStatus,
     setModal = () => {},
+    checkMoimOngoingStatus = () => {},
     setRenderOngoingComponent,
     // setRenderMemoryComponent,
   } = props;
@@ -40,6 +42,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   const [userId, setUserId] = useState<number>();
 
+  // 모임 상세 정보 가져오기
   const setGatheringInfoDataFunc = async () => {
     const response: IGatheringInfo = await getGatheringInfo(moimId);
     setGatheringInfoData(response);
@@ -53,6 +56,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
   };
 
   useEffect(() => {
+    // checkMoimOngoingStatus();
     setGatheringInfoDataFunc();
     setUserIdFromCookie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,7 +80,10 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
               description={getDateFromDatetime(gatheringInfoData?.startedAt)}
               hasRefreshButton={moimStatus === 'ONGOING' ? true : false}
               // hasShareButton={moimStatus === 'COMPLETED' ? true : false}
-              onClickRefreshButton={() => setGatheringInfoDataFunc()}
+              onClickRefreshButton={() => {
+                checkMoimOngoingStatus();
+                setGatheringInfoDataFunc();
+              }}
               // onClickShareButton={() => shareMemory()}
             />
           </div>

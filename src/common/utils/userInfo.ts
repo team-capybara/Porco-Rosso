@@ -8,7 +8,6 @@ export const getUserInfoId = () => {
 };
 
 export const setUserInfoId = async () => {
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   const response = await getUserInfo();
   const id = response.id;
   id && setCookie('userId', id, 1);

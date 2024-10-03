@@ -3,19 +3,22 @@ import style from './alarmSetting.module.scss';
 import Modal from '../../../../common/components/Modal/Modal';
 import ModalContents from '../../../../common/components/Modal/ModalContents';
 import { useState } from 'react';
-import { useSettings, SettingType } from '../../types';
+import {
+  useAlarmSettings,
+  AlarmSettingType,
+} from '../../utils/useAlarmSettings';
 
 const cn = classnames.bind(style);
 
 interface ItemProps {
   text: string;
   isOff: boolean;
-  type: SettingType;
+  type: AlarmSettingType;
 }
 
 const AlarmSetting = () => {
   const [modalOpen] = useState<boolean>(false);
-  const { settings, updateSetting, loading } = useSettings();
+  const { settings, updateSetting, loading } = useAlarmSettings();
 
   const renderItem = ({ text, isOff, type }: ItemProps) => {
     return (

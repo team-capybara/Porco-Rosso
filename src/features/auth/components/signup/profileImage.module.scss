@@ -17,8 +17,13 @@
     background-color: $gray-500;
   }
   .image {
-    width: 100%;
-    height: auto;
+    position: absolute;
+    top: -100%;
+    right: -100%;
+    bottom: -100%;
+    left: -100%;
+    width: auto;
+    height: 100%;
     margin: auto;
   }
   .label {

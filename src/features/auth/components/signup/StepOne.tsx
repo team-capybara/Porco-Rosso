@@ -5,6 +5,7 @@ import ProfileImage from './ProfileImage';
 import NicknameInput from './NicknameInput';
 import { NewProfileProps } from '../../types';
 import { textInputValidation } from '../../../../common/utils/authUtils';
+import NextStepButton from './NextStepButton';
 
 const cn = classnames.bind(styles);
 
@@ -82,21 +83,10 @@ const StepOne = ({ userProfile, updateProfile, onSave }: NewProfileProps) => {
           isFocus={isFocus}
         />
       </div>
-      <div className={cn('wrap_next_step_link')}>
-        {/* 버튼은 '다음' 1가지로 유지하되,
-        정보를 입력하지 않으면 랜덤 프로필이미지/닉네임
-        정보를 입력하면 조건 검증 후 회원가입 완료 */}
-        {/* todo: StepOne에서는 건너뛰기, StepTwo에서는 다음 text Props 부탁드립니다. */}
-        {/* <NextStepLink text="건너뛰기" /> */}
-        {/* 가입 단계가 많이 생략되어서, 링크이동이 아니라 버튼으로 바뀔 것 같습니다. 마크업 부탁드립니다. */}
-        {/* 인라인 스타일태그는 글자가 너무 안보여섴 잠깐 썼어용 */}
-        <button
-          onClick={handleSave}
-          style={{ color: '#fff', fontSize: '18px' }}
-        >
-          다음
-        </button>
-      </div>
+      {/* 버튼은 '다음' 1가지로 유지하되,
+      정보를 입력하지 않으면 랜덤 프로필이미지/닉네임
+      정보를 입력하면 조건 검증 후 회원가입 완료 */}
+      <NextStepButton text="다음" onClick={handleSave} />
     </div>
   );
 };

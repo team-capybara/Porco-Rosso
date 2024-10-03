@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export interface UpcomingGatheringProps {}
 
 export interface OngoingGatheringProps {}
@@ -9,6 +11,15 @@ export interface PicturePickProps {}
 export interface ShareProps {}
 
 export interface GalleryGridProps {}
+
+export interface ModalContentsProps {
+  title: string;
+  description?: ReactNode;
+  firstButton: string;
+  onClickFirstButton: () => void;
+  secondButton?: string;
+  onClickSecondButton?: () => void;
+}
 
 export interface Photo {
   liked: boolean;
@@ -56,20 +67,12 @@ export interface CreateGatheringProps {}
 export interface mapPoint {
   latitude: number;
   longitude: number;
-  logtitude: number;
 }
 
 export interface mapDataInfo {
-  bound: {
-    max: mapPoint;
-    min: mapPoint;
-  };
-  data: mapPoint[];
-  total: number;
-}
-
-export interface gatheringInfoLocation extends mapPoint {
-  name: string;
+  locations: mapPoint[];
+  max: mapPoint;
+  min: mapPoint;
 }
 
 export interface IGatheringInfo {
@@ -77,7 +80,7 @@ export interface IGatheringInfo {
   title: string;
   startedAt: string;
   endedAt: string | null;
-  location: gatheringInfoLocation;
+  location: GatheringLocation;
   status: moimStatusType;
   owner: IParticipants;
   participants: Array<IParticipants>;
@@ -91,10 +94,8 @@ export interface IParticipants {
   isOwner: boolean;
 }
 
-export interface GatheringLocation {
+export interface GatheringLocation extends mapPoint {
   name: string;
-  latitude: number;
-  longitude: number;
 }
 
 export interface CreateGatheringData {

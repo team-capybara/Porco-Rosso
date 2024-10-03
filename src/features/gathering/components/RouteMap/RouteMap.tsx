@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames/bind';
 import styles from './routeMap.module.scss';
 import { getMapLngLat } from '../../../../api/service/gatheringApi';
-import { gatheringInfoLocation, mapDataInfo } from '../../types';
+import { GatheringLocation, mapDataInfo } from '../../types';
 
 const cn = classnames.bind(styles);
 
@@ -16,7 +16,7 @@ declare global {
 }
 
 interface RouteMapProps {
-  locationSummary?: gatheringInfoLocation;
+  locationSummary?: GatheringLocation;
   moimId: number;
 }
 const RouteMap = (props: RouteMapProps) => {
@@ -38,29 +38,26 @@ const RouteMap = (props: RouteMapProps) => {
   useEffect(() => {
     console.log(data);
     // data가 없으면 리턴
-    if (!data || !Object.keys(data).includes('data')) return;
+    if (!data || !Object.keys(data).includes('locations')) return;
     // 이미 그려진 지도가 있으면 리턴
     if (mapInstance.current) return;
     mapInstance.current = new kakao.maps.Map(mapContainer.current!, {
       center: new kakao.maps.LatLng(
-        37, // props.locationSummary?.latitude,
-        128 // props.locationSummary?.longitude
+        props.locationSummary?.latitude,
+        props.locationSummary?.longitude
       ), // 중심점 -> locationSummary 위경도로 초기화 (추후 변경 예정)
       draggable: false, // 드래그 막기
       zoomEnabled: false, // 줌 막기
     });
 
     // 방문 좌표가 없으면 지도만 띄우고 리턴
-    if (data.data.length == 0) return;
+    if (data.locations.length == 0) return;
 
     // bound 처리
     mapInstance.current.setBounds(
       new kakao.maps.LatLngBounds(
-        new kakao.maps.LatLng(
-          data.bound.min.latitude,
-          data.bound.min.logtitude
-        ),
-        new kakao.maps.LatLng(data.bound.max.latitude, data.bound.max.logtitude)
+        new kakao.maps.LatLng(data.min.latitude, data.min.longitude),
+        new kakao.maps.LatLng(data.max.latitude, data.max.longitude)
       )
     );
 
@@ -85,17 +82,19 @@ const RouteMap = (props: RouteMapProps) => {
 
   // 점 그리기
   const makeCircle = (distance: number) => {
-    data?.data.forEach((point: { latitude: number; logtitude: number }) => {
-      // MapCircle
-      const mapcircle = new kakao.maps.Circle({
-        center: new kakao.maps.LatLng(point.latitude, point.logtitude), // 원의 중심좌표 입니다
-        radius: distance, // 미터 단위의 원의 반지름입니다
-        strokeWeight: 0, // 선의 두께입니다
-        fillColor: '#000', // 채우기 색깔입니다
-        fillOpacity: 1, // 채우기 불투명도 입니다
-      });
-      mapcircle.setMap(mapInstance.current!);
-    });
+    data?.locations.forEach(
+      (point: { latitude: number; longitude: number }) => {
+        // MapCircle
+        const mapcircle = new kakao.maps.Circle({
+          center: new kakao.maps.LatLng(point.latitude, point.longitude), // 원의 중심좌표 입니다
+          radius: distance, // 미터 단위의 원의 반지름입니다
+          strokeWeight: 0, // 선의 두께입니다
+          fillColor: '#000', // 채우기 색깔입니다
+          fillOpacity: 1, // 채우기 불투명도 입니다
+        });
+        mapcircle.setMap(mapInstance.current!);
+      }
+    );
   };
 
   return (

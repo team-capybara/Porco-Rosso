@@ -14,6 +14,7 @@ interface Props {
   moimStart: boolean; //모임 시작 여부
   owner?: IParticipants; //모임장 정보
   participantData?: Array<IParticipants>; //친구목록 데이터
+  onClickAddButton?: (type: string) => void;
 }
 
 const ParticipantList = (props: Props) => {
@@ -21,12 +22,14 @@ const ParticipantList = (props: Props) => {
   const onClickDeleteButton = (data: IParticipants) => {
     console.log(data);
   };
+  const { onClickAddButton, participantData } = props;
+  console.log(participantData, 'participantData');
   return (
     <div className={cn('participant_list')}>
       {/* todo: 페이지에 따라 title 분기 부탁드립니다. */}
       <strong className={cn('title')}>
         {props.moimStart ? '참여한' : '모일'} 친구{' '}
-        {props.participantData?.length ?? 0}명
+        {props.participantData ? props.participantData?.length + 1 : 0}명
       </strong>
       {/* <HorizontalScrollWrapper>  //  */}
       <HorizontalScrollWrapper>
@@ -34,12 +37,16 @@ const ParticipantList = (props: Props) => {
           {props.hasAddButton && (
             <li className={cn('item')}>
               {/* todo: 버튼 클릭시, 친구추가 모달 노출됩니다.(작업 전) */}
-              <button type="button" className={cn('button')}>
+              <button
+                type="button"
+                className={cn('button')}
+                onClick={() => onClickAddButton?.('open')}
+              >
                 <span className={cn('plus_icon')}>
                   <IconPlus24X24 className={cn('icon')} />
                 </span>
-                {/* todo: "추가하기" 텍스트 노출되는지 아닌지 확인 필요 */}
-                <span className={cn('text')}>추가하기</span>
+                {/* "추가하기" 텍스트 노출 X */}
+                {/* <span className={cn('text')}>추가하기</span> */}
               </button>
             </li>
           )}
@@ -99,6 +106,28 @@ const ParticipantList = (props: Props) => {
             );
           })}
 
+          {/* <li className={cn('item')}>
+            <button type="button" className={cn('button')}>
+              <div className={cn('thumbnail_area')}>
+                <div className={cn('thumbnail')}>
+                  <img
+                    src="src/assets/png/test_image.png"
+                    alt=""
+                    className={cn('image')}
+                  />
+                </div>
+                <div className={cn('crown_icon')}>
+                  <IconCrown14X11 className={cn('icon')} />
+                  <span className={cn('blind')}>방장</span>
+                </div>
+              </div>
+              <div className={cn('text')}>나</div>
+            </button>
+            {/* todo: 친구 삭제 버튼입니다 */}
+          {/* <button type="button" className={cn('delete_button')}>
+              <IconX12X12 className={cn('icon')} />
+            </button>
+          </li> */}
           {/* <li className={cn('item')}>
             <button type="button" className={cn('button')}>
               <div className={cn('thumbnail_area')}>

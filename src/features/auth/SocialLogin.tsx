@@ -16,11 +16,12 @@ const SocialLogin = () => {
       </h1>
       <div className={cn('link_area')}>
         <a
-          href="https://api.moime.app/oauth2/authorization/google"
+          href="https://api.moime.app/oauth2/authorization/kakao"
           className={cn('link', 'google')}
         >
+          {/* 카카오 로그인으로 변경 마크업 필요 */}
           <IconGoogle24X24 className={cn('icon')} />
-          Continue with Google
+          Continue with Kakao
         </a>
         <a
           href="https://api.moime.app/oauth2/authorization/apple"

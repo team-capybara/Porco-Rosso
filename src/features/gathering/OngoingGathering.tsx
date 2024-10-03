@@ -9,7 +9,7 @@ import RenderPhotoDetail from './components/RenderPhotoDetail/RenderPhotoDetail'
 
 const cn = classnames.bind(styles);
 
-// 진행 중 모임
+// 진행 중 모임 (moimStatus = Ongoing)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const OngoingGathering = (_props: OngoingGatheringProps) => {
   const [renderComponent, setRenderComponent] =
@@ -20,8 +20,9 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
     <div className={cn('ongoing_gathering')}>
       {renderComponent === 'OngoingMain' && (
         <RenderOngoingMain
+          moimStatus="ONGOING"
           moimId={moimId}
-          setRenderComponent={setRenderComponent}
+          setRenderOngoingComponent={setRenderComponent}
         />
       )}
       {renderComponent === 'PhotoList' && (
@@ -30,7 +31,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
       {renderComponent === 'PhotoDetail' && (
         <RenderPhotoDetail setRenderComponent={setRenderComponent} />
       )}
-      <OngoingFooter />
+      <OngoingFooter moimId={moimId} />
     </div>
   );
 };

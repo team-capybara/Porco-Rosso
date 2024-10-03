@@ -42,7 +42,9 @@ export interface MoimePhoto {
 
 export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset'; // reset => 리렌더링을 위해서
 
-export type moimStatus =
+export type memoryType = 'Memory' | 'Share';
+
+export type moimStatusType =
   | 'CREATED'
   | 'ONGOING'
   | 'FINISHED'
@@ -51,17 +53,32 @@ export type moimStatus =
 
 export interface CreateGatheringProps {}
 
+export interface mapPoint {
+  latitude: number;
+  longitude: number;
+  logtitude: number;
+}
+
+export interface mapDataInfo {
+  bound: {
+    max: mapPoint;
+    min: mapPoint;
+  };
+  data: mapPoint[];
+  total: number;
+}
+
+export interface gatheringInfoLocation extends mapPoint {
+  name: string;
+}
+
 export interface IGatheringInfo {
   id: number;
   title: string;
   startedAt: string;
   endedAt: string | null;
-  location: {
-    name: string;
-    latitude: number;
-    longitude: number;
-  };
-  status: moimStatus;
+  location: gatheringInfoLocation;
+  status: moimStatusType;
   owner: IParticipants;
   participants: Array<IParticipants>;
   bestPhotoUrl: string | null; //완료된 모임에만 존재
@@ -72,4 +89,65 @@ export interface IParticipants {
   nickname: string;
   profileImageUrl: string;
   isOwner: boolean;
+}
+
+export interface GatheringLocation {
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface CreateGatheringData {
+  title: string;
+  participantIds: number[]; // 참가자의 ID 목록
+  startedAt: string; // 모임 시작 시간 (ISO 8601 형식)
+  location: GatheringLocation; // 모임 장소
+}
+
+export interface CalendarInputProps {
+  value: string; // Assuming the date is in ISO string format
+  onChange: (date: string) => void;
+}
+
+export type ChangeHandler<T> = (key: keyof T, value: T[keyof T]) => void;
+
+export interface GatheringInfoInputsProps {
+  gatheringData: CreateGatheringData;
+  onChange: ChangeHandler<CreateGatheringData>;
+  onPlaceSelect: (location: {
+    name: string;
+    latitude: number;
+    longitude: number;
+  }) => void;
+  onTimeSelect: (time: string) => void;
+  timeData: string;
+}
+
+export type Friend = {
+  friendId: number;
+  userId: number;
+  targetId: number;
+  targetNickname: string;
+  targetProfile: string;
+  friendCreatedAt: string;
+};
+
+type Cursor = {
+  cursorId: number;
+};
+
+export interface GetFriendsListRes {
+  data: Array<Friend>;
+  last: boolean;
+  cursorId: Cursor | null;
+}
+
+export interface InviteFriendsProps {
+  setLayerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  moimStart: boolean;
+  setParticipantDataList: React.Dispatch<React.SetStateAction<IParticipants[]>>;
+  selectedFriends: number[];
+  setSelectedFriends: React.Dispatch<React.SetStateAction<number[]>>;
+  moimId?: number; //모임 생성 단계에서는 모임 아이디 발급 전
+  participantData: IParticipants[];
 }

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames/bind';
 import styles from './routeMap.module.scss';
 import { getMapLngLat } from '../../../../api/service/gatheringApi';
-import circle from '../../../../assets/svg/icon/IconCircle8X8.svg';
+import { gatheringInfoLocation, mapDataInfo } from '../../types';
 
 const cn = classnames.bind(styles);
 
@@ -16,61 +16,93 @@ declare global {
 }
 
 interface RouteMapProps {
-  locationSummary?: string;
+  locationSummary?: gatheringInfoLocation;
   moimId: number;
 }
 const RouteMap = (props: RouteMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null); //map이 들어가야 할 DOM
   const mapInstance = useRef<any>(); //map 객체 kakao.maps.Map
+  const [data, setData] = useState<mapDataInfo>({} as mapDataInfo);
 
-  const { isLoading, data, refetch } = getMapLngLat(props.moimId);
-
+  const getMapData = async () => {
+    const response = await getMapLngLat(props.moimId);
+    setData(response);
+  };
   // 첫 렌더링 시 지도 생성
   useEffect(() => {
-    refetch();
-    mapInstance.current = new kakao.maps.Map(mapContainer.current!, {
-      center: new kakao.maps.LatLng(33.450701, 126.570667), // 중심점 (추후 bound처리 때문에 의미X)
-      draggable: false, // 드래그 막기
-      zoomEnabled: false, // 줌 막기
-    });
+    getMapData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 데이터 로딩 끝나면 bound 처리
+  // 지도
   useEffect(() => {
-    if (!mapInstance.current) return;
-    if (!isLoading && data) {
-      settingBounds();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+    console.log(data);
+    // data가 없으면 리턴
+    if (!data || !Object.keys(data).includes('data')) return;
+    // 이미 그려진 지도가 있으면 리턴
+    if (mapInstance.current) return;
+    mapInstance.current = new kakao.maps.Map(mapContainer.current!, {
+      center: new kakao.maps.LatLng(
+        37, // props.locationSummary?.latitude,
+        128 // props.locationSummary?.longitude
+      ), // 중심점 -> locationSummary 위경도로 초기화 (추후 변경 예정)
+      draggable: false, // 드래그 막기
+      zoomEnabled: false, // 줌 막기
+    });
 
-  // 방문 좌표에 맞게 bound 처리
-  const settingBounds = () => {
-    const bounds = new kakao.maps.LatLngBounds();
-    data?.data.data.forEach(
-      (point: { latitude: number; logtitude: number }) => {
-        bounds.extend(new kakao.maps.LatLng(point.latitude, point.logtitude));
-        // MapMarker
-        const marker = new kakao.maps.Marker({
-          position: new kakao.maps.LatLng(point.latitude, point.logtitude),
-          image: new kakao.maps.MarkerImage(
-            circle, //image url
-            new kakao.maps.Size(8, 8), // image size
-            {} // image option (ex. offset)
-          ),
-        });
-        marker.setMap(mapInstance.current!);
-      }
+    // 방문 좌표가 없으면 지도만 띄우고 리턴
+    if (data.data.length == 0) return;
+
+    // bound 처리
+    mapInstance.current.setBounds(
+      new kakao.maps.LatLngBounds(
+        new kakao.maps.LatLng(
+          data.bound.min.latitude,
+          data.bound.min.logtitude
+        ),
+        new kakao.maps.LatLng(data.bound.max.latitude, data.bound.max.logtitude)
+      )
     );
-    mapInstance.current!.setBounds(bounds);
+
+    // 원 반지름 계산을 위한 로직. 현재 bound에서 4px의 실제 m 거리 계산
+    const mapProjection = mapInstance.current.getProjection();
+    const pixel1 = new kakao.maps.Point(0, 4);
+    const pixel2 = new kakao.maps.Point(0, 0);
+
+    const point1 = mapProjection.coordsFromPoint(pixel1); // 위치 좌표에 해당하는 지도 좌표
+    const point2 = mapProjection.coordsFromPoint(pixel2); // 위치 좌표에 해당하는 지도 좌표
+
+    // 4px의 실제 m 계산
+    const polyline = new kakao.maps.Polyline({
+      map: mapInstance.current,
+      path: [point2, point1],
+    });
+
+    // 점 그리기
+    makeCircle(polyline.getLength());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  // 점 그리기
+  const makeCircle = (distance: number) => {
+    data?.data.forEach((point: { latitude: number; logtitude: number }) => {
+      // MapCircle
+      const mapcircle = new kakao.maps.Circle({
+        center: new kakao.maps.LatLng(point.latitude, point.logtitude), // 원의 중심좌표 입니다
+        radius: distance, // 미터 단위의 원의 반지름입니다
+        strokeWeight: 0, // 선의 두께입니다
+        fillColor: '#000', // 채우기 색깔입니다
+        fillOpacity: 1, // 채우기 불투명도 입니다
+      });
+      mapcircle.setMap(mapInstance.current!);
+    });
   };
 
   return (
     <div className={cn('route_map')}>
       <div className={cn('title_area')}>
         <strong className={cn('title')}>장소</strong>
-        <div className={cn('description')}>{props.locationSummary}</div>
+        <div className={cn('description')}>{props.locationSummary?.name}</div>
       </div>
       <div className={cn('map_area')}>
         <div

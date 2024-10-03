@@ -3,7 +3,7 @@ import {
   IGatheringInfo,
   GetFriendsListRes,
   CreateGatheringData,
-  mapPoint
+  mapPoint,
 } from '../../features/gathering/types';
 
 // 진행중모임 - 지도 좌표

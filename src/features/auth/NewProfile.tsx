@@ -76,15 +76,14 @@ const NewProfile = () => {
                   nickname: userData.nickname,
                 }} // 초기값을 전달
                 onSave={handleSave}
+                mode="signup"
               />
             )}
-            {signUpSuccess && <StepThree />}
+            {signUpSuccess && <StepThree nickname={userData.nickname} />}
           </>
         ) : (
           <div>No user data available</div>
         )}
-
-        {/* <StepThree /> */}
       </div>
     </div>
   );

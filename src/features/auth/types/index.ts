@@ -20,6 +20,7 @@ export interface NewProfileProps {
   userProfile: UserProfile;
   updateProfile: UpdateProfile;
   onSave: (updatedProfile: UpdateProfile) => void;
+  mode: string;
 }
 
 export interface ProfileImageProps {

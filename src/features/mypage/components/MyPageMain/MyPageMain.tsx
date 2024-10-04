@@ -40,7 +40,11 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
         </div>
       </div>
       <div className={cn('button_area')}>
-        <button type="button" className={cn('revise_button')}>
+        <button
+          type="button"
+          className={cn('revise_button')}
+          onClick={() => setRenderComponent('reviseProfile')}
+        >
           프로필 수정
         </button>
       </div>

@@ -2,14 +2,18 @@ import { useState } from 'react';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import AlarmSetting from './components/AlarmSetting/AlarmSetting';
 import MyPageMain from './components/MyPageMain/MyPageMain';
-import ReviseProfile from './components/ReviseProfile/ReviseProfile';
+// import ReviseProfile from './components/ReviseProfile/ReviseProfile';
 import { mypageProps } from './types/index';
 import { UserProfile } from '../auth/types';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getUserInfo } from '../../api/service/authApi';
 import { renderComponentType } from './types/index';
+import StepOne from '../auth/components/signup/StepOne';
+import { updateProfile } from '../../api/service/authApi';
+import { UpdateProfile } from '../auth/types';
 
 const MypagePage = (props: mypageProps) => {
+  const queryClient = useQueryClient();
   const [renderComponent, setRenderComponent] =
     useState<renderComponentType>('mypageMain');
 
@@ -20,6 +24,17 @@ const MypagePage = (props: mypageProps) => {
 
   console.warn(userData, 'userData에요요요용');
   console.warn(props, 'props');
+  const mutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
+    },
+  });
+
+  const handleSave = (updatedProfile: UpdateProfile) => {
+    mutation.mutate(updatedProfile);
+  };
 
   return (
     <div>
@@ -42,7 +57,19 @@ const MypagePage = (props: mypageProps) => {
         />
       )}
       {/* 프로필 수정 */}
-      {renderComponent === 'reviseProfile' && <ReviseProfile />}
+      {/* 공통화 테스트중 */}
+      {/* {renderComponent === 'reviseProfile' && <ReviseProfile />} */}
+      {renderComponent === 'reviseProfile' && userData && (
+        <StepOne
+          userProfile={userData}
+          updateProfile={{
+            newProfile: null,
+            nickname: userData.nickname,
+          }} // 초기값을 전달
+          onSave={handleSave}
+          mode="signup"
+        />
+      )}
       {/* 알림 설정 */}
       {renderComponent === 'alarmSetting' && <AlarmSetting />}
     </div>

@@ -219,7 +219,7 @@ const InviteFriends = ({
       <div className={cn('wrap_participant_list')}>
         <ParticipantList
           hasAddButton={false}
-          mode="read"
+          mode="update"
           moimStart={false}
           participantData={selectedFriendsData}
         />

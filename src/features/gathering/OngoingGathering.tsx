@@ -22,8 +22,10 @@ const cn = classnames.bind(styles);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const OngoingGathering = (_props: OngoingGatheringProps) => {
   const navigate = useNavigate();
+  // const [renderComponent, setRenderComponent] =
+  //   useState<ongoingType>('OngoingMain');
   const [renderComponent, setRenderComponent] =
-    useState<ongoingType>('OngoingMain');
+    useState<ongoingType>('PhotoList');
   const [moimId] = useState<number>(getmoimId(useLocation())); //props로 변경될 수 있음
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
 
@@ -50,8 +52,8 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   };
 
   useEffect(() => {
-    checkMoimOngoingStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.warn('checkMoimOngoingStatus() called');
+    // checkMoimOngoingStatus();
   }, []);
 
   return (

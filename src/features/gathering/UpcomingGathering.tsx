@@ -1,11 +1,111 @@
+import classnames from 'classnames/bind';
+import styles from './upcomingGathering.module.scss';
+import BackNavigation from '../auth/components/signup/BackNavigation';
+import GatheringTitle from './components/GatheringTitle/GatheringTitle';
+import ParticipantList from './components/ParticipantList/ParticipantList';
+import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs';
 import { UpcomingGatheringProps } from './types/index';
+import IconExport24X24 from '../../assets/svg/icon/IconExport24X24';
+
+const cn = classnames.bind(styles);
 
 const UpcomingGathering = (props: UpcomingGatheringProps) => {
+  const renderUpcomingMain = () => {
+    return (
+      <>
+        <BackNavigation classNameForIconType="close_type" />
+        {/* todo: title 변경 및 편집 수정버튼 동작 개발 작업 필요 */}
+        <GatheringTitle
+          title="호남 향우회 레쓰고"
+          description="모임 시작까지 설레는 마음으로 기다려요"
+          classNameForPage="upcoming_page"
+        />
+        <div className={cn('wrap_participant_list')}>
+          <ParticipantList hasAddButton={false} mode="read" moimStart={false} />
+        </div>
+        <div className={cn('wrap_gathiering_info_inputs')}>
+          <GatheringInfoInputs
+            gatheringData={{
+              title: '호남 향우회 레쓰고',
+              participantIds: [],
+              startedAt: '',
+              location: {
+                name: '스타벅스 신용산점',
+                latitude: 0,
+                longitude: 0,
+              },
+            }}
+            onChange={() => {}}
+            onPlaceSelect={() => {}}
+            onTimeSelect={() => {}}
+            timeData={''}
+          />
+        </div>
+        <div className={cn('wrap_timer_button')}>
+          <div className={cn('inner')}>
+            <button type="button" className={cn('timer_button')}>
+              시작까지 00:00:00
+            </button>
+            <button type="button" className={cn('share_button')}>
+              <IconExport24X24 className={cn('icon')} />
+              <span className={cn('blind')}>공유하기</span>
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const renderReviseUpcoming = () => {
+    return (
+      <>
+        <BackNavigation classNameForIconType="close_type" />
+        {/* todo: title 변경 및 편집 수정버튼 동작 개발 작업 필요 */}
+        <GatheringTitle
+          title="호남 향우회 레쓰고"
+          description="모임 시작까지 설레는 마음으로 기다려요"
+          classNameForPage="upcoming_page"
+          hasEditButton={true}
+        />
+        <div className={cn('wrap_participant_list')}>
+          <ParticipantList hasAddButton={true} mode="read" moimStart={false} />
+        </div>
+        <div className={cn('wrap_gathiering_info_inputs')}>
+          <GatheringInfoInputs
+            gatheringData={{
+              title: '호남 향우회 레쓰고',
+              participantIds: [],
+              startedAt: '',
+              location: {
+                name: '스타벅스 신용산점',
+                latitude: 0,
+                longitude: 0,
+              },
+            }}
+            onChange={() => {}}
+            onPlaceSelect={() => {}}
+            onTimeSelect={() => {}}
+            timeData={''}
+          />
+        </div>
+        <div className={cn('wrap_save_button')}>
+          <div className={cn('inner')}>
+            {/* todo: 버튼 활성화된 경우 disabled={false} 적용부탁드립니다. */}
+            <button type="button" className={cn('save_button')} disabled={true}>
+              저장
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   console.log(props);
+
   return (
-    <div>
-      <h1>UpcomingGathering Page</h1>
-      {/* 진행 전 다가오는 모임 페이지 */}
+    <div className={cn('upcoming_gathering')}>
+      {renderUpcomingMain()}
+      {renderReviseUpcoming()}
     </div>
   );
 };

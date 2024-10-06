@@ -109,26 +109,25 @@ const ProfileImage = ({
   };
   return (
     <div className={cn('profile_image')}>
-      <div className={cn('inner')}>
-        {/* 이미지 태그에 프로필 사진이 들어가야 합니다. 마크업 부탁드립니다 */}
-        {/* 이미지 정사각형 제한은 없어서, 정사각형이 아닌 이미지도 들어갈 수 있습니다 */}
-        <div className={cn('thumbnail')}>
+      <button type="button" className={cn('button')}>
+        <span className={cn('thumbnail')}>
           <img src={value} alt="" className={cn('image')} />
-        </div>
-        <label htmlFor="profile_file" className={cn('label')}>
-          <span className={cn('icon_area')}>
-            <IconEdit16X16 className={cn('icon')} />
-          </span>
-          <input
-            type="file"
-            accept="image/*"
-            id="profile_file"
-            aria-label="프로필 이미지"
-            className={cn('blind')}
-            onChange={handleFileChange}
-          />
-        </label>
-      </div>
+        </span>
+        <span className={cn('icon_area')}>
+          <IconEdit16X16 className={cn('icon')} />
+        </span>
+        <span className={cn('blind')}>프로필 이미지</span>
+      </button>
+
+      {/* todo: 개발 작업하면서 input 태그 제거 부탁드립니다. */}
+      <input
+        type="file"
+        accept="image/*"
+        id="profile_file"
+        aria-label="프로필 이미지"
+        className={cn('blind')}
+        onChange={handleFileChange}
+      />
     </div>
   );
 };

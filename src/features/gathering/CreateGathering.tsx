@@ -15,7 +15,7 @@ import InviteFriends from './components/InviteFriend/InviteFriends';
 import { createMoim } from '../../api/service/gatheringApi';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
-import { goMainAfterCreateMoim } from '../../bridge/gatheringBridge.ts';
+import { onPopBridge } from '../../bridge/gatheringBridge.ts';
 
 const cn = classnames.bind(styles);
 
@@ -180,7 +180,7 @@ const CreateGathering = () => {
             title="모임을 생성했어요!"
             description="모임 시작 전까지 친구들을 꼭 초대해주세요."
             firstButton="메인 화면으로 가기"
-            onClickFirstButton={goMainAfterCreateMoim}
+            onClickFirstButton={onPopBridge}
           />
         </Modal>
       );

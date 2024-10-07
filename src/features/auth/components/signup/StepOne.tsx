@@ -24,6 +24,7 @@ const StepOne = ({
   const [errMsg, setErrMsg] = useState<string>('');
   const [isProfileModify, setIsProfileModify] = useState<boolean>(false);
   const [isFocus, setIsFocus] = useState<boolean>(false);
+  const { providerType = '' } = userProfile;
 
   const handleProfileChange = (file: File) => {
     setNewProfile(file);
@@ -96,12 +97,25 @@ const StepOne = ({
         />
       </div>
       {mode === 'mypage' && (
-        <div className={cn('wrap_login')}>
-          <a href="/" className={cn('apple_login')}>
-            <IconApple14X16 className={cn('icon')} />
-            애플 간편 로그인
-          </a>
-        </div>
+        <>
+          {providerType === 'APPLE' && (
+            <div className={cn('wrap_login')}>
+              <a href="/" className={cn('apple_login')}>
+                <IconApple14X16 className={cn('icon')} />
+                애플 간편 로그인
+              </a>
+            </div>
+          )}
+          {/* 카카오 로그인 마크업 추가 필요 */}
+          {/* to markup */}
+          {providerType === 'KAKAO' && (
+            <div className={cn('wrap_login')}>
+              <a href="/" className={cn('kakao_login')}>
+                카카오 간편 로그인
+              </a>
+            </div>
+          )}
+        </>
       )}
       <div className={cn('wrap_nickname_input')}>
         <NicknameInput

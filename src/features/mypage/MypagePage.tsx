@@ -67,7 +67,7 @@ const MypagePage = (props: mypageProps) => {
             nickname: userData.nickname,
           }} // 초기값을 전달
           onSave={handleSave}
-          mode="signup"
+          mode="mypage"
         />
       )}
       {/* 알림 설정 */}

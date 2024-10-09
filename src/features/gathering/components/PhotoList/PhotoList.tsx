@@ -3,10 +3,12 @@ import classnames from 'classnames/bind';
 import styles from './photoList.module.scss';
 import PhotoCard from './PhotoCard/PhotoCard';
 import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
-import { getMoimePhotoResponse, MoimePhoto } from '../../types';
+import { getMoimePhotoResponse, Photo } from '../../types';
 import React from 'react';
 import useNewPhotoPolling from '../../utils/useNewPhotoPolling';
 import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
+import { PhotoCardProps } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 const cn = classnames.bind(styles);
 
@@ -14,16 +16,8 @@ interface PhotoListProps {
   moimeId: string;
 }
 
-export interface PhotoCardProps {
-  photoUrl: string;
-  profileUrl: string;
-  photoId: number;
-  likes: number;
-  liked: boolean;
-  likeButtonEnabled?: boolean;
-}
-
 const PhotoList = ({ moimeId }: PhotoListProps) => {
+  const navigate = useNavigate();
   const { moimeToast } = useMoimeToast();
   const targetsRef = useRef<HTMLDivElement[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -107,6 +101,14 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     };
   }, []);
 
+  const setSelectedPhotoId = (selectedPhotoId: string) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('selectedPhotoId', selectedPhotoId);
+    navigate(`${location.pathname}?${searchParams.toString()}`, {
+      replace: true,
+    });
+  };
+
   // toast 공통화 필요함
   useEffect(() => {
     if (!isNew) return;
@@ -133,7 +135,7 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
       <ul className={cn('photo_list')}>
         {data?.pages.map((page: getMoimePhotoResponse, pageNum: number) => (
           <React.Fragment key={`page-${pageNum}`}>
-            {page.data.map((photo: MoimePhoto, idx: number) => {
+            {page.data.map((photo: Photo, idx: number) => {
               const photoCardProps: PhotoCardProps = {
                 profileUrl: photo.uploaderProfile,
                 photoUrl: photo.url,
@@ -141,6 +143,7 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
                 likes: photo.likes,
                 liked: photo.liked,
                 likeButtonEnabled: true,
+                onClickHandler: setSelectedPhotoId,
               };
 
               const isLastItemInPage = idx === page.data.length - 1;

@@ -31,6 +31,26 @@ export interface Photo {
   url: string;
 }
 
+export interface PhotoCardProps {
+  photoId: number;
+  photoUrl?: string;
+  profileUrl?: string;
+  likes?: number;
+  liked?: boolean;
+  likeButtonEnabled?: boolean;
+  onClickHandler?: (selectedPhotoId: string) => void;
+}
+
+export interface SelectedPhotoCardProps {
+  photoId: number;
+  photoUrl?: string;
+  profileUrl?: string;
+  likes?: number;
+  liked?: boolean;
+  likeButtonEnabled?: boolean;
+  likeButtonHandler?: () => void;
+}
+
 export interface getMoimePhotoResponse {
   data: Array<Photo>;
   last: boolean;
@@ -39,16 +59,6 @@ export interface getMoimePhotoResponse {
     pageSize: number;
   };
   total: number;
-}
-
-export interface MoimePhoto {
-  photoId: number;
-  url: string;
-  uploadedAt: string;
-  uploaderId: number;
-  uploaderProfile: string;
-  liked: boolean;
-  likes: number;
 }
 
 export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset'; // reset => 리렌더링을 위해서

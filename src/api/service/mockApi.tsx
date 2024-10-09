@@ -60,7 +60,10 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  }: UseInfiniteQueryResult<getMoimePhotoResponse, Error> = useInfiniteQuery({
+  }: UseInfiniteQueryResult<
+    InfiniteData<getMoimePhotoResponse>,
+    Error
+  > = useInfiniteQuery({
     queryKey: [QUERY_KEYS.MOIM_PHOTO, moimId], // queryKey
     queryFn: ({ queryKey, pageParam }) => {
       console.warn('queryKey', 'pageParam', queryKey, pageParam);
@@ -88,12 +91,16 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
     await fetchNextPage(); // 첫 페이지부터 데이터를 다시 불러옴
   };
 
+  // 전체 사진 개수(total) 계산
+  const totalPhotos = data?.pages[0].total || 0;
+
   return {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     resetAndFetchFirstPage,
+    totalPhotos,
   } as {
     data: InfiniteData<getMoimePhotoResponse> | undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,6 +108,7 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
     hasNextPage: boolean | undefined;
     isFetchingNextPage: boolean;
     resetAndFetchFirstPage: () => Promise<void>;
+    totalPhotos: number;
   };
 };
 

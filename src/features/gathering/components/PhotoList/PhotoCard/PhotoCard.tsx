@@ -1,20 +1,12 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import classnames from 'classnames/bind';
 import styles from './photoCard.module.scss';
 import IconHeart15X15 from '../../../../../assets/svg/icon/IconHeart15X15';
+import { PhotoCardProps } from '../../../types';
 
 const cn = classnames.bind(styles);
 
-interface Props {
-  photoId: number;
-  photoUrl?: string;
-  profileUrl?: string;
-  likes?: number;
-  liked?: boolean;
-  likeButtonEnabled?: boolean;
-}
-
-const areEqual = (prevProps: Props, nextProps: Props) => {
+const areEqual = (prevProps: PhotoCardProps, nextProps: PhotoCardProps) => {
   return (
     prevProps.photoId === nextProps.photoId &&
     prevProps.likes === nextProps.likes &&
@@ -33,7 +25,8 @@ const PhotoCard = memo(
     likes = 0,
     liked = false,
     likeButtonEnabled = true, // 기본값은 true로 설정
-  }: Props) => {
+    onClickHandler,
+  }: PhotoCardProps) => {
     const [isLiked, setLiked] = useState(liked);
     const [likeCount, setLikeCount] = useState(likes);
     const likeLoading = useRef<boolean>(false); // 요청 상태 관리
@@ -54,12 +47,18 @@ const PhotoCard = memo(
       }
     };
 
+    useEffect(() => {
+      setLiked(liked);
+      setLikeCount(likes);
+    }, [likes, liked]);
+
     return (
       <div className={cn('photo_card')}>
         <div
           className={cn('thumbnail')}
           onClick={() => {
-            console.log(photoId);
+            if (onClickHandler === undefined) return;
+            onClickHandler(String(photoId));
           }}
           aria-hidden="true"
         >

@@ -139,7 +139,17 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
             )}
         </>
       ) : (
-        <>데이터 불러오는데에 문제가 발생했습니다. </>
+        <>
+          <section className={cn('section')}>
+            <ScrollPhotoList
+              moimeId={'1'}
+              hiddenTitle={false}
+              isMiniPhotoCard={true}
+              setRenderComponent={setRenderOngoingComponent}
+            />
+          </section>
+        </>
+        // <>데이터 불러오는데에 문제가 발생했습니다. </>
       )}
     </>
   );

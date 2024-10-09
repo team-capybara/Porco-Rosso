@@ -9,9 +9,7 @@ const goOnboarding = () => {
     isNewbie: true,
     accessToken: accessToken,
   };
-  if (window.kmpJsBridge) {
-    window.kmpJsBridge.callNative('onLoginSuccess', JSON.stringify(loginData));
-  }
+  window.kmpJsBridge.callNative('onLoginSuccess', JSON.stringify(loginData));
 };
 
 interface DeviceTokenData {

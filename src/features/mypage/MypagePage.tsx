@@ -34,6 +34,7 @@ const MypagePage = (props: mypageProps) => {
 
   const handleSave = (updatedProfile: UpdateProfile) => {
     mutation.mutate(updatedProfile);
+    setRenderComponent('mypageMain');
   };
 
   return (

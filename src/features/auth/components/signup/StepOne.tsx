@@ -83,7 +83,11 @@ const StepOne = ({
       ) : (
         <div className={cn('title_area')}>
           <strong className={cn('title')}>프로필 수정</strong>
-          <button type="button" className={cn('clear_button')}>
+          <button
+            type="button"
+            className={cn('clear_button')}
+            onClick={handleSave}
+          >
             완료
           </button>
         </div>

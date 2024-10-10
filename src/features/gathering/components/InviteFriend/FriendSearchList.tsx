@@ -32,10 +32,10 @@ const FriendSearchList = ({
         <li key={friend.friendId} className={cn('item')}>
           <FriendCard
             friend={friend}
-            isSelected={selectedFriends.includes(friend.friendId)}
-            onClick={() => onFriendSelect(friend.friendId)}
+            isSelected={selectedFriends.includes(friend.targetId)}
+            onClick={() => onFriendSelect(friend.targetId)}
             moimStart={moimStart}
-            disabled={participantIds.has(friend.friendId)}
+            disabled={participantIds.has(friend.targetId)}
           />
         </li>
       ))}

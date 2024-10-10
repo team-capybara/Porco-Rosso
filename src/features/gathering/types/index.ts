@@ -144,7 +144,7 @@ export interface GetFriendsListRes {
 }
 
 export interface InviteFriendsProps {
-  setLayerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setLayerOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   moimStart: boolean;
   setParticipantDataList?: React.Dispatch<
     React.SetStateAction<IParticipants[]>
@@ -155,4 +155,5 @@ export interface InviteFriendsProps {
   participantData: IParticipants[];
   moimStatus: moimStatusType;
   isUserAndOwner?: boolean;
+  ownerId: number | null;
 }

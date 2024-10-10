@@ -85,3 +85,22 @@ export const getMoimStatus = async (moimId: number) => {
     throw error;
   }
 };
+
+// 진행중 모임에서 친구 목록 수정
+export const addFriendsToMoim = async (
+  moimId: number,
+  userIds: number[]
+): Promise<void> => {
+  try {
+    const queryString = userIds.map((id) => `userIds=${id}`).join('&');
+    const response = await apiClient.put(
+      `/moims/${moimId}/invite?${queryString}`,
+      null
+    );
+    console.log(response, '친구 추가 성공');
+    return response.data;
+  } catch (error) {
+    console.error('Error adding friends to Moim:', error);
+    throw error;
+  }
+};

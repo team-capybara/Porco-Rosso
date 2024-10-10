@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import {
+  // useEffect,
+  useState,
+} from 'react';
 import classnames from 'classnames/bind';
 import {
   ModalContentsProps,
@@ -6,53 +9,56 @@ import {
   ongoingType,
 } from './types/index';
 import styles from './ongoingGathering.module.scss';
-import OngoingFooter from './components/OngoingFooter/OngoingFooter';
+// import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import RenderOngoingMain from './components/RenderOngoingMain/RenderOngoingMain';
 import RenderPhotoList from './components/RenderPhotoList/RenderPhotoList';
 import RenderPhotoDetail from './components/RenderPhotoDetail/RenderPhotoDetail';
-import { getmoimId } from '../../common/utils/queryString';
+// import { getmoimId } from '../../common/utils/queryString';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getMoimStatus } from '../../api/service/gatheringApi';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import { getMoimStatus } from '../../api/service/gatheringApi';
 
 const cn = classnames.bind(styles);
 
 // 진행 중 모임 (moimStatus = Ongoing)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const OngoingGathering = (_props: OngoingGatheringProps) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
-  const [moimId] = useState<number>(getmoimId(useLocation())); //props로 변경될 수 있음
+  // const [moimId] = useState<number>(getmoimId(useLocation())); //props로 변경될 수 있음
+  const [moimId] = useState<number>(78); //props로 변경될 수 있음
+  // 79 모임 진행중일 거임
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
+  const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
 
   // 진행 중 모임 때 상태 확인 후 모임종료로 redirect 하는 로직 추가
-  const checkMoimOngoingStatus = async () => {
-    const status = await getMoimStatus(moimId);
-    if (status == 'ONGOING') return;
-    else {
-      let current = 5;
-      const timerId = setInterval(function () {
-        if (current == 0) {
-          clearInterval(timerId);
-          navigate(`/ended-gathering?moimId=${moimId}`);
-        }
-        setModal({
-          title: '모임이 종료되었습니다.',
-          description: '5초 이내 모임종료 페이지로 이동됩니다.',
-          firstButton: current.toString(),
-          onClickFirstButton: () => {},
-        });
-        current--;
-      }, 1000);
-    }
-  };
+  // const checkMoimOngoingStatus = async () => {
+  //   const status = await getMoimStatus(moimId);
+  //   if (status == 'ONGOING') return;
+  //   else {
+  //     let current = 5;
+  //     const timerId = setInterval(function () {
+  //       if (current == 0) {
+  //         clearInterval(timerId);
+  //         navigate(`/ended-gathering?moimId=${moimId}`);
+  //       }
+  //       setModal({
+  //         title: '모임이 종료되었습니다.',
+  //         description: '5초 이내 모임종료 페이지로 이동됩니다.',
+  //         firstButton: current.toString(),
+  //         onClickFirstButton: () => {},
+  //       });
+  //       current--;
+  //     }, 1000);
+  //   }
+  // };
 
-  useEffect(() => {
-    checkMoimOngoingStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   checkMoimOngoingStatus();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     moimId >= 0 && (
@@ -63,8 +69,10 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
               moimStatus="ONGOING"
               moimId={moimId}
               setModal={setModal}
-              checkMoimOngoingStatus={checkMoimOngoingStatus}
+              // checkMoimOngoingStatus={checkMoimOngoingStatus}
               setRenderOngoingComponent={setRenderComponent}
+              inviteFriendOpen={inviteFriendOpen}
+              setInviteFriendOpen={setInviteFriendOpen}
             />
           )}
           {renderComponent === 'PhotoList' && (
@@ -73,11 +81,13 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
           {renderComponent === 'PhotoDetail' && (
             <RenderPhotoDetail setRenderComponent={setRenderComponent} />
           )}
-          <OngoingFooter
-            moimId={moimId}
-            setModal={setModal}
-            checkMoimOngoingStatus={checkMoimOngoingStatus}
-          />
+          {/* {!inviteFriendOpen && (
+            <OngoingFooter
+              moimId={moimId}
+              setModal={setModal}
+              checkMoimOngoingStatus={checkMoimOngoingStatus}
+            />
+          )} */}
         </div>
         {modal && (
           <Modal>

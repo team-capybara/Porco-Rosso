@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     // 액세스 토큰 유실 방지용 JS 함수를 전역으로 등록
-    window.callCookieSaveJs = function (token: string) {
+    window.setAccessToken = function (token: string) {
       setCookie('access_token', token, 1);
     };
   }, []);

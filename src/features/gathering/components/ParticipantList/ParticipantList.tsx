@@ -20,14 +20,21 @@ interface Props {
 
 const ParticipantList = (props: Props) => {
   //모임 수정에서 삭제버튼 클릭 시 수행할 함수
-  const { onClickAddButton, participantData, onClickDeleteButton } = props;
+  const { onClickAddButton, participantData, onClickDeleteButton, moimStart } =
+    props;
   console.log(participantData, 'participantData');
   return (
     <div className={cn('participant_list')}>
       {/* todo: 페이지에 따라 title 분기 부탁드립니다. */}
       <strong className={cn('title')}>
-        {props.moimStart ? '참여한' : '모일'} 친구{' '}
-        {props.participantData ? props.participantData?.length + 1 : 0}명
+        {moimStart ? '참여한' : '모일'} 친구{' '}
+        {participantData && (
+          <>
+            {moimStart
+              ? `${participantData.length + 1}명`
+              : `${participantData.length}명`}
+          </>
+        )}
       </strong>
       {/* <HorizontalScrollWrapper>  //  */}
       <HorizontalScrollWrapper>

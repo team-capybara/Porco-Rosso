@@ -288,11 +288,12 @@ const CreateGathering = () => {
         <InviteFriends
           moimStatus="CREATED"
           moimStart={false}
-          participantData={participantDataList}
+          participantData={[]}
           setParticipantDataList={setParticipantDataList}
           selectedFriends={selectedFriends}
           setSelectedFriends={setSelectedFriends}
           setLayerOpen={setInviteFriendOpen}
+          ownerId={userData.id}
         />
       )}
       {chkModalOpen && renderCreateMoimChkModal(moimCreateRes)}

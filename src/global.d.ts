@@ -6,5 +6,5 @@ interface Window {
       callback?: (data: string) => void // 콜백 함수를 optional로 정의
     ) => void;
   };
-  callCookieSaveJs: (string) => void;
+  setAccessToken: (string) => void;
 }

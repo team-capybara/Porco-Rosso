@@ -15,15 +15,15 @@ const FriendCard = ({
   friend,
   isSelected,
   onClick,
-  moimStart,
-  disabled,
+  // moimStart,
+  // disabled,
 }: FriendCardProps) => {
   return (
     <button
       type="button"
       className={cn('friend_card', { selected: isSelected })}
       onClick={onClick}
-      disabled={moimStart && disabled}
+      // disabled={moimStart && disabled}
     >
       <div className={cn('thumbnail')}>
         <img

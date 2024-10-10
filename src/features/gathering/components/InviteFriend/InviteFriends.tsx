@@ -12,7 +12,10 @@ import {
   GetFriendsListRes,
   InviteFriendsProps,
 } from '../../types';
-import { getFriendsList } from '../../../../api/service/gatheringApi';
+import {
+  addFriendsToMoim,
+  getFriendsList,
+} from '../../../../api/service/gatheringApi';
 
 const cn = classnames.bind(styles);
 
@@ -27,7 +30,9 @@ const InviteFriends = ({
   setSelectedFriends,
   setParticipantDataList, // 모임 생성 시 기존 참가자 목록이 가변 상태일 때
   isUserAndOwner, //방장 일때
+  ownerId, // 방장 id
 }: InviteFriendsProps) => {
+  console.log(selectedFriends, 'selectedFriends');
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색어 상태 관리
   const [cursorId, setCursorId] = useState<number | null>(null); // 커서 관리
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
@@ -83,17 +88,18 @@ const InviteFriends = ({
     if (moimStart) {
       setSelectedFriends([]);
     }
-    setLayerOpen(false);
+    setLayerOpen?.(false);
   };
 
   // 친구 선택 처리
   const handleFriendSelect = (friendId: number) => {
+    console.log(friendId, 'friendId');
     setSelectedFriends((prevSelected) => {
       const isAlreadySelected = prevSelected.includes(friendId);
 
       // friendsData에서 선택된 친구 찾기
       const selectedFriend = friendsData?.data.find(
-        (friend) => friend.friendId === friendId
+        (friend) => friend.targetId === friendId
       );
 
       if (!selectedFriend) return prevSelected; // 친구가 없으면 이전 선택을 반환
@@ -107,13 +113,13 @@ const InviteFriends = ({
         }
         // 이미 추가된 경우는 중복 방지, 추가되지 않은 경우만 추가
         const isAlreadyAdded = prevList.some(
-          (participant) => participant.userId === selectedFriend.friendId
+          (participant) => participant.userId === selectedFriend.targetId
         );
         if (!isAlreadyAdded) {
           return [
             ...prevList,
             {
-              userId: selectedFriend.friendId,
+              userId: selectedFriend.targetId,
               nickname: selectedFriend.targetNickname,
               profileImageUrl: selectedFriend.targetProfile,
               isOwner: false, // 친구는 owner가 아니므로 false
@@ -149,9 +155,9 @@ const InviteFriends = ({
         (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
       ) {
         const selectedData = friendsData?.data
-          .filter((friend) => selectedFriends.includes(friend.friendId))
+          .filter((friend) => selectedFriends.includes(friend.targetId))
           .map((friend) => ({
-            userId: friend.friendId,
+            userId: friend.targetId,
             nickname: friend.targetNickname,
             profileImageUrl: friend.targetProfile,
             isOwner: false,
@@ -161,7 +167,7 @@ const InviteFriends = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFriends, friendsData, moimStart, moimStatus]);
+  }, [friendsData]);
 
   // 스크롤 끝에 도달했을 때 다음 페이지 로드
   useEffect(() => {
@@ -199,6 +205,25 @@ const InviteFriends = ({
     if (inviteFriendValidation()) {
       // 진행중 모임에서 친구 추가 api 요청 보내기
       console.log(moimId, 'moimId 필요할걸');
+      console.log(selectedFriends, 'selectedFreineds 체크');
+      if (
+        moimStart &&
+        moimStatus === 'ONGOING' &&
+        isUserAndOwner &&
+        ownerId !== null &&
+        moimId
+      ) {
+        // 진행중 모임에서는 완료 버튼 눌렀을 때 친구 목록 수정 api 보내야함
+        const modifiedFriendList = [ownerId, ...selectedFriends];
+        console.log(modifiedFriendList, moimId, '다 있나');
+        addFriendsToMoim(moimId, modifiedFriendList)
+          .then(() => {
+            console.log('친구 목록 수정 성공');
+          })
+          .catch((error) => {
+            console.error('친구 목록 수정 실패:', error);
+          });
+      }
       // 어차피 서버에서 불러와서 자동업데이트 될텐데, 굳이 아래 과정이 필요한가?
       // if (moimStart) {
       //   alert('진행 중 모임에서 친구 추가 후 완료 누름');
@@ -210,7 +235,7 @@ const InviteFriends = ({
       //   ]);
       //   console.log(moimId, 'moimId 필요할걸');
       // }
-      setLayerOpen(false);
+      setLayerOpen?.(false);
     }
   };
 

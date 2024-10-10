@@ -20,15 +20,17 @@ const cn = classnames.bind(styles);
 const InviteFriends = ({
   moimId,
   moimStart,
+  moimStatus,
   participantData,
   selectedFriends,
   setLayerOpen,
   setSelectedFriends,
-  setParticipantDataList, // 모임 정보 내 참가자 목록 리스트
+  setParticipantDataList, // 모임 생성 시 기존 참가자 목록이 가변 상태일 때
 }: InviteFriendsProps) => {
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색어 상태 관리
   const [cursorId, setCursorId] = useState<number | null>(null); // 커서 관리
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+  // 선택된 친구 id를 기반으로 친구 목록에 정보를 렌더링 해줘야함
   const [selectedFriendsData, setSelectedFriendsData] = useState<
     IParticipants[]
   >([]);
@@ -121,10 +123,13 @@ const InviteFriends = ({
         return prevList;
       };
 
-      // 진행 전 모임일땐, 바로바로 변경사항 반영
+      // 모임생성에서만, 바로바로 변경사항 반영
       if (!moimStart) {
         setParticipantDataList((prevList) => updateList(prevList));
       }
+
+      // 진행 전이거나 중인 경우에는, invite friend 내 참가자 목록만 가변임
+      // 이미 모임이 생성된 경우에는 participantData에 서버에서 불러온 데이터로 업데이트 되기 때문
       setSelectedFriendsData((prevList) => updateList(prevList));
 
       // selectedFriends 상태 업데이트
@@ -136,22 +141,26 @@ const InviteFriends = ({
 
   useEffect(() => {
     // 모임 생성 및 수정 단계(진행전 모임)에서는 선택된 친구 데이터를 바로 수정 및 확인해야 하므로, 초기 렌더 시 데이터 한번 세팅
-    if (!moimStart && selectedFriends.length) {
-      const selectedData = friendsData?.data
-        .filter((friend) => selectedFriends.includes(friend.friendId))
-        .map((friend) => ({
-          userId: friend.friendId,
-          nickname: friend.targetNickname,
-          profileImageUrl: friend.targetProfile,
-          isOwner: false,
-        }));
+    if (selectedFriends.length) {
+      // 모임생성 || 진행전이면서 유저가 오너 || 진행중이면서 유저가 오너
+      if (
+        !moimStart ||
+        (moimStart && moimStatus === 'CREATED' && '유저가 오너') ||
+        (moimStart && moimStatus === 'ONGOING' && '유저가 오너')
+      ) {
+        const selectedData = friendsData?.data
+          .filter((friend) => selectedFriends.includes(friend.friendId))
+          .map((friend) => ({
+            userId: friend.friendId,
+            nickname: friend.targetNickname,
+            profileImageUrl: friend.targetProfile,
+            isOwner: false,
+          }));
 
-      selectedData && setSelectedFriendsData(selectedData);
+        selectedData && setSelectedFriendsData(selectedData);
+      }
     }
-    // 이미 진행 중인 모임인 경우
-    // 선택된 친구 수정 불가하기 떄문에, 초기 렌더 시 데이터 세팅 필요 없음
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedFriends, friendsData, moimStart, moimStatus]);
 
   // 스크롤 끝에 도달했을 때 다음 페이지 로드
   useEffect(() => {
@@ -187,18 +196,40 @@ const InviteFriends = ({
 
   const handleFinishButton = () => {
     if (inviteFriendValidation()) {
-      if (moimStart) {
-        alert('진행 중 모임에서 친구 추가 후 완료 누름');
-        // 진행 중 모임일땐 완료 버튼 눌렀을 때만, 참가자 목록 업데이트 가능
-        // 완료 버튼 자체가 participantData의 변화를 의미
-        setParticipantDataList((prevList) => [
-          ...prevList,
-          ...selectedFriendsData,
-        ]);
-        console.log(moimId, 'moimId 필요할걸');
-      }
+      // 진행중 모임에서 친구 추가 api 요청 보내기
+      console.log(moimId, 'moimId 필요할걸');
+      // 어차피 서버에서 불러와서 자동업데이트 될텐데, 굳이 아래 과정이 필요한가?
+      // if (moimStart) {
+      //   alert('진행 중 모임에서 친구 추가 후 완료 누름');
+      //   // 진행 중 모임일땐 완료 버튼 눌렀을 때만, 참가자 목록 업데이트 가능
+      //   // 완료 버튼 자체가 participantData의 변화를 의미
+      //   setParticipantDataList((prevList) => [
+      //     ...prevList,
+      //     ...selectedFriendsData,
+      //   ]);
+      //   console.log(moimId, 'moimId 필요할걸');
+      // }
       setLayerOpen(false);
     }
+  };
+
+  const handleDeleteParticipant = (userId: number) => {
+    // 모임생성에서만, 바로바로 변경사항 반영
+    // 모임생성에서만 participantDataList에서도 삭제
+    if (!moimStart) {
+      setParticipantDataList((prevList) =>
+        prevList.filter((participant) => participant.userId !== userId)
+      );
+    }
+
+    setSelectedFriendsData((prevList) =>
+      prevList.filter((participant) => participant.userId !== userId)
+    );
+
+    // 삭제된 참가자를 selectedFriends에서도 제거
+    setSelectedFriends((prevSelected) =>
+      prevSelected.filter((id) => id !== userId)
+    );
   };
 
   return (
@@ -217,11 +248,13 @@ const InviteFriends = ({
         onClickFinishButton={handleFinishButton}
       />
       <div className={cn('wrap_participant_list')}>
+        {/* 가변성이 있되, 기존 참가자리스트와 합쳐져야함 */}
         <ParticipantList
           hasAddButton={false}
           mode="update"
           moimStart={false}
           participantData={selectedFriendsData}
+          onClickDeleteButton={handleDeleteParticipant}
         />
       </div>
       <div className={cn('wrap_friend_search_input')}>

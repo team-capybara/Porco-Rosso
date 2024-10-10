@@ -15,14 +15,12 @@ interface Props {
   owner?: IParticipants; //모임장 정보
   participantData?: Array<IParticipants>; //친구목록 데이터
   onClickAddButton?: (type: string) => void;
+  onClickDeleteButton?: (type: number) => void;
 }
 
 const ParticipantList = (props: Props) => {
   //모임 수정에서 삭제버튼 클릭 시 수행할 함수
-  const onClickDeleteButton = (data: IParticipants) => {
-    console.log(data);
-  };
-  const { onClickAddButton, participantData } = props;
+  const { onClickAddButton, participantData, onClickDeleteButton } = props;
   console.log(participantData, 'participantData');
   return (
     <div className={cn('participant_list')}>
@@ -95,7 +93,7 @@ const ParticipantList = (props: Props) => {
                     <button
                       type="button"
                       className={cn('delete_button')}
-                      onClick={() => onClickDeleteButton(data)}
+                      onClick={() => onClickDeleteButton?.(data.userId)}
                     >
                       <IconX12X12 className={cn('icon')} />
                     </button>

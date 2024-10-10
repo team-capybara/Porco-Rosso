@@ -286,6 +286,7 @@ const CreateGathering = () => {
       {!textInputOpen && inviteFriendOpen && (
         // 친구 초대 공통으로 사용해야해서 컴포넌트화 진행
         <InviteFriends
+          moimStatus="CREATED"
           moimStart={false}
           participantData={participantDataList}
           setParticipantDataList={setParticipantDataList}

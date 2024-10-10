@@ -151,4 +151,5 @@ export interface InviteFriendsProps {
   setSelectedFriends: React.Dispatch<React.SetStateAction<number[]>>;
   moimId?: number; //모임 생성 단계에서는 모임 아이디 발급 전
   participantData: IParticipants[];
+  moimStatus: moimStatusType;
 }

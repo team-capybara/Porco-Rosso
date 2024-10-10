@@ -26,14 +26,14 @@ const InviteFriends = ({
   setLayerOpen,
   setSelectedFriends,
   setParticipantDataList, // 모임 생성 시 기존 참가자 목록이 가변 상태일 때
+  isUserAndOwner, //방장 일때
 }: InviteFriendsProps) => {
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색어 상태 관리
   const [cursorId, setCursorId] = useState<number | null>(null); // 커서 관리
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
   // 선택된 친구 id를 기반으로 친구 목록에 정보를 렌더링 해줘야함
-  const [selectedFriendsData, setSelectedFriendsData] = useState<
-    IParticipants[]
-  >([]);
+  const [selectedFriendsData, setSelectedFriendsData] =
+    useState<IParticipants[]>(participantData);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null); // 감지할 대상 (페이지 하단)
@@ -125,7 +125,7 @@ const InviteFriends = ({
 
       // 모임생성에서만, 바로바로 변경사항 반영
       if (!moimStart) {
-        setParticipantDataList((prevList) => updateList(prevList));
+        setParticipantDataList?.((prevList) => updateList(prevList));
       }
 
       // 진행 전이거나 중인 경우에는, invite friend 내 참가자 목록만 가변임
@@ -145,8 +145,8 @@ const InviteFriends = ({
       // 모임생성 || 진행전이면서 유저가 오너 || 진행중이면서 유저가 오너
       if (
         !moimStart ||
-        (moimStart && moimStatus === 'CREATED' && '유저가 오너') ||
-        (moimStart && moimStatus === 'ONGOING' && '유저가 오너')
+        (moimStart && moimStatus === 'CREATED' && isUserAndOwner) ||
+        (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
       ) {
         const selectedData = friendsData?.data
           .filter((friend) => selectedFriends.includes(friend.friendId))
@@ -160,6 +160,7 @@ const InviteFriends = ({
         selectedData && setSelectedFriendsData(selectedData);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFriends, friendsData, moimStart, moimStatus]);
 
   // 스크롤 끝에 도달했을 때 다음 페이지 로드
@@ -217,7 +218,7 @@ const InviteFriends = ({
     // 모임생성에서만, 바로바로 변경사항 반영
     // 모임생성에서만 participantDataList에서도 삭제
     if (!moimStart) {
-      setParticipantDataList((prevList) =>
+      setParticipantDataList?.((prevList) =>
         prevList.filter((participant) => participant.userId !== userId)
       );
     }

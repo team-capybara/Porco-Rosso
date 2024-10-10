@@ -17,6 +17,7 @@ import {
 import { getGatheringInfo } from '../../../../api/service/gatheringApi';
 import { getUserInfoId } from '../../../../common/utils/userInfo';
 import { onPopBridge } from '../../../../bridge/gatheringBridge';
+import InviteFriends from '../InviteFriend/InviteFriends';
 
 const cn = classnames.bind(styles);
 
@@ -41,6 +42,8 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
   // const [leaveModal, setModal] = useState<boolean>(false);
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   const [userId, setUserId] = useState<number>();
+  const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
+  const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
 
   // 모임 상세 정보 가져오기
   const setGatheringInfoDataFunc = async () => {
@@ -61,6 +64,18 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     setUserIdFromCookie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const isUserAndOwner = userId === gatheringInfoData?.owner.userId;
+
+  const handleInviteFriendLayer = (type: string) => {
+    if (type === 'open') {
+      setInviteFriendOpen(true);
+    }
+    if (type === 'close') {
+      setInviteFriendOpen(false);
+    }
+    return '';
+  };
 
   return (
     <>
@@ -89,11 +104,12 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
           </div>
           <section className={cn('section')}>
             <ParticipantList
-              hasAddButton={true}
+              hasAddButton={isUserAndOwner ? true : false}
               mode="read"
               moimStart={true}
               owner={gatheringInfoData?.owner}
               participantData={gatheringInfoData?.participants}
+              onClickAddButton={handleInviteFriendLayer}
             />
           </section>
           <section className={cn('section')}>
@@ -137,6 +153,18 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                 </button>
               </div>
             )}
+          {inviteFriendOpen && (
+            // 친구 초대 공통으로 사용해야해서 컴포넌트화 진행
+            <InviteFriends
+              moimStatus="ONGOING"
+              moimStart={true}
+              participantData={gatheringInfoData?.participants}
+              selectedFriends={selectedFriends}
+              setSelectedFriends={setSelectedFriends}
+              setLayerOpen={setInviteFriendOpen}
+              isUserAndOwner={isUserAndOwner}
+            />
+          )}
         </>
       ) : (
         <>데이터 불러오는데에 문제가 발생했습니다. </>

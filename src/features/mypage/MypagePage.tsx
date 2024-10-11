@@ -22,7 +22,6 @@ const MypagePage = (props: mypageProps) => {
     queryFn: getUserInfo,
   });
 
-  console.warn(userData, 'userData에요요요용');
   console.warn(props, 'props');
   const mutation = useMutation({
     mutationFn: updateProfile,

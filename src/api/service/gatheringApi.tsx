@@ -41,7 +41,6 @@ export const getFriendsList = async (
     const response = await apiClient.get<GetFriendsListRes>(
       `/users/friends/followings?size=${size}&cursorId=${cursorId || ''}&keyword=${keyword}`
     );
-    console.log(response.data, '친구목록 불러오기');
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);
@@ -53,10 +52,8 @@ export const createMoim = async (
   gatheringData: CreateGatheringData
 ): Promise<void> => {
   // void면 서버에서 응답 데이터가 빈값이라는 걸 의미하므로, 응답 값에도 타입 지정 필요함
-  console.log(gatheringData, '모임생성 요청은 가나');
   try {
     const response = await apiClient.post('/moims', gatheringData);
-    console.log(response, '모임생성성공');
     return response.data;
   } catch (error) {
     console.error('Error create gathering', error);
@@ -97,7 +94,6 @@ export const addFriendsToMoim = async (
       `/moims/${moimId}/invite?${queryString}`,
       null
     );
-    console.log(response, '친구 추가 성공');
     return response.data;
   } catch (error) {
     console.error('Error adding friends to Moim:', error);

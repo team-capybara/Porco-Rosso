@@ -40,6 +40,7 @@ const CreateGathering = () => {
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [chkModalOpen, setChkModalOpen] = useState<boolean>(false);
   const [moimCreateRes, setMoimCreateRes] = useState<string>('');
+  const [ownerInfo, setOwnerInfo] = useState<IParticipants>();
 
   const checkTextInputValid = (input: string) => {
     const errorMsg = textInputValidation(input, 'withEmoji');
@@ -72,15 +73,12 @@ const CreateGathering = () => {
   // userData를 participantList에 추가하는 로직
   useEffect(() => {
     if (userData) {
-      setParticipantDataList((prevList) => [
-        ...prevList,
-        {
-          userId: userData.id,
-          nickname: userData.nickname,
-          profileImageUrl: userData.profile,
-          isOwner: true,
-        }, // userData에서 필요한 정보를 구조화
-      ]);
+      setOwnerInfo({
+        userId: userData.id,
+        nickname: userData.nickname,
+        profileImageUrl: userData.profile,
+        isOwner: true,
+      });
     }
   }, [userData]);
 
@@ -94,11 +92,6 @@ const CreateGathering = () => {
 
   const handleTimeSelect = (time: string) => {
     setTimeData(`${time}00`);
-    // console.log(`${gatheringData.startedAt.slice(0, 8)}${time}00`, '세팅확인');
-    // handleChange(
-    //   'startedAt',
-    //   `${gatheringData.startedAt.slice(0, 8)}${time}00`
-    // ); // yyyyMMdd + hhmm00 초는 입력 안 받으므로 00
   };
 
   const handleTextInputOpen = () => {
@@ -122,7 +115,6 @@ const CreateGathering = () => {
       // setSignUpSuccess(true); // 모임 생성 성공 시 성공 상태 설정
       setMoimCreateRes('success');
       setChkModalOpen(true);
-      console.log('모임 생성 성공');
     },
     onError: (error) => {
       // 실패 시 처리할 로직
@@ -152,12 +144,12 @@ const CreateGathering = () => {
     const updatedGatheringData = {
       ...gatheringData,
       startedAt: `${gatheringData.startedAt.slice(0, 8)}${timeData}`,
-      participantIds: participantDataList.map(
-        (participant) => participant.userId
-      ),
+      participantIds: [
+        ...participantDataList.map((participant) => participant.userId),
+        userData?.id, // 항상 userId 추가
+      ],
     };
 
-    console.log(updatedGatheringData, '제출할 데이터');
     mutation.mutate(updatedGatheringData);
   };
 
@@ -249,6 +241,7 @@ const CreateGathering = () => {
             moimStart={false}
             participantData={participantDataList}
             onClickAddButton={handleInviteFriendLayer}
+            owner={ownerInfo}
           />
         </div>
         <div className={cn('wrap_gathiering_info_inputs')}>

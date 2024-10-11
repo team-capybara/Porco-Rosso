@@ -156,4 +156,5 @@ export interface InviteFriendsProps {
   moimStatus: moimStatusType;
   isUserAndOwner?: boolean;
   ownerId: number | null;
+  setFriendAddSuccess?: React.Dispatch<React.SetStateAction<boolean>>;
 }

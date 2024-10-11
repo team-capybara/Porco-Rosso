@@ -28,7 +28,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
   // const [moimId] = useState<number>(getmoimId(useLocation())); //props로 변경될 수 있음
-  const [moimId] = useState<number>(78); //props로 변경될 수 있음
+  const [moimId] = useState<number>(83); //props로 변경될 수 있음
   // 79 모임 진행중일 거임
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);

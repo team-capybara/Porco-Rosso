@@ -48,6 +48,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
   const [userId, setUserId] = useState<number>();
   // const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
+  const [isFriendAddSuccess, setIsFriendAddSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (gatheringInfoData?.participants) {
@@ -62,7 +63,6 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
   const setGatheringInfoDataFunc = async () => {
     const response: IGatheringInfo = await getGatheringInfo(moimId);
     setGatheringInfoData(response);
-    console.log(gatheringInfoData);
   };
 
   // 사용자 id 셋팅
@@ -73,10 +73,11 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
 
   useEffect(() => {
     // checkMoimOngoingStatus();
+    console.log('다시불러오기');
     setGatheringInfoDataFunc();
     setUserIdFromCookie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isFriendAddSuccess]);
 
   const isUserAndOwner = userId === gatheringInfoData?.owner.userId;
 
@@ -185,6 +186,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
               isUserAndOwner={isUserAndOwner}
               moimId={moimId}
               ownerId={userId ? userId : null}
+              setFriendAddSuccess={setIsFriendAddSuccess}
             />
           )}
         </>

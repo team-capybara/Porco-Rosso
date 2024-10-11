@@ -10,7 +10,6 @@ const OauthRedirectHandler = () => {
 
   useEffect(() => {
     const accessToken = getCookie('access_token');
-    console.log(accessToken, 'old bie access token 받아옴');
 
     // 로그인 오류 처리
     if (!accessToken) {

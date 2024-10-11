@@ -45,7 +45,6 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
       latitude: parseFloat(place.y),
       longitude: parseFloat(place.x),
     };
-    console.log(location, 'location 잘 선택되나');
     onPlaceSelect(location); // 상위 컴포넌트로 장소 정보 전달
   };
 

@@ -48,16 +48,12 @@ const StepOne = ({
   const handleSave = async () => {
     // 닉네임 밸리데이션 미통과
     if (errMsg) {
-      console.log('ㅎㅎ');
-      console.log(isFocus, 'isFoucs');
       setIsFocus(true);
       return;
     }
     if (isProfileModify) {
-      console.log('프로필 사진 바뀌었음');
       onSave({ newProfile, nickname });
     } else {
-      console.log('프로필 사진 안바뀌었음');
       const convertedFile = await urlToFile(
         profile,
         'profile-image.jpg',

@@ -31,14 +31,15 @@ const InviteFriends = ({
   setParticipantDataList, // 모임 생성 시 기존 참가자 목록이 가변 상태일 때
   isUserAndOwner, //방장 일때
   ownerId, // 방장 id
+  setFriendAddSuccess,
 }: InviteFriendsProps) => {
-  console.log(selectedFriends, 'selectedFriends');
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색어 상태 관리
   const [cursorId, setCursorId] = useState<number | null>(null); // 커서 관리
   const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
   // 선택된 친구 id를 기반으로 친구 목록에 정보를 렌더링 해줘야함
-  const [selectedFriendsData, setSelectedFriendsData] =
-    useState<IParticipants[]>(participantData);
+  const [selectedFriendsData, setSelectedFriendsData] = useState<
+    IParticipants[]
+  >([]);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null); // 감지할 대상 (페이지 하단)
@@ -93,7 +94,6 @@ const InviteFriends = ({
 
   // 친구 선택 처리
   const handleFriendSelect = (friendId: number) => {
-    console.log(friendId, 'friendId');
     setSelectedFriends((prevSelected) => {
       const isAlreadySelected = prevSelected.includes(friendId);
 
@@ -146,13 +146,15 @@ const InviteFriends = ({
   };
 
   useEffect(() => {
+    setFriendAddSuccess && setFriendAddSuccess(false);
     // 모임 생성 및 수정 단계(진행전 모임)에서는 선택된 친구 데이터를 바로 수정 및 확인해야 하므로, 초기 렌더 시 데이터 한번 세팅
     if (selectedFriends.length) {
-      // 모임생성 || 진행전이면서 유저가 오너 || 진행중이면서 유저가 오너
+      // 모임생성 || 진행전이면서 유저가 오너 ||
+      // 진행중이면서 유저가 오너일 때는 제외, 기존 애들은 못 건드리기 때문에, 세팅해줄 필요 없음
       if (
         !moimStart ||
-        (moimStart && moimStatus === 'CREATED' && isUserAndOwner) ||
-        (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
+        (moimStart && moimStatus === 'CREATED' && isUserAndOwner)
+        // || (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
       ) {
         const selectedData = friendsData?.data
           .filter((friend) => selectedFriends.includes(friend.targetId))
@@ -204,37 +206,24 @@ const InviteFriends = ({
   const handleFinishButton = () => {
     if (inviteFriendValidation()) {
       // 진행중 모임에서 친구 추가 api 요청 보내기
-      console.log(moimId, 'moimId 필요할걸');
-      console.log(selectedFriends, 'selectedFreineds 체크');
       if (
         moimStart &&
         moimStatus === 'ONGOING' &&
         isUserAndOwner &&
         ownerId !== null &&
-        moimId
+        moimId &&
+        selectedFriendsData.length
       ) {
         // 진행중 모임에서는 완료 버튼 눌렀을 때 친구 목록 수정 api 보내야함
         const modifiedFriendList = [ownerId, ...selectedFriends];
-        console.log(modifiedFriendList, moimId, '다 있나');
         addFriendsToMoim(moimId, modifiedFriendList)
           .then(() => {
-            console.log('친구 목록 수정 성공');
+            setFriendAddSuccess && setFriendAddSuccess(true);
           })
           .catch((error) => {
             console.error('친구 목록 수정 실패:', error);
           });
       }
-      // 어차피 서버에서 불러와서 자동업데이트 될텐데, 굳이 아래 과정이 필요한가?
-      // if (moimStart) {
-      //   alert('진행 중 모임에서 친구 추가 후 완료 누름');
-      //   // 진행 중 모임일땐 완료 버튼 눌렀을 때만, 참가자 목록 업데이트 가능
-      //   // 완료 버튼 자체가 participantData의 변화를 의미
-      //   setParticipantDataList((prevList) => [
-      //     ...prevList,
-      //     ...selectedFriendsData,
-      //   ]);
-      //   console.log(moimId, 'moimId 필요할걸');
-      // }
       setLayerOpen?.(false);
     }
   };
@@ -302,6 +291,7 @@ const InviteFriends = ({
             onFriendSelect={handleFriendSelect}
             moimStart={moimStart}
             participantData={participantData}
+            moimStatus={moimStatus}
           />
         )}
       </div>

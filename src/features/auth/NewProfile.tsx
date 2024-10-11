@@ -25,7 +25,6 @@ const NewProfile = () => {
   // useEffect(() => {
   //   // new bie 랜딩
   //   const accessToken = getCookie('access_token');
-  //   console.log(accessToken, 'new bie access token 받아옴');
 
   //   // 로그인 오류 처리
   //   if (!accessToken) {
@@ -54,10 +53,7 @@ const NewProfile = () => {
     },
   });
 
-  console.log(userData, 'userData에요요요용');
-
   const handleSave = (updatedProfile: UpdateProfile) => {
-    console.log('이게 다 동시에');
     mutation.mutate(updatedProfile);
     setSignUpSuccess(true);
   };

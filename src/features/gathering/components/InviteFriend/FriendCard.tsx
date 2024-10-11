@@ -1,6 +1,6 @@
 import classnames from 'classnames/bind';
 import styles from './friendCard.module.scss';
-import { Friend } from '../../types';
+import { Friend, moimStatusType } from '../../types';
 
 const cn = classnames.bind(styles);
 interface FriendCardProps {
@@ -9,6 +9,7 @@ interface FriendCardProps {
   disabled: boolean; // 이미 모임에 있는 친구인지 여부
   onClick: () => void; // 클릭 핸들러
   moimStart: boolean;
+  moimStatus: moimStatusType; // 모임 상태 (progress, end)
 }
 
 const FriendCard = ({
@@ -16,14 +17,16 @@ const FriendCard = ({
   isSelected,
   onClick,
   // moimStart,
-  // disabled,
+  moimStatus,
+  disabled,
 }: FriendCardProps) => {
+  // disabled 일때 ui 차이 필요해보임, to markup
   return (
     <button
       type="button"
       className={cn('friend_card', { selected: isSelected })}
       onClick={onClick}
-      // disabled={moimStart && disabled}
+      disabled={moimStatus === 'ONGOING' && disabled}
     >
       <div className={cn('thumbnail')}>
         <img

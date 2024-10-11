@@ -14,7 +14,6 @@ const NicknameInput = ({
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (isFocus) {
-      console.log(isFocus, 'isFocus');
       inputRef.current?.focus();
     }
   }, [isFocus]);

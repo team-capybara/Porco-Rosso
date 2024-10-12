@@ -13,10 +13,7 @@ import RenderPhotoDetail from './components/RenderPhotoDetail/RenderPhotoDetail'
 // import { getmoimId } from '../../common/utils/queryString';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
-import {
-  // useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getMoimStatus } from '../../api/service/gatheringApi';
 
 const cn = classnames.bind(styles);
@@ -28,14 +25,13 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   const navigate = useNavigate();
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
-  // const [moimId] = useState<number>(getmoimId(useLocation())); //props로 변경될 수 있음
-  const [moimId] = useState<number>(84); //test 용 강제로 집어넣기 추후 제거
+  // const [moimId] = useState<number>(getmoimId(useLocation()));
+  const [moimId] = useState<number>(84);
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
 
-  // 쿼리스트링에 선택된 사진이 바뀔 때 photodetail로 변경
   useEffect(() => {
-    // 쿼리스트링이 변경될 때마다 실행됨
+    // 쿼리스트링에 선택된 사진이 바뀔 때 photodetail로 변경
     if (renderComponent === 'PhotoDetail') return;
 
     const searchParams = new URLSearchParams(location.search);
@@ -44,7 +40,6 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
     if (selectedPhotoId !== null && selectedPhotoId !== '-1') {
       setRenderComponent('PhotoDetail');
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]); // location.search를 의존성으로 설정
 
@@ -73,6 +68,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   useEffect(() => {
     console.warn('checkMoimOngoingStatus() called');
     checkMoimOngoingStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -91,10 +87,16 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
             />
           )}
           {renderComponent === 'PhotoList' && (
-            <RenderPhotoList setRenderComponent={setRenderComponent} />
+            <RenderPhotoList
+              moimId={String(moimId)}
+              setRenderComponent={setRenderComponent}
+            />
           )}
           {renderComponent === 'PhotoDetail' && (
-            <RenderPhotoDetail setRenderComponent={setRenderComponent} />
+            <RenderPhotoDetail
+              moimId={String(moimId)}
+              setRenderComponent={setRenderComponent}
+            />
           )}
           {!inviteFriendOpen && (
             <OngoingFooter

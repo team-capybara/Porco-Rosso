@@ -6,24 +6,26 @@ import GatheringTitle from '../GatheringTitle/GatheringTitle';
 import ScrollPhotoList from '../PhotoList/ScrollPhotoList';
 import { ongoingType, PhotoCardProps } from '../../types';
 import { useEffect, useState } from 'react';
-import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
 import PhotoCard from '../PhotoList/PhotoCard/PhotoCard';
+import { useMoimePhotoQuery } from '../../utils/useMoimePhotoQuery';
 // import { useLocation, useNavigate } from 'react-router-dom';
 const cn = classnames.bind(styles);
 
 interface RenderPhotoDetailProps {
+  moimId: string;
   setRenderComponent: React.Dispatch<React.SetStateAction<ongoingType>>;
 }
 // 진행 중 모임 사진 상세페이지
 const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
-  const { setRenderComponent } = props;
+  const { moimId, setRenderComponent } = props;
 
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoCardProps>({
+    moimId: moimId,
     photoId: -1,
   });
 
   // moimeId = '1'
-  const { data } = useMoimePhotoQuery('1', null); // 초기 cursorId = null;
+  const { data } = useMoimePhotoQuery(moimId, null); // 초기 cursorId = null;
 
   useEffect(() => {
     // 쿼리스트링이 변경될 때마다 실행됨
@@ -38,6 +40,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
           page.data.forEach((photo) => {
             if (photo.photoId === Number(selectedPhotoId)) {
               setSelectedPhoto({
+                moimId: moimId,
                 profileUrl: photo.uploaderProfile,
                 photoUrl: photo.url,
                 photoId: photo.photoId,
@@ -81,6 +84,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
           hiddenTitle={true}
           isMiniPhotoCard={true}
           selectedPhoto={selectedPhoto}
+          isJustImg={true}
           setSelectedPhoto={setSelectedPhoto}
         />
       </div>

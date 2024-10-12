@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames/bind';
 import styles from './photoList.module.scss';
 import PhotoCard from './PhotoCard/PhotoCard';
-import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
 import { getMoimePhotoResponse, Photo } from '../../types';
 import React from 'react';
-import useNewPhotoPolling from '../../utils/useNewPhotoPolling';
-import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
+// import useNewPhotoPolling from '../../utils/useNewPhotoPolling';
+// import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
 import { PhotoCardProps } from '../../types';
 import { useNavigate } from 'react-router-dom';
+import { useMoimePhotoQuery } from '../../utils/useMoimePhotoQuery';
 
 const cn = classnames.bind(styles);
 
@@ -18,14 +18,14 @@ interface PhotoListProps {
 
 const PhotoList = ({ moimeId }: PhotoListProps) => {
   const navigate = useNavigate();
-  const { moimeToast } = useMoimeToast();
+  // const { moimeToast } = useMoimeToast();
   const targetsRef = useRef<HTMLDivElement[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const [pageNum, setPageNum] = useState<number>(0);
 
-  // 새로운 사진 polling hooks
-  const { isNew, setIsNew } = useNewPhotoPolling(5000);
+  // 새로운 사진 polling hooks => api 추가 필요
+  // const { isNew, setIsNew } = useNewPhotoPolling(5000);
 
   // 사진 페이지네이션 로직 관련 START
   const {
@@ -33,20 +33,20 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    resetAndFetchFirstPage,
+    // resetAndFetchFirstPage,
   } = useMoimePhotoQuery(moimeId, null); // 초기 cursorId = null;
 
-  const handleClick = () => {
-    if (observerRef.current) {
-      // unmount시 모든 감시 대상 해제
-      targetsRef.current.forEach((target) => {
-        if (target) observerRef.current?.unobserve(target);
-      });
-      observerRef.current.disconnect();
-      targetsRef.current = [];
-    }
-    resetAndFetchFirstPage();
-  };
+  // const handleClick = () => {
+  //   if (observerRef.current) {
+  //     // unmount시 모든 감시 대상 해제
+  //     targetsRef.current.forEach((target) => {
+  //       if (target) observerRef.current?.unobserve(target);
+  //     });
+  //     observerRef.current.disconnect();
+  //     targetsRef.current = [];
+  //   }
+  //   resetAndFetchFirstPage();
+  // };
 
   const observerCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry: IntersectionObserverEntry) => {
@@ -93,6 +93,7 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     return () => {
       if (observerRef.current) {
         // unmount시 모든 감시 대상 해제
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         targetsRef.current.forEach((target) => {
           if (target) observerRef.current?.unobserve(target);
         });
@@ -109,21 +110,21 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     });
   };
 
-  // toast 공통화 필요함
-  useEffect(() => {
-    if (!isNew) return;
+  // toast 공통화 필요함 => 폴링 추가 후 다시 추가
+  // useEffect(() => {
+  //   if (!isNew) return;
 
-    //
-    moimeToast({
-      message: 'userName님이 사진을 업로드 했습니다.', // 메시지 커스터마이징
-      onClickEnabled: true, // onClick 활성화
-      onClick: handleClick, // 클릭 시 실행할 함수
-      duration: 3000, // 지속 시간 설정
-      id: 'new-photo-toast', // 고유 ID 설정
-    });
-    setIsNew(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isNew]);
+  //   //
+  //   moimeToast({
+  //     message: 'userName님이 사진을 업로드 했습니다.', // 메시지 커스터마이징
+  //     onClickEnabled: true, // onClick 활성화
+  //     onClick: handleClick, // 클릭 시 실행할 함수
+  //     duration: 3000, // 지속 시간 설정
+  //     id: 'new-photo-toast', // 고유 ID 설정
+  //   });
+  //   setIsNew(false);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isNew]);
 
   // 디버깅용
   useEffect(() => {
@@ -137,6 +138,7 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
           <React.Fragment key={`page-${pageNum}`}>
             {page.data.map((photo: Photo, idx: number) => {
               const photoCardProps: PhotoCardProps = {
+                moimId: moimeId,
                 profileUrl: photo.uploaderProfile,
                 photoUrl: photo.url,
                 photoId: photo.photoId,

@@ -6,10 +6,10 @@ import HorizontalScrollWrapper from '../../../../common/components/HorizontalScr
 import PhotoCard from './PhotoCard/PhotoCard';
 import { ongoingType, Photo } from '../../types';
 import { PhotoCardProps } from '../../types';
-import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
 import { getMoimePhotoResponse } from '../../types';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
+import { useMoimePhotoQuery } from '../../utils/useMoimePhotoQuery';
 
 const cn = classnames.bind(styles);
 
@@ -20,6 +20,7 @@ interface Props {
   setRenderComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
   selectedPhoto?: PhotoCardProps;
   setSelectedPhoto?: React.Dispatch<React.SetStateAction<PhotoCardProps>>;
+  isJustImg: boolean;
 }
 
 const ScrollPhotoList = ({
@@ -28,6 +29,7 @@ const ScrollPhotoList = ({
   moimeId = '0',
   setRenderComponent,
   selectedPhoto,
+  isJustImg = false,
 }: Props) => {
   const navigate = useNavigate();
   const targetRef = useRef<HTMLLIElement>(null);
@@ -103,6 +105,7 @@ const ScrollPhotoList = ({
             <React.Fragment key={`page-${pageNum}`}>
               {page.data.map((photo: Photo) => {
                 const photoCardProps: PhotoCardProps = {
+                  moimId: moimeId,
                   profileUrl: photo.uploaderProfile,
                   photoUrl: photo.url,
                   photoId: photo.photoId,
@@ -115,8 +118,8 @@ const ScrollPhotoList = ({
                       ? selectedPhoto.liked
                       : photo.liked,
                   likeButtonEnabled: false,
-                  onClickHandler: setSelectedPhotoId,
-                  isJustImg: true,
+                  onClickHandler: isJustImg ? setSelectedPhotoId : undefined,
+                  isJustImg: isJustImg,
                 };
 
                 return (

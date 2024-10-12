@@ -1,13 +1,15 @@
 import classnames from 'classnames/bind';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import styles from './scrollPhotoList.module.scss';
 import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
 import HorizontalScrollWrapper from '../../../../common/components/HorizontalScrollWrapper/HorizontalScrollWrapper';
 import PhotoCard from './PhotoCard/PhotoCard';
-import { MoimePhoto, ongoingType } from '../../types';
-import { PhotoCardProps } from './PhotoList';
-import { getMoimePhoto } from '../../../../api/service/mockApi';
-import { getMoimePhotoResponse, Photo } from '../../types';
+import { ongoingType, Photo } from '../../types';
+import { PhotoCardProps } from '../../types';
+import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
+import { getMoimePhotoResponse } from '../../types';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 const cn = classnames.bind(styles);
 
@@ -16,133 +18,59 @@ interface Props {
   isMiniPhotoCard?: boolean;
   moimeId: string;
   setRenderComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
+  selectedPhoto?: PhotoCardProps;
+  setSelectedPhoto?: React.Dispatch<React.SetStateAction<PhotoCardProps>>;
 }
 
 const ScrollPhotoList = ({
   hiddenTitle = false,
   isMiniPhotoCard = false,
   moimeId = '0',
-  setRenderComponent = () => {},
+  setRenderComponent,
+  selectedPhoto,
 }: Props) => {
-  const size: number = 18;
-
+  const navigate = useNavigate();
   const targetRef = useRef<HTMLLIElement>(null);
-  const likeLoadingLst = useRef<number[]>([]);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const [isLast, setIsLast] = useState<boolean>(false);
-  const [intersectAction, setIntersectAction] = useState<'idle' | 'getPhoto'>(
-    'idle'
-  );
-  const [cursorId, setCursorId] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [moimePhotoLst, setMoimePhotoLst] = useState<MoimePhoto[]>([]);
-
-  async function fetchData(moimeId: string, cusorIdVal: number | null) {
-    setLoading(true);
-
-    const res: getMoimePhotoResponse = await getMoimePhoto(
-      moimeId,
-      cusorIdVal,
-      size
-    );
-    setIsLast(res.last);
-    fetchDataCallback(res.data);
-  }
-
-  function fetchDataCallback(resPhotoLst: Array<Photo>) {
-    let nextMoimePhotoLst = [];
-
-    // 테스트용 : photoId 중복을 막기 위한 코드(실제api에서 photoId 중복 없음)
-    resPhotoLst.forEach((el) => {
-      if (cursorId === null) {
-        el.photoId = el.photoId + 100;
-      } else {
-        el.photoId = el.photoId + cursorId;
-      }
-    });
-
-    nextMoimePhotoLst = [...moimePhotoLst, ...resPhotoLst];
-
-    setCursorId(nextMoimePhotoLst[nextMoimePhotoLst.length - 1].photoId);
-    setMoimePhotoLst(nextMoimePhotoLst);
-    setLoading(false);
-  }
+  const { data, fetchNextPage, isFetchingNextPage, totalPhotos } =
+    useMoimePhotoQuery(moimeId, null); // 초기 cursorId = null;
 
   const observerCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry: IntersectionObserverEntry) => {
       if (!entry.isIntersecting) return;
-      if (loading) return;
-
-      setIntersectAction('getPhoto');
+      if (isFetchingNextPage) return;
+      fetchNextPage();
     });
   };
 
-  const likeButtonHandler = function likeButtonHandler(
-    e: React.MouseEvent<HTMLButtonElement>,
-    photoId: number
-  ) {
-    e.preventDefault();
-    if (likeLoadingLst.current.includes(photoId)) {
-      console.log('좋아요 변경을 이미 요청 중입니다');
-    } else {
-      likeLoadingLst.current.push(photoId);
-      console.log('LOCK', photoId);
-      setTimeout(() => {
-        likeButtonHandlerCb(photoId);
-      }, 500); // 좋아요 요청 <-> 응답 간의 시간을 주기 위해(테스트용)
-    }
-  };
-
-  function likeButtonHandlerCb(photoId: number) {
-    let nextMoimePhotoLst: MoimePhoto[] = [];
-    if (photoId !== undefined) {
-      nextMoimePhotoLst = moimePhotoLst.map((el) => {
-        if (el.photoId === photoId) {
-          const nextEl: MoimePhoto = el;
-
-          nextEl.liked = !el.liked;
-          nextEl.likes = nextEl.liked ? el.likes + 1 : el.likes - 1;
-
-          return nextEl;
-        } else {
-          return el;
-        }
-      });
-    }
-    setMoimePhotoLst(nextMoimePhotoLst);
-
-    likeLoadingLst.current = likeLoadingLst.current.filter(
-      (el) => el !== photoId
-    );
-  }
-
   useEffect(() => {
-    fetchData(moimeId, cursorId); // 최신 사진 18장 가져오기 (cursorId: null, size : 18)
+    const targetElement = targetRef.current;
 
-    const observer = new IntersectionObserver(observerCallback);
+    if (!targetElement) return;
 
-    if (targetRef.current) {
-      observer.observe(targetRef.current);
-    }
+    observerRef.current = new IntersectionObserver(observerCallback, {
+      root: null,
+      threshold: 0.3, // 10% 정도 화면에 보이면 트리거
+    });
+
+    observerRef.current.observe(targetElement);
 
     return () => {
-      if (targetRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        observer.unobserve(targetRef.current);
+      if (observerRef.current && targetElement) {
+        observerRef.current.unobserve(targetElement);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (intersectAction === 'getPhoto') {
-      if (!isLast) {
-        fetchData(moimeId, cursorId); // api 요청
-      }
-    }
-    setIntersectAction('idle');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [intersectAction]);
+  const setSelectedPhotoId = (selectedPhotoId: string) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('selectedPhotoId', selectedPhotoId);
+    navigate(`${location.pathname}?${searchParams.toString()}`, {
+      replace: true,
+    });
+  };
 
   return (
     <div
@@ -158,34 +86,47 @@ const ScrollPhotoList = ({
               type="button"
               className={cn('button')}
               onClick={() => {
-                setRenderComponent('PhotoList');
+                if (setRenderComponent === undefined) return;
+                setRenderComponent!('PhotoList');
               }}
             >
               <ArrowLeft24X24 className={cn('arrow_icon')} />
               <span className={cn('blind')}>더보기</span>
             </button>
           </div>
-          <div className={cn('description')}>10장의 사진</div>
+          <div className={cn('description')}>{`${totalPhotos}장의 사진`}</div>
         </div>
       )}
       <HorizontalScrollWrapper>
         <ul className={cn('photo_list')}>
-          {moimePhotoLst.map((el: MoimePhoto) => {
-            const photoCardProps: PhotoCardProps = {
-              profileUrl: el.uploaderProfile,
-              photoUrl: el.url,
-              photoId: el.photoId,
-              likes: el.likes,
-              liked: el.liked,
-              likeButtonHandler: likeButtonHandler,
-            };
+          {data?.pages.map((page: getMoimePhotoResponse, pageNum: number) => (
+            <React.Fragment key={`page-${pageNum}`}>
+              {page.data.map((photo: Photo) => {
+                const photoCardProps: PhotoCardProps = {
+                  profileUrl: photo.uploaderProfile,
+                  photoUrl: photo.url,
+                  photoId: photo.photoId,
+                  likes:
+                    photo.photoId === selectedPhoto?.photoId
+                      ? selectedPhoto.likes
+                      : photo.likes,
+                  liked:
+                    photo.photoId === selectedPhoto?.photoId
+                      ? selectedPhoto.liked
+                      : photo.liked,
+                  likeButtonEnabled: false,
+                  onClickHandler: setSelectedPhotoId,
+                  isJustImg: true,
+                };
 
-            return (
-              <li className={cn('item')} key={`photocard-${el.photoId}`}>
-                <PhotoCard {...photoCardProps} />
-              </li>
-            );
-          })}
+                return (
+                  <li className={cn('item')} key={`photocard-${photo.photoId}`}>
+                    <PhotoCard {...photoCardProps} />
+                  </li>
+                );
+              })}
+            </React.Fragment>
+          ))}
           {isMiniPhotoCard ? (
             <li
               className={cn('item')}

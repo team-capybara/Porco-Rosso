@@ -24,6 +24,7 @@ const cn = classnames.bind(styles);
 // 진행 중 모임 (moimStatus = Ongoing)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const OngoingGathering = (_props: OngoingGatheringProps) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
@@ -31,6 +32,21 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   const [moimId] = useState<number>(84); //test 용 강제로 집어넣기 추후 제거
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
+
+  // 쿼리스트링에 선택된 사진이 바뀔 때 photodetail로 변경
+  useEffect(() => {
+    // 쿼리스트링이 변경될 때마다 실행됨
+    if (renderComponent === 'PhotoDetail') return;
+
+    const searchParams = new URLSearchParams(location.search);
+    const selectedPhotoId = searchParams.get('selectedPhotoId');
+
+    if (selectedPhotoId !== null && selectedPhotoId !== '-1') {
+      setRenderComponent('PhotoDetail');
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]); // location.search를 의존성으로 설정
 
   // 진행 중 모임 때 상태 확인 후 모임종료로 redirect 하는 로직 추가
   const checkMoimOngoingStatus = async () => {
@@ -55,8 +71,8 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   };
 
   useEffect(() => {
+    console.warn('checkMoimOngoingStatus() called');
     checkMoimOngoingStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

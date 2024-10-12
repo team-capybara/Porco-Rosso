@@ -231,7 +231,7 @@ const CreateGathering = () => {
         <GatheringTitle
           title={title || '제목 없는 모임'}
           description="정보를 채우고 모임을 시작해보세요."
-          classNameForPage="create_page"
+          hasEditButton={true}
           onClickEditButton={handleTextInputOpen}
         />
         <div className={cn('wrap_participant_list')}>

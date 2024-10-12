@@ -5,6 +5,7 @@ import BackNavigation from '../../../auth/components/signup/BackNavigation';
 import GatheringTitle from '../GatheringTitle/GatheringTitle';
 import PhotoList from '../PhotoList/PhotoList';
 import { ongoingType } from '../../types';
+import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
 
 const cn = classnames.bind(styles);
 
@@ -15,6 +16,9 @@ interface RenderPhotoListProps {
 // 진행 중 모임 순간 모음
 const RenderPhotoList = (props: RenderPhotoListProps) => {
   const { setRenderComponent } = props;
+
+  const { totalPhotos } = useMoimePhotoQuery('1', null);
+
   const PhotoListBackNavigationClickHandler = (
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
@@ -30,10 +34,13 @@ const RenderPhotoList = (props: RenderPhotoListProps) => {
         onClick={PhotoListBackNavigationClickHandler}
       />
       <div className={cn('wrap_gathering_title')}>
-        <GatheringTitle title="순간 모음" description="42장의 사진" />
+        <GatheringTitle
+          title="순간 모음"
+          description={`${totalPhotos}장의 사진`}
+        />
       </div>
       <div className={cn('wrap_photo_list')}>
-        <PhotoList moimeId={'1'} setRenderComponent={setRenderComponent} />
+        <PhotoList moimeId={'1'} />
       </div>
     </>
   );

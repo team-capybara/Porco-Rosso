@@ -11,10 +11,11 @@ interface Props {
   title?: string;
   description?: ReactNode;
   hasRefreshButton?: boolean;
+  hasEditButton?: boolean;
   onClickRefreshButton?: () => void;
   hasShareButton?: boolean;
   onClickShareButton?: () => void;
-  classNameForPage?: '' | 'create_page' | 'invite_friends';
+  classNameForPage?: '' | 'invite_friends' | 'upcoming_page';
   onClickEditButton?: () => void;
   onClickFinishButton?: () => void;
 }
@@ -26,15 +27,16 @@ const GatheringTitle = ({
   onClickRefreshButton,
   hasShareButton = false,
   onClickShareButton,
-  classNameForPage = '',
+  hasEditButton = false,
   onClickEditButton,
   onClickFinishButton,
+  classNameForPage = '',
 }: Props) => {
   return (
     <div className={cn('gathering_title')}>
       <strong className={cn('title')}>
         {title}
-        {classNameForPage === 'create_page' && (
+        {hasEditButton && (
           <button
             type="button"
             className={cn('edit_button')}
@@ -68,11 +70,28 @@ const GatheringTitle = ({
           )}
         </button>
       )}
+      {classNameForPage === 'upcoming_page' && (
+        // todo: 초대한 사람의 경우, '수정' 텍스트 및 'revise' 클래스 적용
+        // todo: 초대받은 사람의 경우, '나가기' 텍스트 및 'getout' 클래스 적용
+        // todo: 진행 중 모임 수정의 경우, '삭제' 텍스트 및 'delete' 클래스 적용
+        <button
+          type="button"
+          className={cn(
+            'button',
+            { revise: true },
+            { getout: false },
+            { delete: false }
+          )}
+          disabled={false}
+        >
+          수정
+        </button>
+      )}
       {classNameForPage === 'invite_friends' && (
         // todo: 친구 선택 시, disabled={false} 로 토글 부탁드립니다.
         <button
           type="button"
-          className={cn('button')}
+          className={cn('button', 'complete')}
           disabled={false}
           onClick={onClickFinishButton}
         >

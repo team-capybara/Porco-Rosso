@@ -3,9 +3,12 @@ import styles from '../../ongoingGathering.module.scss';
 
 import BackNavigation from '../../../auth/components/signup/BackNavigation';
 import GatheringTitle from '../GatheringTitle/GatheringTitle';
-import PhotoCard from '../PhotoList/PhotoCard/PhotoCard';
 import ScrollPhotoList from '../PhotoList/ScrollPhotoList';
-import { ongoingType } from '../../types';
+import { ongoingType, PhotoCardProps } from '../../types';
+import { useEffect, useState } from 'react';
+import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
+import PhotoCard from '../PhotoList/PhotoCard/PhotoCard';
+// import { useLocation, useNavigate } from 'react-router-dom';
 const cn = classnames.bind(styles);
 
 interface RenderPhotoDetailProps {
@@ -14,6 +17,42 @@ interface RenderPhotoDetailProps {
 // 진행 중 모임 사진 상세페이지
 const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
   const { setRenderComponent } = props;
+
+  const [selectedPhoto, setSelectedPhoto] = useState<PhotoCardProps>({
+    photoId: -1,
+  });
+
+  // moimeId = '1'
+  const { data } = useMoimePhotoQuery('1', null); // 초기 cursorId = null;
+
+  useEffect(() => {
+    // 쿼리스트링이 변경될 때마다 실행됨
+    console.log('Query string changed:', location.search);
+
+    const searchParams = new URLSearchParams(location.search);
+    const selectedPhotoId = searchParams.get('selectedPhotoId');
+
+    if (selectedPhotoId !== null && selectedPhotoId !== '-1') {
+      if (data !== undefined) {
+        data.pages.forEach((page) => {
+          page.data.forEach((photo) => {
+            if (photo.photoId === Number(selectedPhotoId)) {
+              setSelectedPhoto({
+                profileUrl: photo.uploaderProfile,
+                photoUrl: photo.url,
+                photoId: photo.photoId,
+                likes: photo.likes,
+                liked: photo.liked,
+                likeButtonEnabled: true,
+              });
+            }
+          });
+        });
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]); // location.search를 의존성으로 설정
 
   return (
     <>
@@ -34,13 +73,15 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
         />
       </div>
       <div className={cn('wrap_photo_card')}>
-        <PhotoCard photoId={1} />
+        <PhotoCard {...selectedPhoto} key="selected-photo" />
       </div>
       <div className={cn('wrap_scroll_photo_list')}>
         <ScrollPhotoList
           moimeId={'1'}
           hiddenTitle={true}
           isMiniPhotoCard={true}
+          selectedPhoto={selectedPhoto}
+          setSelectedPhoto={setSelectedPhoto}
         />
       </div>
     </>

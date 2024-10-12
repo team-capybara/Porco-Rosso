@@ -1,301 +1,190 @@
 import { useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
 import classnames from 'classnames/bind';
 import styles from './photoList.module.scss';
 import PhotoCard from './PhotoCard/PhotoCard';
-import { getMoimePhoto } from '../../../../api/service/mockApi';
-import axios from 'axios';
-import {
-  getMoimePhotoResponse,
-  Photo,
-  MoimePhoto,
-  ongoingType,
-} from '../../types';
+import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
+import { getMoimePhotoResponse, Photo } from '../../types';
+import React from 'react';
+import useNewPhotoPolling from '../../utils/useNewPhotoPolling';
+import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
+import { PhotoCardProps } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 const cn = classnames.bind(styles);
 
 interface PhotoListProps {
   moimeId: string;
-  setRenderComponent: React.Dispatch<React.SetStateAction<ongoingType>>;
 }
 
-export interface PhotoCardProps {
-  photoUrl: string;
-  profileUrl: string;
-  photoId: number;
-  likes: number;
-  liked: boolean;
-  likeButtonHandler?: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    photoId: number
-  ) => void;
-}
-
-const PhotoList = ({ moimeId, setRenderComponent }: PhotoListProps) => {
-  const size: number = 18;
-
-  const targetsRef = useRef<HTMLLIElement[]>([]);
+const PhotoList = ({ moimeId }: PhotoListProps) => {
+  const navigate = useNavigate();
+  const { moimeToast } = useMoimeToast();
+  const targetsRef = useRef<HTMLDivElement[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const oddEven = useRef<number>(1);
-  const likeLoadingLst = useRef<number[]>([]);
-  const photoIdIndexMap = useRef<Map<number, number>>(new Map());
 
-  const [isLast, setIsLast] = useState<boolean>(false);
-  const [cursorId, setCursorId] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const [pageNum, setPageNum] = useState<number>(0);
-  const [isNew, setIsNew] = useState<boolean>(false);
-  const [moimePhotoLst, setMoimePhotoLst] = useState<MoimePhoto[]>([]);
-  const [intersectAction, setIntersectAction] = useState<'idle' | 'getPhoto'>(
-    'idle'
-  );
 
-  async function getTrueOrFasle(num: number) {
-    let res = null;
+  // 새로운 사진 polling hooks
+  const { isNew, setIsNew } = useNewPhotoPolling(5000);
 
-    if (num % 2 === 1) {
-      res = await axios.get('/moims/newPhoto/true');
-    } else {
-      res = await axios.get('/moims/newPhoto/false');
+  // 사진 페이지네이션 로직 관련 START
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    resetAndFetchFirstPage,
+  } = useMoimePhotoQuery(moimeId, null); // 초기 cursorId = null;
+
+  const handleClick = () => {
+    if (observerRef.current) {
+      // unmount시 모든 감시 대상 해제
+      targetsRef.current.forEach((target) => {
+        if (target) observerRef.current?.unobserve(target);
+      });
+      observerRef.current.disconnect();
+      targetsRef.current = [];
     }
-    const isNewPhoto: boolean = res.data.isNew;
-
-    setIsNew(isNewPhoto);
-    oddEven.current += 1;
-    return true;
-  }
-
-  async function fetchData(moimeId: string, cusorIdVal: number | null) {
-    setLoading(true);
-
-    const res: getMoimePhotoResponse = await getMoimePhoto(
-      moimeId,
-      cusorIdVal,
-      size
-    );
-    setIsLast(res.last);
-    fetchDataCallback(res.data);
-  }
-
-  function fetchDataCallback(resPhotoLst: Array<Photo>) {
-    let nextMoimePhotoLst = [];
-
-    // 테스트용 : photoId 중복을 막기 위한 코드(실제api에서 photoId 중복 없음)
-    resPhotoLst.forEach((el) => {
-      if (cursorId === null) {
-        el.photoId = el.photoId + 100;
-      } else {
-        el.photoId = el.photoId + cursorId;
-      }
-    });
-
-    if (moimePhotoLst.length !== 0) {
-      nextMoimePhotoLst = [...moimePhotoLst, ...resPhotoLst];
-    } else {
-      nextMoimePhotoLst = resPhotoLst;
-    }
-
-    setCursorId(nextMoimePhotoLst[nextMoimePhotoLst.length - 1].photoId);
-    setMoimePhotoLst(nextMoimePhotoLst);
-    setLoading(false);
-  }
+    resetAndFetchFirstPage();
+  };
 
   const observerCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry: IntersectionObserverEntry) => {
       if (!entry.isIntersecting) return;
-      if (loading) return;
 
       const targetIndex = targetsRef.current.findIndex(
         (target) => target === entry.target
       );
 
-      // 마지막 요소의 경우에는 fetch data
+      // 마지막 요소이고, 페이지가 남아 있을 때
       if (targetIndex === targetsRef.current.length - 1) {
-        setIntersectAction('getPhoto');
-      } else {
-        // 아닌경우 지금 보고있는 사진의 page(18장에 1장) update
-        setPageNum(targetIndex);
+        if (isFetchingNextPage) return;
+        fetchNextPage();
       }
+      setPageNum(targetIndex);
     });
   };
 
-  const likeButtonHandler = function likeButtonHandler(
-    e: React.MouseEvent<HTMLButtonElement>,
-    photoId: number
-  ) {
-    e.preventDefault();
-    if (likeLoadingLst.current.includes(photoId)) {
-      console.log('좋아요 변경을 이미 요청 중입니다');
-    } else {
-      likeLoadingLst.current.push(photoId);
-      console.log('LOCK', photoId);
-      setTimeout(() => {
-        likeButtonHandlerCb(photoId);
-      }, 500); // 좋아요 요청 <-> 응답 간의 시간을 주기 위해(테스트용)
-    }
-  };
-
-  function likeButtonHandlerCb(photoId: number) {
-    const photoIdx = photoIdIndexMap.current.get(photoId);
-    let nextMoimePhotoLst: MoimePhoto[] = [];
-    if (photoIdx !== undefined) {
-      nextMoimePhotoLst = moimePhotoLst.map((el, idx) => {
-        if (idx === photoIdx) {
-          const nextEl: MoimePhoto = el;
-
-          nextEl.liked = !el.liked;
-          nextEl.likes = nextEl.liked ? el.likes + 1 : el.likes - 1;
-
-          return nextEl;
-        } else {
-          return el;
-        }
-      });
-    }
-    setMoimePhotoLst(nextMoimePhotoLst);
-
-    likeLoadingLst.current = likeLoadingLst.current.filter(
-      (el) => el !== photoId
-    );
-    console.warn('LOCK 해제', photoId);
-  }
-
   useEffect(() => {
-    fetchData(moimeId, cursorId); // 최신 사진 18장 가져오기 (cursorId: null, size : 18)
-
+    // IntersectionObserver 옵션 설정
     const option = {
-      root: null,
-      rootMargin: '-300px 0px',
-      threshold: 0.3,
+      root: null, // 뷰포트 기준으로 감시
+      rootMargin: '0px',
+      threshold: 0.3, // 요소가 20% 이상 보일 때 트리거
     };
 
-    observerRef.current = new IntersectionObserver(observerCallback, option);
+    if (!observerRef.current) {
+      // observer가 존재하지 않을 때 새로 생성
+      observerRef.current = new IntersectionObserver(observerCallback, option);
+    }
 
+    if (targetsRef.current.length === 0) return;
+    // targetsRef의 마지막 요소만 감시 대상으로 추가
+    const lastTarget = targetsRef.current[targetsRef.current.length - 1];
+    if (lastTarget) {
+      observerRef.current.observe(lastTarget); // 새로 추가된 요소 감시 시작
+      setPageNum(targetsRef.current.length - 1); // 페이지 세팅
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  useEffect(() => {
     return () => {
-      // 컴포넌트 언마운트 시 observer 해제
       if (observerRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // unmount시 모든 감시 대상 해제
         targetsRef.current.forEach((target) => {
-          if (target) observerRef.current!.unobserve(target);
+          if (target) observerRef.current?.unobserve(target);
         });
         observerRef.current.disconnect();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      getTrueOrFasle(oddEven.current);
-    }, 5000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  useEffect(() => {
-    moimePhotoLst.forEach((el, idx) => {
-      photoIdIndexMap.current.set(el.photoId, idx);
+  const setSelectedPhotoId = (selectedPhotoId: string) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('selectedPhotoId', selectedPhotoId);
+    navigate(`${location.pathname}?${searchParams.toString()}`, {
+      replace: true,
     });
+  };
 
-    if (cursorId === null) return;
-    observerRef.current!.observe(
-      targetsRef.current[targetsRef.current.length - 1]
-    );
-
-    setPageNum(targetsRef.current.length - 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moimePhotoLst]);
-
+  // toast 공통화 필요함
   useEffect(() => {
-    if (intersectAction === 'getPhoto') {
-      if (!isLast) {
-        fetchData(moimeId, cursorId); // api 요청
-      }
-    }
-    setIntersectAction('idle');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [intersectAction]);
+    if (!isNew) return;
 
-  useEffect(() => {
-    toast(
-      (t) => (
-        <div style={{ display: 'flex' }}>
-          <button
-            style={{
-              fontSize: '24px',
-              marginRight: '16px',
-              background: 'white',
-            }}
-            onClick={() => {
-              toast.dismiss(t.id);
-              window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: 'smooth',
-              });
-              setRenderComponent!('reset');
-              setTimeout(() => {
-                setRenderComponent!('PhotoList');
-              }, 0);
-            }}
-          >
-            ⏫
-          </button>
-          <div style={{ margin: '0', padding: '2px', lineHeight: '32px' }}>
-            userName님이 사진을 업로드 했습니다.
-          </div>
-        </div>
-      ),
-      { duration: 3000 }
-    );
+    //
+    moimeToast({
+      message: 'userName님이 사진을 업로드 했습니다.', // 메시지 커스터마이징
+      onClickEnabled: true, // onClick 활성화
+      onClick: handleClick, // 클릭 시 실행할 함수
+      duration: 3000, // 지속 시간 설정
+      id: 'new-photo-toast', // 고유 ID 설정
+    });
     setIsNew(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNew]);
 
+  // 디버깅용
   useEffect(() => {
     console.log('pageNum 변경됨 :', pageNum);
-    console.log('cursorId 변경됨: ', cursorId);
-  }, [pageNum, cursorId]);
+  }, [pageNum]);
 
   return (
     <>
       <ul className={cn('photo_list')}>
-        {moimePhotoLst.map((el: MoimePhoto, idx: number) => {
-          const photoCardProps: PhotoCardProps = {
-            profileUrl: el.uploaderProfile,
-            photoUrl: el.url,
-            photoId: el.photoId,
-            likes: el.likes,
-            liked: el.liked,
-            likeButtonHandler: likeButtonHandler,
-          };
+        {data?.pages.map((page: getMoimePhotoResponse, pageNum: number) => (
+          <React.Fragment key={`page-${pageNum}`}>
+            {page.data.map((photo: Photo, idx: number) => {
+              const photoCardProps: PhotoCardProps = {
+                profileUrl: photo.uploaderProfile,
+                photoUrl: photo.url,
+                photoId: photo.photoId,
+                likes: photo.likes,
+                liked: photo.liked,
+                likeButtonEnabled: true,
+                onClickHandler: setSelectedPhotoId,
+              };
 
-          if ((idx + 1) % 18 === 0) {
-            return (
-              <li
-                className={cn('item')}
-                key={`photocard-${el.photoId}`}
-                ref={(htmlEl: HTMLLIElement) => {
-                  if (htmlEl !== null) {
-                    targetsRef.current[Math.floor(idx / 18)] = htmlEl;
-                  }
-                }}
-              >
-                <PhotoCard {...photoCardProps} />
-              </li>
-            );
-          } else {
-            return (
-              <li className={cn('item')} key={`photocard-${el.photoId}`}>
-                <PhotoCard {...photoCardProps} />
-              </li>
-            );
-          }
-        })}
+              const isLastItemInPage = idx === page.data.length - 1;
+
+              return (
+                <li className={cn('item')} key={`photocard-${photo.photoId}`}>
+                  <PhotoCard {...photoCardProps} />
+                  {/* 페이지의 마지막 항목에만 감시용 div 추가 */}
+                  {isLastItemInPage && (
+                    <div
+                      ref={(htmlDiv: HTMLDivElement) => {
+                        if (htmlDiv !== null) {
+                          targetsRef.current[pageNum] = htmlDiv;
+                        }
+                      }}
+                      style={{
+                        visibility: 'hidden', // 감시 대상이 보이지 않도록 설정
+                        width: '1px',
+                        height: '1px',
+                      }}
+                      key={`observer-${pageNum}`} // 고유한 키 추가
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </React.Fragment>
+        ))}
       </ul>
-      <div style={{ height: '100px', backgroundColor: 'black' }}></div>
+      <div
+        style={{
+          height: '100px',
+          backgroundColor: 'black',
+          color: 'white',
+          textAlign: 'center',
+          paddingTop: '40px',
+        }}
+      >
+        {isFetchingNextPage && <p>로딩중입니다...</p>}
+        {!hasNextPage && <p>마지막페이지입니다.</p>}
+      </div>
     </>
   );
 };

@@ -39,6 +39,7 @@ export interface PhotoCardProps {
   liked?: boolean;
   likeButtonEnabled?: boolean;
   onClickHandler?: (selectedPhotoId: string) => void;
+  isJustImg?: boolean;
 }
 
 export interface SelectedPhotoCardProps {

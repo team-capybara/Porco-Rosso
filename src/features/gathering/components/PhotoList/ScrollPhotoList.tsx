@@ -116,6 +116,7 @@ const ScrollPhotoList = ({
                       : photo.liked,
                   likeButtonEnabled: false,
                   onClickHandler: setSelectedPhotoId,
+                  isJustImg: true,
                 };
 
                 return (

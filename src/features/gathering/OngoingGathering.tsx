@@ -23,10 +23,10 @@ const cn = classnames.bind(styles);
 const OngoingGathering = (_props: OngoingGatheringProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-  // const [renderComponent, setRenderComponent] =
-  //   useState<ongoingType>('OngoingMain');
   const [renderComponent, setRenderComponent] =
-    useState<ongoingType>('PhotoDetail');
+    useState<ongoingType>('OngoingMain');
+  // const [renderComponent, setRenderComponent] =
+  //   useState<ongoingType>('PhotoDetail');
   const [moimId] = useState<number>(getmoimId(useLocation())); //props로 변경될 수 있음
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
 
@@ -69,7 +69,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
 
   useEffect(() => {
     console.warn('checkMoimOngoingStatus() called');
-    // checkMoimOngoingStatus();
+    checkMoimOngoingStatus();
   }, []);
 
   return (

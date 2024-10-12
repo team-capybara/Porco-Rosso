@@ -26,6 +26,7 @@ const PhotoCard = memo(
     liked = false,
     likeButtonEnabled = true, // 기본값은 true로 설정
     onClickHandler,
+    isJustImg = false,
   }: PhotoCardProps) => {
     const [isLiked, setLiked] = useState(liked);
     const [likeCount, setLikeCount] = useState(likes);
@@ -65,19 +66,23 @@ const PhotoCard = memo(
           <img src={photoUrl} alt="/" className={cn('image')} />
         </div>
         {/* todo: 좋아요 된 경우, 'active' 클래스 활성화부탁드립니다. */}
-        <button
-          type="button"
-          onClick={toggleLike}
-          className={cn('like_button', { active: isLiked })}
-          disabled={!likeButtonEnabled}
-        >
-          <span className={cn('blind')}>좋아요</span>
-          <IconHeart15X15 className={cn('icon')} />
-          <span className={cn('number')}>{likeCount}</span>
-        </button>
-        <div className={cn('user_thumbnail')}>
-          <img src={profileUrl} alt="/" className={cn('image')} />
-        </div>
+        {!isJustImg && (
+          <button
+            type="button"
+            onClick={toggleLike}
+            className={cn('like_button', { active: isLiked })}
+            disabled={!likeButtonEnabled}
+          >
+            <span className={cn('blind')}>좋아요</span>
+            <IconHeart15X15 className={cn('icon')} />
+            <span className={cn('number')}>{likeCount}</span>
+          </button>
+        )}
+        {!isJustImg && (
+          <div className={cn('user_thumbnail')}>
+            <img src={profileUrl} alt="/" className={cn('image')} />
+          </div>
+        )}
       </div>
     );
   },

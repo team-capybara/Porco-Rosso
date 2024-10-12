@@ -3,11 +3,11 @@ import styles from '../../ongoingGathering.module.scss';
 
 import BackNavigation from '../../../auth/components/signup/BackNavigation';
 import GatheringTitle from '../GatheringTitle/GatheringTitle';
-import SelectedPhotoCard from '../PhotoList/SelectedPhotoCard/SelectedPhotoCard';
 import ScrollPhotoList from '../PhotoList/ScrollPhotoList';
 import { ongoingType, PhotoCardProps } from '../../types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMoimePhotoQuery } from '../../../../api/service/mockApi';
+import PhotoCard from '../PhotoList/PhotoCard/PhotoCard';
 // import { useLocation, useNavigate } from 'react-router-dom';
 const cn = classnames.bind(styles);
 
@@ -17,7 +17,6 @@ interface RenderPhotoDetailProps {
 // 진행 중 모임 사진 상세페이지
 const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
   const { setRenderComponent } = props;
-  const likeLoading = useRef<boolean>(false); // 요청 상태 관리
 
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoCardProps>({
     photoId: -1,
@@ -55,24 +54,6 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]); // location.search를 의존성으로 설정
 
-  const likeButtonHandler = async () => {
-    console.warn('hihihihihihihihihihihihihihih,');
-    if (likeLoading.current) return; // 이미 요청 중이면 중복 방지
-
-    likeLoading.current = true;
-    try {
-      setSelectedPhoto!((prev: PhotoCardProps) => ({
-        ...prev,
-        liked: !prev.liked,
-        likes: prev.liked ? prev.likes! - 1 : prev.likes! + 1,
-      }));
-    } catch (error) {
-      console.error('좋아요 상태 변경 실패:', error);
-    } finally {
-      likeLoading.current = false;
-    }
-  };
-
   return (
     <>
       <BackNavigation
@@ -92,11 +73,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
         />
       </div>
       <div className={cn('wrap_photo_card')}>
-        <SelectedPhotoCard
-          {...selectedPhoto}
-          likeButtonHandler={likeButtonHandler}
-          key="selected-photo"
-        />
+        <PhotoCard {...selectedPhoto} key="selected-photo" />
       </div>
       <div className={cn('wrap_scroll_photo_list')}>
         <ScrollPhotoList

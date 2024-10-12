@@ -1,6 +1,6 @@
 import classnames from 'classnames/bind';
 import styles from './friendSearchList.module.scss';
-import { Friend, IParticipants } from '../../types';
+import { Friend, IParticipants, moimStatusType } from '../../types';
 
 const cn = classnames.bind(styles);
 
@@ -12,6 +12,7 @@ interface FriendSearchListProps {
   onFriendSelect: (friendId: number) => void; // 친구 선택 처리 함수
   moimStart: boolean;
   participantData: IParticipants[];
+  moimStatus: moimStatusType; // 모임 상태(CREATED, ONGOING)
 }
 
 const FriendSearchList = ({
@@ -20,22 +21,23 @@ const FriendSearchList = ({
   onFriendSelect,
   moimStart,
   participantData,
+  moimStatus, // 모임 상태(CREATED, ONGOING)
 }: FriendSearchListProps) => {
   const participantIds = new Set(
     participantData.map((participant) => participant.userId)
   );
   // 친구 검색 결과 리스트
-  console.log('FriendSearchList');
   return (
     <ul className={cn('friend_search_list')}>
       {friends.map((friend) => (
         <li key={friend.friendId} className={cn('item')}>
           <FriendCard
             friend={friend}
-            isSelected={selectedFriends.includes(friend.friendId)}
-            onClick={() => onFriendSelect(friend.friendId)}
+            isSelected={selectedFriends.includes(friend.targetId)}
+            onClick={() => onFriendSelect(friend.targetId)}
             moimStart={moimStart}
-            disabled={participantIds.has(friend.friendId)}
+            moimStatus={moimStatus}
+            disabled={participantIds.has(friend.targetId)}
           />
         </li>
       ))}

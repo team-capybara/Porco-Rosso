@@ -146,7 +146,7 @@ const GatheringInfoInputs = ({
       </div>
       {/* Layer 활성화 시, 기존 화면 비활성화 부탁드립니다. */}
       {(dateOpen || locationOpen || timeOpen) && (
-        <Layer classNameForView="location_search_input">
+        <Layer classNameForView={locationOpen ? 'location_search_input' : ''}>
           {dateOpen && (
             <CalendarInput
               value={gatheringData.startedAt}

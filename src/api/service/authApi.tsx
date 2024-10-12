@@ -17,7 +17,6 @@ import { UpdateProfile } from '../../features/auth/types';
 const getUserInfo = async () => {
   try {
     const response = await apiClient.get('/users/my');
-    console.log(response.data, '뭐징');
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);
@@ -29,14 +28,11 @@ const updateProfile = async ({
   newProfile,
   nickname,
 }: UpdateProfile): Promise<void> => {
-  console.log(newProfile, nickname, '요청은 가나');
   const formData = new FormData();
   if (newProfile !== null && typeof newProfile !== 'string') {
     formData.append('profile', newProfile);
   }
   formData.append('nickname', nickname);
-  const formProps = Object.fromEntries(formData);
-  console.log(formProps, 'form데이터 찍어보기');
   try {
     const response = await apiClient.post('/users/my', formData, {
       headers: {

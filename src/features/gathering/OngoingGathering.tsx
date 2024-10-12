@@ -87,10 +87,16 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
             />
           )}
           {renderComponent === 'PhotoList' && (
-            <RenderPhotoList setRenderComponent={setRenderComponent} />
+            <RenderPhotoList
+              moimId={String(moimId)}
+              setRenderComponent={setRenderComponent}
+            />
           )}
           {renderComponent === 'PhotoDetail' && (
-            <RenderPhotoDetail setRenderComponent={setRenderComponent} />
+            <RenderPhotoDetail
+              moimId={String(moimId)}
+              setRenderComponent={setRenderComponent}
+            />
           )}
           {!inviteFriendOpen && (
             <OngoingFooter

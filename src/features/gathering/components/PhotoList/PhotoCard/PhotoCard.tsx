@@ -3,6 +3,7 @@ import classnames from 'classnames/bind';
 import styles from './photoCard.module.scss';
 import IconHeart15X15 from '../../../../../assets/svg/icon/IconHeart15X15';
 import { PhotoCardProps } from '../../../types';
+import { updatePhotoLike } from '../../../../../api/service/photoApi';
 
 const cn = classnames.bind(styles);
 
@@ -19,6 +20,7 @@ https://stackoverflow.com/questions/65721917/is-it-possible-to-observe-many-item
 
 const PhotoCard = memo(
   ({
+    moimId,
     photoId,
     photoUrl = '',
     profileUrl = '',
@@ -37,8 +39,7 @@ const PhotoCard = memo(
 
       likeLoading.current = true;
       try {
-        // 실제 api 넣어줘야함
-        // await axios.post('/api/like', { photoId, liked: !isLiked });
+        await updatePhotoLike(moimId, photoId, isLiked);
         setLiked(!isLiked);
         setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
       } catch (error) {

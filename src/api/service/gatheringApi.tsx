@@ -76,7 +76,7 @@ export const deleteMoim = async (moimId: number) => {
 export const getMoimStatus = async (moimId: number) => {
   try {
     const response = await apiClient.get(`/moims/${moimId}/status`);
-    return response.data;
+    return response.data.status;
   } catch (error) {
     console.error('Error get Moim Status : ', error);
     throw error;

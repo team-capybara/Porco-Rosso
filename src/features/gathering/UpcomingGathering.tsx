@@ -12,6 +12,7 @@ import IconExport24X24 from '../../assets/svg/icon/IconExport24X24';
 import { getGatheringInfo } from '../../api/service/gatheringApi';
 import { IGatheringInfo } from '../gathering/types/index';
 import { getUserInfoId } from '../../common/utils/userInfo';
+import { onPopBridge } from '../../bridge/gatheringBridge';
 
 const cn = classnames.bind(styles);
 
@@ -19,7 +20,8 @@ const UpcomingGathering = (props: UpcomingGatheringProps) => {
   // const navigate = useNavigate();
   // const [moimId] = useState<number>(getmoimId(useLocation()));
   const [moimId] = useState<number>(84);
-  // const [userId, setUserId] = useState<number>();
+  const [userId, setUserId] = useState<number>();
+  console.log(userId, 'userId');
 
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   // 모임 상세 정보 가져오기
@@ -56,17 +58,49 @@ const UpcomingGathering = (props: UpcomingGatheringProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isUserAndOwner = userId === gatheringInfoData?.owner.userId;
+  const isParticipant = userId !== gatheringInfoData?.owner.userId;
+
+  const handleUpcomingTitleBtn = (mode: string) => {
+    // 읽기 모드에서 오너
+    if (isUserAndOwner && mode === 'readonly') {
+      alert('읽기 모드에서 오너');
+    }
+    // 읽기 모드에서 방원
+    if (isParticipant && mode === 'readonly') {
+      alert('읽기 모드에서 방원');
+    }
+
+    // 수정 모드
+    if (isUserAndOwner && mode === 'revise') {
+      alert('수정 모드일때 삭제 누름');
+    }
+  };
+
   const renderUpcomingMain = () => {
+    // 방장이랑, 방원 구분
     if (!gatheringInfoData) return null;
+    console.log(isParticipant, '머지');
 
     return (
       <>
-        <BackNavigation classNameForIconType="close_type" />
+        <BackNavigation
+          classNameForIconType="close_type"
+          blindText="이전으로"
+          isButton={true}
+          onClick={() => {
+            onPopBridge();
+          }}
+        />
         {/* todo: title 변경 및 편집 수정버튼 동작 개발 작업 필요 */}
         <GatheringTitle
           title={gatheringInfoData?.title}
           description="모임 시작까지 설레는 마음으로 기다려요"
           classNameForPage="upcoming_page"
+          isUserAndOwner={isUserAndOwner}
+          isParticipant={isParticipant}
+          onClickUpcomingButton={handleUpcomingTitleBtn}
+          mode="readonly"
         />
         <div className={cn('wrap_participant_list')}>
           <ParticipantList hasAddButton={false} mode="read" moimStart={false} />
@@ -98,13 +132,22 @@ const UpcomingGathering = (props: UpcomingGatheringProps) => {
   const renderReviseUpcoming = () => {
     return (
       <>
-        <BackNavigation classNameForIconType="close_type" />
+        <BackNavigation
+          classNameForIconType="close_type"
+          blindText="이전으로"
+          isButton={true}
+          onClick={() => {
+            onPopBridge();
+          }}
+        />
         {/* todo: title 변경 및 편집 수정버튼 동작 개발 작업 필요 */}
         <GatheringTitle
           title="호남 향우회 레쓰고"
           description="모임 시작까지 설레는 마음으로 기다려요"
           classNameForPage="upcoming_page"
           hasEditButton={true}
+          mode="revise"
+          onClickUpcomingButton={handleUpcomingTitleBtn}
         />
         <div className={cn('wrap_participant_list')}>
           <ParticipantList hasAddButton={true} mode="read" moimStart={false} />

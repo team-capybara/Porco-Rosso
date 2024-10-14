@@ -35,7 +35,7 @@ const StepOne = ({
     setIsFocus(false);
     const nameInput = event.target.value;
     setNickname(nameInput);
-    setDisplayNickname(nameInput);
+    setDisplayNickname && setDisplayNickname(nameInput);
     const errorMsg = textInputValidation(nameInput, 'withoutEmoji');
     setErrMsg(errorMsg);
   };

@@ -16,7 +16,11 @@ import { UpdateProfile } from '../../features/auth/types';
 
 const getUserInfo = async () => {
   try {
-    const response = await apiClient.get('/users/my');
+    const response = await apiClient.get('/users/my', {
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);

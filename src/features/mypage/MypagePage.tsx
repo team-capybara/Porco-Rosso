@@ -17,7 +17,7 @@ const MypagePage = (props: mypageProps) => {
   const [renderComponent, setRenderComponent] =
     useState<renderComponentType>('mypageMain');
 
-  const { data: userData } = useQuery<UserProfile>({
+  const { data: userData, refetch } = useQuery<UserProfile>({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
   });
@@ -34,6 +34,8 @@ const MypagePage = (props: mypageProps) => {
   const handleSave = (updatedProfile: UpdateProfile) => {
     mutation.mutate(updatedProfile);
     setRenderComponent('mypageMain');
+    refetch();
+    getUserInfo();
   };
 
   return (

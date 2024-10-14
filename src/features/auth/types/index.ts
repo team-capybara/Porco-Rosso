@@ -21,7 +21,7 @@ export interface NewProfileProps {
   updateProfile: UpdateProfile;
   onSave: (updatedProfile: UpdateProfile) => void;
   mode: string;
-  setDisplayNickname: React.Dispatch<React.SetStateAction<string>>;
+  setDisplayNickname?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface ProfileImageProps {

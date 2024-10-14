@@ -10,7 +10,7 @@ import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import RenderOngoingMain from './components/RenderOngoingMain/RenderOngoingMain';
 import RenderPhotoList from './components/RenderPhotoList/RenderPhotoList';
 import RenderPhotoDetail from './components/RenderPhotoDetail/RenderPhotoDetail';
-// import { getmoimId } from '../../common/utils/queryString';
+import { getmoimId } from '../../common/utils/queryString';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -25,8 +25,8 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   const navigate = useNavigate();
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
-  // const [moimId] = useState<number>(getmoimId(useLocation()));
-  const [moimId] = useState<number>(88);
+  const [moimId] = useState<number>(getmoimId(useLocation()));
+  // const [moimId] = useState<number>(88);
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
 

@@ -15,6 +15,7 @@ const StepOne = ({
   updateProfile,
   onSave,
   mode,
+  setDisplayNickname,
 }: NewProfileProps) => {
   const [profile, setProfile] = useState<string>(userProfile.profile);
   const [newProfile, setNewProfile] = useState<File | null>(
@@ -34,6 +35,7 @@ const StepOne = ({
     setIsFocus(false);
     const nameInput = event.target.value;
     setNickname(nameInput);
+    setDisplayNickname(nameInput);
     const errorMsg = textInputValidation(nameInput, 'withoutEmoji');
     setErrMsg(errorMsg);
   };

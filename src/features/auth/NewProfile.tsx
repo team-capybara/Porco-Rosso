@@ -19,6 +19,7 @@ const cn = classnames.bind(styles);
 const NewProfile = () => {
   const queryClient = useQueryClient();
   const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false);
+  const [displayNickname, setDisplayNickname] = useState<string>('');
   // const navigate = useNavigate();
   // const location = useLocation();
 
@@ -73,9 +74,10 @@ const NewProfile = () => {
                 }} // 초기값을 전달
                 onSave={handleSave}
                 mode="signup"
+                setDisplayNickname={setDisplayNickname}
               />
             )}
-            {signUpSuccess && <StepThree nickname={userData.nickname} />}
+            {signUpSuccess && <StepThree nickname={displayNickname} />}
           </>
         ) : (
           <div>No user data available</div>

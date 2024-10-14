@@ -251,7 +251,7 @@ const InviteFriends = ({
     <>
       <BackNavigation
         classNameForIconType="close_type"
-        hasNext={true}
+        hasNext={false}
         isButton={true}
         onClick={inviteFriendBackNavClickHandler}
         blindText="이전으로"

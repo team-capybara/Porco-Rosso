@@ -17,9 +17,16 @@ const MypagePage = (props: mypageProps) => {
   const [renderComponent, setRenderComponent] =
     useState<renderComponentType>('mypageMain');
 
-  const { data: userData, refetch } = useQuery<UserProfile>({
+  const { data: userData } = useQuery<UserProfile>({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
+    select: (data) => {
+      // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
+      return {
+        ...data,
+        profile: `${data.profile}?t=${new Date().getTime()}`,
+      };
+    },
   });
 
   console.warn(props, 'props');
@@ -34,8 +41,6 @@ const MypagePage = (props: mypageProps) => {
   const handleSave = (updatedProfile: UpdateProfile) => {
     mutation.mutate(updatedProfile);
     setRenderComponent('mypageMain');
-    refetch();
-    getUserInfo();
   };
 
   return (

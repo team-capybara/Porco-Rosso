@@ -40,7 +40,7 @@ const NewProfile = () => {
     data: userData,
     // isError,
     // error,
-    refetch,
+    // refetch,
   } = useQuery<UserProfile>({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
@@ -57,7 +57,6 @@ const NewProfile = () => {
   const handleSave = (updatedProfile: UpdateProfile) => {
     mutation.mutate(updatedProfile);
     setSignUpSuccess(true);
-    refetch();
   };
 
   return (

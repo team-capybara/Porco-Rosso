@@ -14,6 +14,7 @@ interface Props {
   hasNext?: boolean;
   targetHref?: string;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onClickNextButton?: (event: React.MouseEvent<HTMLButtonElement>) => void; // next button click event handler
 }
 
 const BackNavigation = ({
@@ -25,6 +26,7 @@ const BackNavigation = ({
   onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
   },
+  onClickNextButton,
 }: Props) => {
   return (
     <div className={cn('back_navigation')}>
@@ -47,9 +49,9 @@ const BackNavigation = ({
           {blindText && <span className={cn('blind')}>{blindText}</span>}
         </a>
         {hasNext && (
-          <a href="/" className={cn('next_link')}>
-            다음
-          </a>
+          <button onClick={onClickNextButton} className={cn('next_link')}>
+            완료
+          </button>
         )}
       </div>
     </div>

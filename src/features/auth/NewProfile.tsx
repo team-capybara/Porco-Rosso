@@ -77,7 +77,9 @@ const NewProfile = () => {
                 setDisplayNickname={setDisplayNickname}
               />
             )}
-            {signUpSuccess && <StepThree nickname={displayNickname} />}
+            {signUpSuccess && (
+              <StepThree nickname={displayNickname || userData?.nickname} />
+            )}
           </>
         ) : (
           <div>No user data available</div>

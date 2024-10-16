@@ -165,7 +165,7 @@ const CreateGathering = () => {
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
     e.preventDefault();
-    setTextInputOpen(false);
+    onPopBridge();
   };
 
   useEffect(() => {

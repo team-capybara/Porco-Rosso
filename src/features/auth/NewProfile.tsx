@@ -44,6 +44,13 @@ const NewProfile = () => {
   } = useQuery<UserProfile>({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
+    select: (data) => {
+      // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
+      return {
+        ...data,
+        profile: `${data.profile}?t=${new Date().getTime()}`,
+      };
+    },
   });
 
   const mutation = useMutation({

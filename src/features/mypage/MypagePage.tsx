@@ -11,6 +11,7 @@ import { renderComponentType } from './types/index';
 import StepOne from '../auth/components/signup/StepOne';
 import { updateProfile } from '../../api/service/authApi';
 import { UpdateProfile } from '../auth/types';
+import { onPopBridge } from '../../bridge/gatheringBridge';
 
 const MypagePage = (props: mypageProps) => {
   const queryClient = useQueryClient();
@@ -43,18 +44,17 @@ const MypagePage = (props: mypageProps) => {
     setRenderComponent('mypageMain');
   };
 
+  const handleMypageBackNav = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    onPopBridge();
+  };
+
   return (
     <div>
       <BackNavigation
         classNameForIconType="close_type"
         isButton={true}
-        onClick={() => {
-          if (renderComponent === 'mypageMain') {
-            location.href = '/'; // 수정 필요: 어디로 보내야하나..
-          } else {
-            setRenderComponent('mypageMain');
-          }
-        }}
+        onClick={handleMypageBackNav}
       />
       {/* 마이페이지 메인 */}
       {renderComponent === 'mypageMain' && (

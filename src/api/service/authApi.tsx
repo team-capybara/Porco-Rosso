@@ -2,6 +2,7 @@ import apiClient from '../config';
 // import axios from 'axios';
 // import MockAdapter from 'axios-mock-adapter';
 import { UpdateProfile } from '../../features/auth/types';
+import { deleteCookie } from '../../common/utils/authUtils';
 
 // const mock: MockAdapter = new MockAdapter(axios, { delayResponse: 800 });
 
@@ -50,6 +51,7 @@ const updateProfile = async ({
 const userLogout = async () => {
   try {
     const response = await apiClient.post('/users/logout');
+    deleteCookie('access_token');
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);

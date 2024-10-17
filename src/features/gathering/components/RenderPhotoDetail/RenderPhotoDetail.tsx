@@ -80,7 +80,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
       </div>
       <div className={cn('wrap_scroll_photo_list')}>
         <ScrollPhotoList
-          moimeId={'1'}
+          moimeId={moimId}
           hiddenTitle={true}
           isMiniPhotoCard={true}
           selectedPhoto={selectedPhoto}

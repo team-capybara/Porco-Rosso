@@ -19,6 +19,10 @@ const setCookie = (name: string, value: string, days: number) => {
   document.cookie = name + '=' + value + ';' + expires + ';path=/';
 };
 
+const deleteCookie = (name: string) => {
+  document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+};
+
 const getQueryStringValue = (key: string, url = window.location.href) => {
   const urlObj = new URL(url);
   const params = new URLSearchParams(urlObj.search);
@@ -55,4 +59,10 @@ const textInputValidation = (
 
   return '';
 };
-export { getCookie, setCookie, getQueryStringValue, textInputValidation };
+export {
+  getCookie,
+  setCookie,
+  deleteCookie,
+  getQueryStringValue,
+  textInputValidation,
+};

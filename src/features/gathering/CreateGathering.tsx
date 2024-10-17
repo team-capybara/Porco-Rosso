@@ -40,6 +40,7 @@ const CreateGathering = () => {
   >([]);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [chkModalOpen, setChkModalOpen] = useState<boolean>(false);
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [moimCreateRes, setMoimCreateRes] = useState<string>('');
   const [ownerInfo, setOwnerInfo] = useState<IParticipants>();
 
@@ -50,6 +51,7 @@ const CreateGathering = () => {
     // 밸리데이션 통과
     if (!errorMsg) {
       setTextInputOpen(false);
+      setInitialLoad(false);
     } else {
       moimeToast({
         message: errorMsg, // 메시지 커스터마이징
@@ -165,7 +167,11 @@ const CreateGathering = () => {
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
     e.preventDefault();
-    onPopBridge();
+    if (initialLoad) {
+      onPopBridge();
+    } else {
+      setTextInputOpen(false);
+    }
   };
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import BackNavigation from '../../../auth/components/signup/BackNavigation';
 import classnames from 'classnames/bind';
 import styles from '../../createGathering.module.scss';
@@ -41,9 +41,6 @@ const InviteFriends = ({
     IParticipants[]
   >([]);
 
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const loadMoreRef = useRef<HTMLDivElement | null>(null); // 감지할 대상 (페이지 하단)
-
   const useFriendSearch = (
     keyword: string,
     cursorId: number | null,
@@ -54,7 +51,7 @@ const InviteFriends = ({
       isLoading, // 데이터 로딩 중 상태
       isFetching, // 추가 데이터 요청 중 상태
       isError, // 에러 상태
-      error, // 발생한 에러 객체
+      error, // 발생한 에러 객체,
     } = useQuery<GetFriendsListRes>({
       queryKey: ['friendsList', keyword, cursorId, size], // 쿼리 키 명시
       queryFn: () => getFriendsList(keyword, cursorId, size), // 쿼리 함수 명시
@@ -172,27 +169,27 @@ const InviteFriends = ({
   }, [friendsData]);
 
   // 스크롤 끝에 도달했을 때 다음 페이지 로드
-  useEffect(() => {
-    if (isFetchingNextPage || !friendsData || friendsData.last === true) return;
+  // useEffect(() => {
+  //   if (isFetchingNextPage || !friendsData || friendsData.last === true) return;
 
-    observerRef.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && friendsData.cursorId) {
-        setIsFetchingNextPage(true);
-        setCursorId(friendsData.cursorId.cursorId || null); // cursorId가 null일 수 있으므로 안전하게 처리
-      }
-    });
+  //   observerRef.current = new IntersectionObserver((entries) => {
+  //     if (entries[0].isIntersecting && friendsData.cursorId) {
+  //       setIsFetchingNextPage(true);
+  //       setCursorId(friendsData.cursorId.cursorId || null); // cursorId가 null일 수 있으므로 안전하게 처리
+  //     }
+  //   });
 
-    if (loadMoreRef.current) {
-      observerRef.current.observe(loadMoreRef.current);
-    }
+  //   if (loadMoreRef.current) {
+  //     observerRef.current.observe(loadMoreRef.current);
+  //   }
 
-    return () => {
-      if (observerRef.current && loadMoreRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        observerRef.current.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [friendsData, isFetchingNextPage]);
+  //   return () => {
+  //     if (observerRef.current && loadMoreRef.current) {
+  //       // eslint-disable-next-line react-hooks/exhaustive-deps
+  //       observerRef.current.unobserve(loadMoreRef.current);
+  //     }
+  //   };
+  // }, [friendsData, isFetchingNextPage]);
 
   const inviteFriendValidation = () => {
     const totalFriendCnt = selectedFriends.length + participantData.length;
@@ -247,6 +244,10 @@ const InviteFriends = ({
     );
   };
 
+  const updateCursorId = () => {
+    setCursorId(friendsData?.cursorId?.cursorId || null); // cursorId가 null일 수 있으므로 안전하게 처리
+  };
+
   return (
     <>
       <BackNavigation
@@ -287,11 +288,15 @@ const InviteFriends = ({
         ) : (
           <FriendSearchList
             friends={friendsData?.data || []}
+            isLast={friendsData?.last}
             selectedFriends={selectedFriends}
             onFriendSelect={handleFriendSelect}
             moimStart={moimStart}
             participantData={participantData}
             moimStatus={moimStatus}
+            updateCursorId={updateCursorId}
+            isFetchingNextPage={isFetchingNextPage}
+            setIsFetchingNextPage={setIsFetchingNextPage}
           />
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import BackNavigation from '../../../auth/components/signup/BackNavigation';
 import classnames from 'classnames/bind';
 import styles from '../../createGathering.module.scss';
@@ -73,6 +73,7 @@ const InviteFriends = ({
         return lastPage.last ? null : lastPage?.cursorId?.cursorId || null;
       },
       initialPageParam: cursorId,
+      placeholderData: (prev) => prev,
     });
 
     return {
@@ -249,6 +250,45 @@ const InviteFriends = ({
       prevSelected.filter((id) => id !== userId)
     );
   };
+
+  // 1. 스크롤 위치 저장을 위한 useRef 선언
+  const scrollPositionRef = useRef(localStorage.getItem('scrollPosition') || 0);
+
+  // 2. 컴포넌트가 언마운트될 때 스크롤 위치 저장
+  // useEffect(() => {
+  //   return () => {
+  //     scrollPositionRef.current = window.scrollY;
+  //   };
+  // }, []);
+
+  // 스크롤 위치를 저장하는 함수
+  const handleScroll = () => {
+    console.log('scroll', scrollPositionRef);
+    scrollPositionRef.current = window.scrollY;
+    localStorage.setItem(
+      'scrollPosition',
+      scrollPositionRef.current.toString()
+    );
+  };
+
+  // 컴포넌트 마운트 시 이벤트 리스너 등록
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll); // 스크롤 이벤트 등록
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 해제
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // 3. 데이터가 로딩된 후 스크롤 위치 복원
+  useEffect(() => {
+    console.log(scrollPositionRef, 'scrollPositionRef');
+    if (scrollPositionRef.current) {
+      console.log('scrollPositionRef.current', scrollPositionRef.current);
+      window.scrollTo(0, Number(scrollPositionRef.current));
+    }
+  }, [data]);
 
   return (
     <div>

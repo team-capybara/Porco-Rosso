@@ -38,45 +38,49 @@ const FriendSearchList = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastFriendRef = useRef<HTMLLIElement | null>(null); // 마지막 친구 할당용
 
-  const scrollContainerRef = useRef<HTMLUListElement | null>(null);
-
-  // 스크롤 위치 복원
-  useEffect(() => {
-    const savedScrollTop = localStorage.getItem(SCROLL_KEY);
-    if (savedScrollTop) {
-      window.scrollTo(0, parseInt(savedScrollTop, 10));
-    }
-  }, []);
-
   // 옵저버를 활용한 스크롤 위치 저장 및 페이지 로딩
+  // useEffect(() => {
+  //   observerRef.current = new IntersectionObserver((entries) => {
+  //     const lastEntry = entries[0];
+  //     if (lastEntry.isIntersecting) {
+  //       // 다음 페이지 로딩
+  //       fetchNextPage();
+  //     }
+  //   });
+
+  //   const current = lastFriendRef.current;
+  //   if (current) observerRef.current.observe(current);
+
+  //   return () => {
+  //     if (current) observerRef.current?.unobserve(current);
+  //   };
+  // }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
   useEffect(() => {
+    if (observerRef.current) observerRef.current.disconnect();
+
     observerRef.current = new IntersectionObserver((entries) => {
       const lastEntry = entries[0];
-      if (lastEntry.isIntersecting) {
-        // 스크롤 위치를 LocalStorage에 저장
-        const scrollY = window.scrollY;
-        localStorage.setItem(SCROLL_KEY, scrollY.toString());
-        console.log('Saved Scroll Position:', scrollY); // 디버깅용
-        // 다음 페이지 로딩
+      if (lastEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
     });
 
-    const current = lastFriendRef.current;
-    if (current) observerRef.current.observe(current);
+    if (lastFriendRef.current) {
+      observerRef.current.observe(lastFriendRef.current);
+    }
 
     return () => {
-      if (current) observerRef.current?.unobserve(current);
+      observerRef.current?.disconnect();
     };
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-  const SCROLL_KEY = 'inviteFriendsScrollPosition'; // 스크롤 위치를 저장할 키
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasNextPage, isFetchingNextPage]);
 
   return (
-    <ul className={cn('friend_search_list')} ref={scrollContainerRef}>
+    <ul className={cn('friend_search_list')}>
       {friends.map((friend, index) => (
         <li
-          key={friend.friendId}
+          key={`${friend.friendId}-${index}`}
           className={cn('item')}
           ref={index === friends.length - 1 ? lastFriendRef : null}
         >

@@ -6,7 +6,11 @@ import GatheringTitle from '../GatheringTitle/GatheringTitle';
 import ParticipantList from '../ParticipantList/ParticipantList';
 import FriendSearchInput from './FriendSearchInput';
 import FriendSearchList from './FriendSearchList';
-import { useQuery } from '@tanstack/react-query';
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+} from '@tanstack/react-query';
 import {
   IParticipants,
   GetFriendsListRes,
@@ -34,8 +38,7 @@ const InviteFriends = ({
   setFriendAddSuccess,
 }: InviteFriendsProps) => {
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색어 상태 관리
-  const [cursorId, setCursorId] = useState<number | null>(null); // 커서 관리
-  const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+  const [cursorId] = useState<number | null>(null); // 커서 관리
   // 선택된 친구 id를 기반으로 친구 목록에 정보를 렌더링 해줘야함
   const [selectedFriendsData, setSelectedFriendsData] = useState<
     IParticipants[]
@@ -47,35 +50,61 @@ const InviteFriends = ({
     size: number
   ) => {
     const {
-      data: friendsData, // 가져온 친구 목록 데이터
+      data, // 가져온 친구 목록 데이터
       isLoading, // 데이터 로딩 중 상태
       isFetching, // 추가 데이터 요청 중 상태
       isError, // 에러 상태
       error, // 발생한 에러 객체,
-    } = useQuery<GetFriendsListRes>({
-      queryKey: ['friendsList', keyword, cursorId, size], // 쿼리 키 명시
-      queryFn: () => getFriendsList(keyword, cursorId, size), // 쿼리 함수 명시
+      fetchNextPage,
+      hasNextPage,
+      isFetchingNextPage,
+    }: UseInfiniteQueryResult<
+      InfiniteData<GetFriendsListRes>,
+      Error
+    > = useInfiniteQuery({
+      queryKey: ['friendsList', keyword, size], // 쿼리 키에 keyword만 사용해 재사용성 향상
+      queryFn: ({ pageParam = null }) =>
+        getFriendsList(keyword, pageParam, size), // cursorId를 pageParam으로 사용
       // enabled: !!searchKeyword, // 검색어가 있을 때만 쿼리가 실행되도록 설정
-      // keepPreviousData: true, // 무한 스크롤 시 이전 데이터를 유지
-      // staleTime: 1000 * 60 * 5, // 데이터가 5분 동안 신선하다고 간주됨
+      staleTime: 1000 * 60 * 5, // 데이터가 5분 동안 신선하다고 간주됨
+      getNextPageParam: (lastPage) => {
+        console.log('lastPage:', lastPage); // 디버깅: 응답 확인
+        console.log(lastPage?.cursorId?.cursorId, '뭐지');
+        return lastPage.last ? null : lastPage?.cursorId?.cursorId || null;
+      },
+      initialPageParam: cursorId,
     });
 
-    return { friendsData, isLoading, isFetching, isError, error };
+    return {
+      data,
+      isLoading,
+      isFetching,
+      isError,
+      error,
+      fetchNextPage,
+      hasNextPage,
+      isFetchingNextPage,
+    };
   };
 
   // React Query로 친구 목록 데이터 가져오기
   const {
-    friendsData,
+    data,
     isLoading,
     isFetching,
     isError,
     // error
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useFriendSearch(searchKeyword, cursorId, 10);
+
+  const friendsData = data?.pages.flatMap((page) => page.data) || [];
 
   // 검색어 변경 처리
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(event.target.value);
-    setCursorId(null); // 검색 시 커서를 초기화
+    // setCursorId(null); // 검색 시 커서를 초기화
   };
 
   const inviteFriendBackNavClickHandler = (
@@ -95,7 +124,7 @@ const InviteFriends = ({
       const isAlreadySelected = prevSelected.includes(friendId);
 
       // friendsData에서 선택된 친구 찾기
-      const selectedFriend = friendsData?.data.find(
+      const selectedFriend = friendsData?.find(
         (friend) => friend.targetId === friendId
       );
 
@@ -153,8 +182,8 @@ const InviteFriends = ({
         (moimStart && moimStatus === 'CREATED' && isUserAndOwner)
         // || (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
       ) {
-        const selectedData = friendsData?.data
-          .filter((friend) => selectedFriends.includes(friend.targetId))
+        const selectedData = friendsData
+          ?.filter((friend) => selectedFriends.includes(friend.targetId))
           .map((friend) => ({
             userId: friend.targetId,
             nickname: friend.targetNickname,
@@ -167,29 +196,6 @@ const InviteFriends = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendsData]);
-
-  // 스크롤 끝에 도달했을 때 다음 페이지 로드
-  // useEffect(() => {
-  //   if (isFetchingNextPage || !friendsData || friendsData.last === true) return;
-
-  //   observerRef.current = new IntersectionObserver((entries) => {
-  //     if (entries[0].isIntersecting && friendsData.cursorId) {
-  //       setIsFetchingNextPage(true);
-  //       setCursorId(friendsData.cursorId.cursorId || null); // cursorId가 null일 수 있으므로 안전하게 처리
-  //     }
-  //   });
-
-  //   if (loadMoreRef.current) {
-  //     observerRef.current.observe(loadMoreRef.current);
-  //   }
-
-  //   return () => {
-  //     if (observerRef.current && loadMoreRef.current) {
-  //       // eslint-disable-next-line react-hooks/exhaustive-deps
-  //       observerRef.current.unobserve(loadMoreRef.current);
-  //     }
-  //   };
-  // }, [friendsData, isFetchingNextPage]);
 
   const inviteFriendValidation = () => {
     const totalFriendCnt = selectedFriends.length + participantData.length;
@@ -244,12 +250,8 @@ const InviteFriends = ({
     );
   };
 
-  const updateCursorId = () => {
-    setCursorId(friendsData?.cursorId?.cursorId || null); // cursorId가 null일 수 있으므로 안전하게 처리
-  };
-
   return (
-    <>
+    <div>
       <BackNavigation
         classNameForIconType="close_type"
         hasNext={false}
@@ -276,7 +278,7 @@ const InviteFriends = ({
       <div className={cn('wrap_friend_search_input')}>
         <strong className={cn('title')}>
           내친구
-          <span className={cn('count')}>{friendsData?.data?.length}명</span>
+          <span className={cn('count')}>{friendsData?.length}명</span>
         </strong>
         <FriendSearchInput onChange={handleSearchChange} />
       </div>
@@ -287,20 +289,19 @@ const InviteFriends = ({
           <div>에러 발생</div>
         ) : (
           <FriendSearchList
-            friends={friendsData?.data || []}
-            isLast={friendsData?.last}
+            friends={friendsData || []}
             selectedFriends={selectedFriends}
             onFriendSelect={handleFriendSelect}
             moimStart={moimStart}
             participantData={participantData}
             moimStatus={moimStatus}
-            updateCursorId={updateCursorId}
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
             isFetchingNextPage={isFetchingNextPage}
-            setIsFetchingNextPage={setIsFetchingNextPage}
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 

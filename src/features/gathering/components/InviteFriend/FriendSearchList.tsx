@@ -14,10 +14,10 @@ interface FriendSearchListProps {
   moimStart: boolean;
   participantData: IParticipants[];
   moimStatus: moimStatusType; // 모임 상태(CREATED, ONGOING)
-  updateCursorId: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fetchNextPage: () => Promise<any>;
+  hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
-  isLast?: boolean;
-  setIsFetchingNextPage: (value: boolean) => void;
 }
 
 const FriendSearchList = ({
@@ -27,10 +27,9 @@ const FriendSearchList = ({
   moimStart,
   participantData,
   moimStatus, // 모임 상태(CREATED, ONGOING)
-  updateCursorId,
   isFetchingNextPage,
-  setIsFetchingNextPage,
-  isLast,
+  hasNextPage,
+  fetchNextPage,
 }: FriendSearchListProps) => {
   const participantIds = new Set(
     participantData.map((participant) => participant.userId)
@@ -39,34 +38,42 @@ const FriendSearchList = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastFriendRef = useRef<HTMLLIElement | null>(null); // 마지막 친구 할당용
 
-  // 마지막 친구를 관찰하는 IntersectionObserver 설정
-  useEffect(() => {
-    console.log('머지');
-    console.log(isFetchingNextPage, isLast, friends.length);
-    if (isFetchingNextPage || isLast || !friends.length) return; // 이미 다음 페이지를 가져오는 중이면 중단
-    console.log('dfsdf');
+  const scrollContainerRef = useRef<HTMLUListElement | null>(null);
 
+  // 스크롤 위치 복원
+  useEffect(() => {
+    const savedScrollTop = localStorage.getItem(SCROLL_KEY);
+    if (savedScrollTop) {
+      window.scrollTo(0, parseInt(savedScrollTop, 10));
+    }
+  }, []);
+
+  // 옵저버를 활용한 스크롤 위치 저장 및 페이지 로딩
+  useEffect(() => {
     observerRef.current = new IntersectionObserver((entries) => {
-      const lastEntry = entries[0]; // 첫 번째 관찰 항목(마지막 친구)
-      console.log(lastEntry, 'lastEntry');
+      const lastEntry = entries[0];
       if (lastEntry.isIntersecting) {
-        setIsFetchingNextPage(true); // 다음 페이지 로드 중 상태로 설정
-        updateCursorId();
+        // 스크롤 위치를 LocalStorage에 저장
+        const scrollY = window.scrollY;
+        localStorage.setItem(SCROLL_KEY, scrollY.toString());
+        console.log('Saved Scroll Position:', scrollY); // 디버깅용
+        // 다음 페이지 로딩
+        fetchNextPage();
       }
     });
 
     const current = lastFriendRef.current;
-    console.log(current, '머지');
-    if (current) observerRef.current.observe(current); // 마지막 친구 관찰 시작
+    if (current) observerRef.current.observe(current);
 
     return () => {
-      if (current) observerRef.current?.unobserve(current); // 컴포넌트 언마운트 시 정리
+      if (current) observerRef.current?.unobserve(current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [friends, isFetchingNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  const SCROLL_KEY = 'inviteFriendsScrollPosition'; // 스크롤 위치를 저장할 키
 
   return (
-    <ul className={cn('friend_search_list')}>
+    <ul className={cn('friend_search_list')} ref={scrollContainerRef}>
       {friends.map((friend, index) => (
         <li
           key={friend.friendId}

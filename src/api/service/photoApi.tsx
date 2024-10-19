@@ -8,7 +8,7 @@ export const getMoimePhoto = async (
 ): Promise<getMoimePhotoResponse> => {
   try {
     const res = await apiClient.get(
-      `/moims/${moimId}/photos?size=${size}&cursorId=${cursorId}`
+      `/moims/${moimId}/photos?size=${size}&cursorId=${cursorId || ''}`
     );
 
     console.warn('체크 response', res.data);

@@ -11,6 +11,7 @@ import { renderComponentType } from './types/index';
 import StepOne from '../auth/components/signup/StepOne';
 import { updateProfile } from '../../api/service/authApi';
 import { UpdateProfile } from '../auth/types';
+import { onPopBridge } from '../../bridge/gatheringBridge';
 
 const MypagePage = (props: mypageProps) => {
   const queryClient = useQueryClient();
@@ -20,6 +21,13 @@ const MypagePage = (props: mypageProps) => {
   const { data: userData } = useQuery<UserProfile>({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
+    select: (data) => {
+      // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
+      return {
+        ...data,
+        profile: `${data.profile}?t=${new Date().getTime()}`,
+      };
+    },
   });
 
   console.warn(props, 'props');
@@ -36,18 +44,17 @@ const MypagePage = (props: mypageProps) => {
     setRenderComponent('mypageMain');
   };
 
+  const handleMypageBackNav = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    onPopBridge();
+  };
+
   return (
     <div>
       <BackNavigation
         classNameForIconType="close_type"
         isButton={true}
-        onClick={() => {
-          if (renderComponent === 'mypageMain') {
-            location.href = '/'; // 수정 필요: 어디로 보내야하나..
-          } else {
-            setRenderComponent('mypageMain');
-          }
-        }}
+        onClick={handleMypageBackNav}
       />
       {/* 마이페이지 메인 */}
       {renderComponent === 'mypageMain' && (

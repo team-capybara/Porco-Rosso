@@ -100,3 +100,15 @@ export const addFriendsToMoim = async (
     throw error;
   }
 };
+
+// 모임 종료 (진행중 => 종료)
+export const finishMoim = async (moimId: number) => {
+  try {
+    const response = await apiClient.put(`/moims/${moimId}/finish`);
+    console.warn('모임종료 response: ' + response);
+    return response.data.status;
+  } catch (error) {
+    console.error('Error finish Moim : ', error);
+    throw error;
+  }
+};

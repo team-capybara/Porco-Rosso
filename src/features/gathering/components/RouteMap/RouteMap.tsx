@@ -18,6 +18,7 @@ declare global {
 interface RouteMapProps {
   locationSummary?: GatheringLocation;
   moimId: number;
+  isRefresh: boolean;
 }
 const RouteMap = (props: RouteMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null); //map이 들어가야 할 DOM
@@ -34,13 +35,18 @@ const RouteMap = (props: RouteMapProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (props.isRefresh) getMapData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.isRefresh]);
+
   // 지도
   useEffect(() => {
     console.log(data);
     // data가 없으면 리턴
     if (!data || !Object.keys(data).includes('locations')) return;
     // 이미 그려진 지도가 있으면 리턴
-    if (mapInstance.current) return;
+    // if (mapInstance.current) return; (새로고침을 위해 주석처리)
     mapInstance.current = new kakao.maps.Map(mapContainer.current!, {
       center: new kakao.maps.LatLng(
         props.locationSummary?.latitude,

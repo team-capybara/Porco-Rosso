@@ -25,8 +25,8 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   const navigate = useNavigate();
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
-  // const [moimId] = useState<number>(getmoimId(useLocation()));
-  const [moimId] = useState<number>(90);
+  const [moimId] = useState<number>(getmoimId(useLocation()));
+  // const [moimId] = useState<number>(92);
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
 

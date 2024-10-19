@@ -18,6 +18,10 @@ interface Props {
   classNameForPage?: '' | 'invite_friends' | 'upcoming_page';
   onClickEditButton?: () => void;
   onClickFinishButton?: () => void;
+  onClickUpcomingButton?: (mode: string) => void;
+  isUserAndOwner?: boolean;
+  isParticipant?: boolean;
+  mode?: string;
 }
 
 const GatheringTitle = ({
@@ -31,6 +35,10 @@ const GatheringTitle = ({
   onClickEditButton,
   onClickFinishButton,
   classNameForPage = '',
+  isUserAndOwner = false,
+  isParticipant = false,
+  mode = '',
+  onClickUpcomingButton,
 }: Props) => {
   return (
     <div className={cn('gathering_title')}>
@@ -78,13 +86,17 @@ const GatheringTitle = ({
           type="button"
           className={cn(
             'button',
-            { revise: true },
-            { getout: false },
-            { delete: false }
+            { revise: isUserAndOwner },
+            { getout: isParticipant },
+            { delete: mode === 'revise' ? true : false }
           )}
           disabled={false}
+          onClick={() => onClickUpcomingButton && onClickUpcomingButton(mode)}
         >
-          수정
+          {isUserAndOwner && '수정'}
+          {isParticipant && '나가기'}
+          {mode === 'revise' && '삭제'}
+          {/* 수정 */}
         </button>
       )}
       {classNameForPage === 'invite_friends' && (

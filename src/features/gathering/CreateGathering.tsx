@@ -16,6 +16,7 @@ import { createMoim } from '../../api/service/gatheringApi';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
 import { onPopBridge } from '../../bridge/gatheringBridge.ts';
+import { useMoimeToast } from '../../common/utils/useMoimeToast.tsx';
 
 const cn = classnames.bind(styles);
 
@@ -39,16 +40,25 @@ const CreateGathering = () => {
   >([]);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [chkModalOpen, setChkModalOpen] = useState<boolean>(false);
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [moimCreateRes, setMoimCreateRes] = useState<string>('');
   const [ownerInfo, setOwnerInfo] = useState<IParticipants>();
+
+  const { moimeToast } = useMoimeToast();
 
   const checkTextInputValid = (input: string) => {
     const errorMsg = textInputValidation(input, 'withEmoji');
     // 밸리데이션 통과
     if (!errorMsg) {
       setTextInputOpen(false);
+      setInitialLoad(false);
     } else {
-      alert(errorMsg); // 추후 토스트 공통화 후 토스트로 바꿈
+      moimeToast({
+        message: errorMsg, // 메시지 커스터마이징
+        onClickEnabled: false, // onClick 활성화
+        duration: 3000, // 지속 시간 설정
+        id: 'moim-title-validation-toast', // 고유 ID 설정
+      });
     }
   };
 
@@ -157,7 +167,11 @@ const CreateGathering = () => {
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
     e.preventDefault();
-    setTextInputOpen(false);
+    if (initialLoad) {
+      onPopBridge();
+    } else {
+      setTextInputOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -200,6 +214,7 @@ const CreateGathering = () => {
           isButton={true}
           onClick={textInputBackNavClickHandler}
           blindText="이전으로"
+          onClickNextButton={() => checkTextInputValid(gatheringData.title)}
         />
         <div className={cn('wrap_text_input')}>
           <TextInput
@@ -208,7 +223,7 @@ const CreateGathering = () => {
           />
         </div>
         {/* 버튼 위치 마크업 필요 */}
-        <div className={cn('wrap_confirm_button')}>
+        {/* <div className={cn('wrap_confirm_button')}>
           <button
             type="button"
             className={cn('confirm_button')}
@@ -217,7 +232,7 @@ const CreateGathering = () => {
           >
             확인
           </button>
-        </div>
+        </div> */}
       </>
     );
   };
@@ -227,7 +242,14 @@ const CreateGathering = () => {
     const { title, location, startedAt } = gatheringData;
     return (
       <>
-        <BackNavigation classNameForIconType="close_type" />
+        <BackNavigation
+          classNameForIconType="close_type"
+          blindText="이전으로"
+          isButton={true}
+          onClick={() => {
+            onPopBridge();
+          }}
+        />
         <GatheringTitle
           title={title || '제목 없는 모임'}
           description="정보를 채우고 모임을 시작해보세요."

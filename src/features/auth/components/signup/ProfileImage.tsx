@@ -34,8 +34,10 @@ const ProfileImage = ({
 
   const editProfile = () => {
     window.kmpJsBridge.callNative('onPickImage', '', function (data: string) {
+      console.log('브릿지 발동');
       try {
         const parsedData = JSON.parse(data);
+        console.log(parsedData, 'parsedData');
         if (parsedData && parsedData.image) {
           const base64Image = `data:image/jpeg;base64,${parsedData.image}`;
           setProfile(base64Image);
@@ -45,11 +47,13 @@ const ProfileImage = ({
 
           // base64 문자열을 Blob으로 변환하는 함수 호출
           const blob = base64ToBlob(base64Data, contentType);
+          console.log(blob, 'blob');
 
           // Blob을 File 객체로 변환
           const fileName = 'profile.jpg'; // 원하는 파일 이름 설정
           const file = new File([blob], fileName, { type: contentType });
 
+          console.log(file, 'file');
           // onChange 함수 호출하여 파일 전달
           onChange(file);
         }

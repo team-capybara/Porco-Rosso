@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './friendSearchList.module.scss';
 import { Friend, IParticipants, moimStatusType } from '../../types';
@@ -13,6 +14,10 @@ interface FriendSearchListProps {
   moimStart: boolean;
   participantData: IParticipants[];
   moimStatus: moimStatusType; // 모임 상태(CREATED, ONGOING)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fetchNextPage: () => Promise<any>;
+  hasNextPage: boolean | undefined;
+  isFetchingNextPage: boolean;
 }
 
 const FriendSearchList = ({
@@ -22,15 +27,45 @@ const FriendSearchList = ({
   moimStart,
   participantData,
   moimStatus, // 모임 상태(CREATED, ONGOING)
+  isFetchingNextPage,
+  hasNextPage,
+  fetchNextPage,
 }: FriendSearchListProps) => {
   const participantIds = new Set(
     participantData.map((participant) => participant.userId)
   );
   // 친구 검색 결과 리스트
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastFriendRef = useRef<HTMLLIElement | null>(null); // 마지막 친구 할당용
+
+  useEffect(() => {
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver((entries) => {
+      const lastEntry = entries[0];
+      if (lastEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    });
+
+    if (lastFriendRef.current) {
+      observerRef.current.observe(lastFriendRef.current);
+    }
+
+    return () => {
+      observerRef.current?.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasNextPage, isFetchingNextPage]);
+
   return (
     <ul className={cn('friend_search_list')}>
-      {friends.map((friend) => (
-        <li key={friend.friendId} className={cn('item')}>
+      {friends.map((friend, index) => (
+        <li
+          key={`${friend.friendId}-${index}`}
+          className={cn('item')}
+          ref={index === friends.length - 1 ? lastFriendRef : null}
+        >
           <FriendCard
             friend={friend}
             isSelected={selectedFriends.includes(friend.targetId)}

@@ -14,10 +14,14 @@ import {
   moimStatusType,
   ongoingType,
 } from '../../types';
-import { getGatheringInfo } from '../../../../api/service/gatheringApi';
+import {
+  finishMoim,
+  getGatheringInfo,
+} from '../../../../api/service/gatheringApi';
 import { getUserInfoId } from '../../../../common/utils/userInfo';
 import { onPopBridge } from '../../../../bridge/gatheringBridge';
 import InviteFriends from '../InviteFriend/InviteFriends';
+import { useNavigate } from 'react-router-dom';
 
 const cn = classnames.bind(styles);
 
@@ -43,12 +47,14 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     setInviteFriendOpen,
     // setRenderMemoryComponent,
   } = props;
+  const navigate = useNavigate();
   // const [leaveModal, setModal] = useState<boolean>(false);
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   const [userId, setUserId] = useState<number>();
   // const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
   const [isFriendAddSuccess, setIsFriendAddSuccess] = useState<boolean>(false);
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
 
   useEffect(() => {
     if (gatheringInfoData?.participants) {
@@ -112,11 +118,19 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                   description={getDateFromDatetime(
                     gatheringInfoData?.startedAt
                   )}
-                  hasRefreshButton={moimStatus === 'ONGOING' ? true : false}
+                  hasRefreshButton={
+                    moimStatus === 'ONGOING' && isRefresh === false
+                      ? true
+                      : false
+                  }
                   // hasShareButton={moimStatus === 'COMPLETED' ? true : false}
                   onClickRefreshButton={() => {
                     checkMoimOngoingStatus();
                     setGatheringInfoDataFunc();
+                    setIsRefresh(true);
+                    setTimeout(() => {
+                      setIsRefresh(false); // 0.5 초 동안 버튼 안 보이게 처리
+                    }, 500);
                   }}
                   // onClickShareButton={() => shareMemory()}
                 />
@@ -138,12 +152,14 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                   isMiniPhotoCard={false}
                   isJustImg={false}
                   setRenderComponent={setRenderOngoingComponent}
+                  isRefresh={isRefresh}
                 />
               </section>
               <section className={cn('section')}>
                 <RouteMap
                   locationSummary={gatheringInfoData?.location}
                   moimId={moimId}
+                  isRefresh={isRefresh}
                 />
               </section>
               {moimStatus === 'ONGOING' &&
@@ -162,9 +178,15 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                             setModal(null);
                           },
                           onClickSecondButton: () => {
-                            // TODO : 종료 api 호출
-                            onPopBridge();
-                            setModal(null);
+                            finishMoim(moimId)
+                              .then(() => {
+                                setModal(null);
+                                navigate(`/ended-gathering?moimId=${moimId}`); // ended-gathering 이동
+                              })
+                              .catch(() => {
+                                console.error('모임 종료 실패');
+                                // 토스트 팝업 요망
+                              });
                           },
                         });
                       }}

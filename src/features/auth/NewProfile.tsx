@@ -19,6 +19,7 @@ const cn = classnames.bind(styles);
 const NewProfile = () => {
   const queryClient = useQueryClient();
   const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false);
+  const [displayNickname, setDisplayNickname] = useState<string>('');
   // const navigate = useNavigate();
   // const location = useLocation();
 
@@ -43,6 +44,13 @@ const NewProfile = () => {
   } = useQuery<UserProfile>({
     queryKey: ['userInfo'],
     queryFn: getUserInfo,
+    select: (data) => {
+      // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
+      return {
+        ...data,
+        profile: `${data.profile}?t=${new Date().getTime()}`,
+      };
+    },
   });
 
   const mutation = useMutation({
@@ -73,9 +81,12 @@ const NewProfile = () => {
                 }} // 초기값을 전달
                 onSave={handleSave}
                 mode="signup"
+                setDisplayNickname={setDisplayNickname}
               />
             )}
-            {signUpSuccess && <StepThree nickname={userData.nickname} />}
+            {signUpSuccess && (
+              <StepThree nickname={displayNickname || userData?.nickname} />
+            )}
           </>
         ) : (
           <div>No user data available</div>

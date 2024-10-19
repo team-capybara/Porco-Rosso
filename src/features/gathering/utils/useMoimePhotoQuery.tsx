@@ -51,7 +51,7 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
   };
 
   // 전체 사진 개수(total) 계산
-  const totalPhotos = data?.pages[0].total || 0;
+  const totalPhotos = data?.pages[0]?.total || 0;
 
   return {
     data,

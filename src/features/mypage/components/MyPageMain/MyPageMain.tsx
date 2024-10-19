@@ -113,7 +113,7 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
             }}
             onClickSecondButton={() => {
               userLogout().then(() => {
-                window.location.href = '/'; // to Main page
+                window.location.href = '/'; // to SocialLogin
               });
             }}
           />

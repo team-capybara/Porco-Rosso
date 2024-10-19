@@ -21,6 +21,7 @@ interface Props {
   selectedPhoto?: PhotoCardProps;
   setSelectedPhoto?: React.Dispatch<React.SetStateAction<PhotoCardProps>>;
   isJustImg: boolean;
+  isRefresh: boolean;
 }
 
 const ScrollPhotoList = ({
@@ -30,13 +31,19 @@ const ScrollPhotoList = ({
   setRenderComponent,
   selectedPhoto,
   isJustImg = false,
+  isRefresh = false,
 }: Props) => {
   const navigate = useNavigate();
   const targetRef = useRef<HTMLLIElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const { data, fetchNextPage, isFetchingNextPage, totalPhotos } =
-    useMoimePhotoQuery(moimeId, null); // 초기 cursorId = null;
+  const {
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    totalPhotos,
+    resetAndFetchFirstPage,
+  } = useMoimePhotoQuery(moimeId, null); // 초기 cursorId = null;
 
   const observerCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry: IntersectionObserverEntry) => {
@@ -65,6 +72,11 @@ const ScrollPhotoList = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (isRefresh) resetAndFetchFirstPage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]); // 새로고침
 
   const setSelectedPhotoId = (selectedPhotoId: string) => {
     const searchParams = new URLSearchParams(location.search);

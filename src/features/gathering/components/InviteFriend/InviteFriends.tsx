@@ -6,20 +6,10 @@ import GatheringTitle from '../GatheringTitle/GatheringTitle';
 import ParticipantList from '../ParticipantList/ParticipantList';
 import FriendSearchInput from './FriendSearchInput';
 import FriendSearchList from './FriendSearchList';
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  UseInfiniteQueryResult,
-} from '@tanstack/react-query';
-import {
-  IParticipants,
-  GetFriendsListRes,
-  InviteFriendsProps,
-} from '../../types';
-import {
-  addFriendsToMoim,
-  getFriendsList,
-} from '../../../../api/service/gatheringApi';
+import { IParticipants, InviteFriendsProps } from '../../types';
+import { addFriendsToMoim } from '../../../../api/service/gatheringApi';
+import { useFriendSearch } from '../../utils/useFriendSearch';
+import { useDebounce } from '../../utils/useDebounce';
 
 const cn = classnames.bind(styles);
 
@@ -44,68 +34,26 @@ const InviteFriends = ({
     IParticipants[]
   >([]);
 
-  const useFriendSearch = (
-    keyword: string,
-    cursorId: number | null,
-    size: number
-  ) => {
-    const {
-      data, // 가져온 친구 목록 데이터
-      isLoading, // 데이터 로딩 중 상태
-      isFetching, // 추가 데이터 요청 중 상태
-      isError, // 에러 상태
-      error, // 발생한 에러 객체,
-      fetchNextPage,
-      hasNextPage,
-      isFetchingNextPage,
-    }: UseInfiniteQueryResult<
-      InfiniteData<GetFriendsListRes>,
-      Error
-    > = useInfiniteQuery({
-      queryKey: ['friendsList', keyword, size], // 쿼리 키에 keyword만 사용해 재사용성 향상
-      queryFn: ({ pageParam = null }) =>
-        getFriendsList(keyword, pageParam, size), // cursorId를 pageParam으로 사용
-      // enabled: !!searchKeyword, // 검색어가 있을 때만 쿼리가 실행되도록 설정
-      staleTime: 1000 * 60 * 5, // 데이터가 5분 동안 신선하다고 간주됨
-      getNextPageParam: (lastPage) => {
-        console.log('lastPage:', lastPage); // 디버깅: 응답 확인
-        console.log(lastPage?.cursorId?.cursorId, '뭐지');
-        return lastPage.last ? null : lastPage?.cursorId?.cursorId || null;
-      },
-      initialPageParam: cursorId,
-      placeholderData: (prev) => prev,
-    });
-
-    return {
-      data,
-      isLoading,
-      isFetching,
-      isError,
-      error,
-      fetchNextPage,
-      hasNextPage,
-      isFetchingNextPage,
-    };
-  };
+  const debouncedKeyword = useDebounce(searchKeyword, 300);
 
   // React Query로 친구 목록 데이터 가져오기
   const {
     data,
-    // isLoading,
-    // isFetching,
-    // isError,
+    isLoading,
+    isFetching,
+    isError,
     // error
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useFriendSearch(searchKeyword, cursorId, 10);
+  } = useFriendSearch(debouncedKeyword, cursorId, 10);
 
   const friendsData = data?.pages.flatMap((page) => page.data) || [];
+  console.log(friendsData, 'freindData');
 
   // 검색어 변경 처리
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(event.target.value);
-    // setCursorId(null); // 검색 시 커서를 초기화
   };
 
   const inviteFriendBackNavClickHandler = (
@@ -126,7 +74,7 @@ const InviteFriends = ({
 
       // friendsData에서 선택된 친구 찾기
       const selectedFriend = friendsData?.find(
-        (friend) => friend.targetId === friendId
+        (friend) => friend.id === friendId
       );
 
       if (!selectedFriend) return prevSelected; // 친구가 없으면 이전 선택을 반환
@@ -140,15 +88,15 @@ const InviteFriends = ({
         }
         // 이미 추가된 경우는 중복 방지, 추가되지 않은 경우만 추가
         const isAlreadyAdded = prevList.some(
-          (participant) => participant.userId === selectedFriend.targetId
+          (participant) => participant.userId === selectedFriend.id
         );
         if (!isAlreadyAdded) {
           return [
             ...prevList,
             {
-              userId: selectedFriend.targetId,
-              nickname: selectedFriend.targetNickname,
-              profileImageUrl: selectedFriend.targetProfile,
+              userId: selectedFriend.id,
+              nickname: selectedFriend.nickname,
+              profileImageUrl: selectedFriend.profile,
               isOwner: false, // 친구는 owner가 아니므로 false
             },
           ];
@@ -184,11 +132,11 @@ const InviteFriends = ({
         // || (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
       ) {
         const selectedData = friendsData
-          ?.filter((friend) => selectedFriends.includes(friend.targetId))
+          ?.filter((friend) => selectedFriends.includes(friend.id))
           .map((friend) => ({
-            userId: friend.targetId,
-            nickname: friend.targetNickname,
-            profileImageUrl: friend.targetProfile,
+            userId: friend.id,
+            nickname: friend.nickname,
+            profileImageUrl: friend.profile,
             isOwner: false,
           }));
 
@@ -294,6 +242,9 @@ const InviteFriends = ({
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          isError={isError}
         />
       </div>
     </div>

@@ -18,6 +18,9 @@ interface FriendSearchListProps {
   fetchNextPage: () => Promise<any>;
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
+  isLoading: boolean;
+  isFetching: boolean;
+  isError: boolean;
 }
 
 const FriendSearchList = ({
@@ -30,6 +33,9 @@ const FriendSearchList = ({
   isFetchingNextPage,
   hasNextPage,
   fetchNextPage,
+  isLoading,
+  isFetching,
+  isError,
 }: FriendSearchListProps) => {
   const participantIds = new Set(
     participantData.map((participant) => participant.userId)
@@ -59,24 +65,32 @@ const FriendSearchList = ({
   }, [hasNextPage, isFetchingNextPage]);
 
   return (
-    <ul className={cn('friend_search_list')}>
-      {friends.map((friend, index) => (
-        <li
-          key={`${friend.friendId}-${index}`}
-          className={cn('item')}
-          ref={index === friends.length - 1 ? lastFriendRef : null}
-        >
-          <FriendCard
-            friend={friend}
-            isSelected={selectedFriends.includes(friend.targetId)}
-            onClick={() => onFriendSelect(friend.targetId)}
-            moimStart={moimStart}
-            moimStatus={moimStatus}
-            disabled={participantIds.has(friend.targetId)}
-          />
-        </li>
-      ))}
-    </ul>
+    <>
+      {isLoading || isFetching ? (
+        <div>로딩 중...</div>
+      ) : isError ? (
+        <div>에러 발생</div>
+      ) : (
+        <ul className={cn('friend_search_list')}>
+          {friends.map((friend, index) => (
+            <li
+              key={`${friend.friendId}-${index}`}
+              className={cn('item')}
+              ref={index === friends.length - 1 ? lastFriendRef : null}
+            >
+              <FriendCard
+                friend={friend}
+                isSelected={selectedFriends.includes(friend.id)}
+                onClick={() => onFriendSelect(friend.id)}
+                moimStart={moimStart}
+                moimStatus={moimStatus}
+                disabled={participantIds.has(friend.id)}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 };
 

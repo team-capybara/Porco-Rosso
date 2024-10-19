@@ -222,17 +222,6 @@ const CreateGathering = () => {
             onChange={(value: string) => handleChange('title', value)} // 제목 변경 처리
           />
         </div>
-        {/* 버튼 위치 마크업 필요 */}
-        {/* <div className={cn('wrap_confirm_button')}>
-          <button
-            type="button"
-            className={cn('confirm_button')}
-            style={{ color: 'white' }}
-            onClick={() => checkTextInputValid(gatheringData.title)}
-          >
-            확인
-          </button>
-        </div> */}
       </>
     );
   };

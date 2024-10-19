@@ -88,10 +88,6 @@ const GatheringInfoInputs = ({
               <span className={cn('number')}>
                 {getDateFromDatetime(startedAt)}
               </span>
-              {/* 큰 차이 없다면 위 처럼 파싱된 날짜로 바로 나타내는게 심플할 거 같은데 어떻게 생각하시나용?*/}
-              {/* <span className={cn('number')}>2024</span>년{' '}
-              <span className={cn('number')}>5</span>월{' '}
-              <span className={cn('number')}>3</span>일 */}
             </span>
           ) : (
             <span className={cn('text')}>날짜를 선택해 주세요</span>

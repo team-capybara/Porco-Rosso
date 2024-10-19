@@ -5,7 +5,7 @@ import IconOut24X24 from '../../../../assets/svg/icon/IconOut24X24';
 import { onNavigateCamera } from '../../../../bridge/ongoingBridge';
 import { ModalContentsProps } from '../../types';
 import { onPopBridge } from '../../../../bridge/gatheringBridge';
-import { deleteMoim } from '../../../../api/service/gatheringApi';
+import { leaveMoim } from '../../../../api/service/gatheringApi';
 
 const cn = classnames.bind(styles);
 interface OngoingFooterProps {
@@ -36,13 +36,13 @@ const OngoingFooter = (props: OngoingFooterProps) => {
     secondButton: '추억 남기기',
     onClickFirstButton: () => {
       checkMoimOngoingStatus();
-      deleteMoim(moimId);
+      leaveMoim(moimId, false);
       onPopBridge();
       setModal(null);
     },
     onClickSecondButton: () => {
       checkMoimOngoingStatus();
-      // TODO : 추억 남기기 api 호출
+      leaveMoim(moimId, true);
       onPopBridge();
       setModal(null);
     },

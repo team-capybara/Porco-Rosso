@@ -61,13 +61,15 @@ export const createMoim = async (
   }
 };
 
-// 모임 삭제
-export const deleteMoim = async (moimId: number) => {
+// 모임 나가기 (leaveTrace : 추억 남길지 여부)
+export const leaveMoim = async (moimId: number, leaveTrace: boolean) => {
   try {
-    const response = await apiClient.delete(`/moims/${moimId}`);
+    const response = await apiClient.put(`/moims/${moimId}`, {
+      leaveTrace: leaveTrace,
+    });
     return response.data;
   } catch (error) {
-    console.error('Error delete Moim : ', error);
+    console.error('Error leave Moim : ', error);
     throw error;
   }
 };

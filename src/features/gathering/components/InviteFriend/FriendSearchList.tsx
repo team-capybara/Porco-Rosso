@@ -38,24 +38,6 @@ const FriendSearchList = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastFriendRef = useRef<HTMLLIElement | null>(null); // 마지막 친구 할당용
 
-  // 옵저버를 활용한 스크롤 위치 저장 및 페이지 로딩
-  // useEffect(() => {
-  //   observerRef.current = new IntersectionObserver((entries) => {
-  //     const lastEntry = entries[0];
-  //     if (lastEntry.isIntersecting) {
-  //       // 다음 페이지 로딩
-  //       fetchNextPage();
-  //     }
-  //   });
-
-  //   const current = lastFriendRef.current;
-  //   if (current) observerRef.current.observe(current);
-
-  //   return () => {
-  //     if (current) observerRef.current?.unobserve(current);
-  //   };
-  // }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
 

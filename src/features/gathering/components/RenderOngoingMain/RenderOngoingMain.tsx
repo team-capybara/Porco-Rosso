@@ -14,10 +14,14 @@ import {
   moimStatusType,
   ongoingType,
 } from '../../types';
-import { getGatheringInfo } from '../../../../api/service/gatheringApi';
+import {
+  finishMoim,
+  getGatheringInfo,
+} from '../../../../api/service/gatheringApi';
 import { getUserInfoId } from '../../../../common/utils/userInfo';
 import { onPopBridge } from '../../../../bridge/gatheringBridge';
 import InviteFriends from '../InviteFriend/InviteFriends';
+import { useNavigate } from 'react-router-dom';
 
 const cn = classnames.bind(styles);
 
@@ -43,6 +47,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     setInviteFriendOpen,
     // setRenderMemoryComponent,
   } = props;
+  const navigate = useNavigate();
   // const [leaveModal, setModal] = useState<boolean>(false);
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   const [userId, setUserId] = useState<number>();
@@ -162,9 +167,10 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                             setModal(null);
                           },
                           onClickSecondButton: () => {
-                            // TODO : 종료 api 호출
-                            onPopBridge();
-                            setModal(null);
+                            finishMoim(moimId).then(() => {
+                              setModal(null);
+                              navigate(`/ended-gathering?moimId=${moimId}`); // ended-gathering 이동
+                            });
                           },
                         });
                       }}

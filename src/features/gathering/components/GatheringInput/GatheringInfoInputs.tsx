@@ -149,7 +149,9 @@ const GatheringInfoInputs = ({
               onChange={(date: string) => onChange('startedAt', date)}
             />
           )}
-          {timeOpen && <TimeInput onChange={onTimeSelect} />}
+          {timeOpen && (
+            <TimeInput onChange={onTimeSelect} timeData={timeData} />
+          )}
           {locationOpen && (
             <LocationSearchInput onPlaceSelect={onPlaceSelect} />
           )}

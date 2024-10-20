@@ -20,48 +20,8 @@ interface LocationSearchInputProps {
 const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
   const [searchInput, setSearchInput] = useState('');
   const [places, setPlaces] = useState<any[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [page, setPage] = useState<number>(1);
-
-  // // 카카오 API 로드 확인
-  // useEffect(() => {
-  //   if (searchInput.trim()) {
-  //     // 검색어가 있을 때만 검색 실행
-  //     const ps = new kakao.maps.services.Places();
-  //     ps.keywordSearch(searchInput, (data: any[], status: any) => {
-  //       if (status === kakao.maps.services.Status.OK) {
-  //         setPlaces(data);
-  //       } else {
-  //         // alert('검색 결과가 없습니다.');
-  //         setPlaces([]); // 검색 결과 없을 때 places 초기화
-  //         // 장소 검색결과가 없습니다를 띄워줘야할듯
-  //       }
-  //     });
-  //   } else {
-  //     setPlaces([]); // 검색어가 비었을 때 검색 결과 초기화
-  //   }
-  // }, [searchInput]);
-
-  // 디바운스된 검색어
-  // const debouncedSearchInput = useDebounce(searchInput, 300); // 300ms 지연
-
-  // // 카카오 API 로드 및 검색 실행
-  // useEffect(() => {
-  //   console.log(debouncedSearchInput, '체크체크');
-  //   if (debouncedSearchInput.trim()) {
-  //     const ps = new kakao.maps.services.Places();
-  //     ps.keywordSearch(debouncedSearchInput, (data: any[], status: any) => {
-  //       if (status === kakao.maps.services.Status.OK) {
-  //         console.log(data, 'data');
-  //         setPlaces(data);
-  //       } else {
-  //         setPlaces([]); // 검색 결과가 없을 때 초기화
-  //       }
-  //     });
-  //   } else {
-  //     setPlaces([]); // 검색어가 없을 때 초기화
-  //   }
-  // }, [debouncedSearchInput]); // 디바운스된 검색어를 의존성으로 추가
+  console.log(page, 'page');
 
   const handlePlaceSelect = (place: any) => {
     const location = {
@@ -122,9 +82,6 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
           return nextPage;
         });
       }
-      // if (entry.isIntersecting && hasMore) {
-      //   searchPlaces(debouncedSearchInput, 1); // 다음 페이지 검색
-      // }
     });
 
     const target = loadMoreRef.current;

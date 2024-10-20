@@ -33,9 +33,9 @@ const FriendSearchList = ({
   isFetchingNextPage,
   hasNextPage,
   fetchNextPage,
-  isLoading,
-  isFetching,
-  isError,
+  // isLoading,
+  // isFetching,
+  // isError,
 }: FriendSearchListProps) => {
   const participantIds = new Set(
     participantData.map((participant) => participant.userId)
@@ -66,30 +66,30 @@ const FriendSearchList = ({
 
   return (
     <>
-      {isLoading || isFetching ? (
+      {/* {isLoading || isFetching ? (
         <div>로딩 중...</div>
       ) : isError ? (
         <div>에러 발생</div>
-      ) : (
-        <ul className={cn('friend_search_list')}>
-          {friends.map((friend, index) => (
-            <li
-              key={`${friend.friendId}-${index}`}
-              className={cn('item')}
-              ref={index === friends.length - 1 ? lastFriendRef : null}
-            >
-              <FriendCard
-                friend={friend}
-                isSelected={selectedFriends.includes(friend.id)}
-                onClick={() => onFriendSelect(friend.id)}
-                moimStart={moimStart}
-                moimStatus={moimStatus}
-                disabled={participantIds.has(friend.id)}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+      ) : ( */}
+      <ul className={cn('friend_search_list')}>
+        {friends.map((friend, index) => (
+          <li
+            key={`${friend.friendId}-${index}`}
+            className={cn('item')}
+            ref={index === friends.length - 1 ? lastFriendRef : null}
+          >
+            <FriendCard
+              friend={friend}
+              isSelected={selectedFriends.includes(friend.id)}
+              onClick={() => onFriendSelect(friend.id)}
+              moimStart={moimStart}
+              moimStatus={moimStatus}
+              disabled={participantIds.has(friend.id)}
+            />
+          </li>
+        ))}
+      </ul>
+      {/* )} */}
     </>
   );
 };

@@ -7,9 +7,10 @@ const cn = classnames.bind(styles);
 
 interface TimeInputProps {
   onChange: (time: string) => void; // 시간 변경 시 호출할 함수
+  timeData?: string; // ���기 시간 (hhmm)
 }
 
-const TimeInput = ({ onChange }: TimeInputProps) => {
+const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   const hours = Array.from({ length: 24 }, (_, index) =>
     String(index).padStart(2, '0')
   ); // '00'부터 '23'까지 생성
@@ -22,6 +23,41 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
   const hourRefs = useRef<(HTMLLIElement | null)[]>([]);
   const minuteRefs = useRef<(HTMLLIElement | null)[]>([]);
   const wrapTimeRef = useRef<HTMLDivElement | null>(null);
+  // const initializedRef = useRef<boolean>(false); // 초기 설정 여부 추적
+
+  // const smoothScroll = (element: HTMLElement | null) => {
+  //   return new Promise<void>((resolve) => {
+  //     if (element) {
+  //       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //       setTimeout(resolve, 500); // 스크롤 애니메이션이 끝난 후 resolve 호출
+  //     } else {
+  //       resolve();
+  //     }
+  //   });
+  // };
+
+  // 초기 값 설정 (timeData가 있을 경우 한 번만 실행)
+  // useEffect(() => {
+  //   if (timeData && !initializedRef.current) {
+  //     const hourIndex = parseInt(timeData.slice(0, 2));
+  //     const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
+
+  //     (async () => {
+  //       if (hourIndex >= 0) {
+  //         await smoothScroll(hourRefs.current[hourIndex]);
+  //       }
+  //       if (minuteIndex >= 0) {
+  //         await smoothScroll(minuteRefs.current[minuteIndex]);
+  //       }
+  //     })();
+
+  //     initializedRef.current = true; // 초기화 완료
+  //   }
+  // }, [timeData]);
+
+  useEffect(() => {
+    console.log(timeData, 'timeData');
+  }, [timeData]);
 
   // IntersectionObserver를 사용하여 현재 보이는 항목을 active 상태로 설정
   useEffect(() => {
@@ -40,9 +76,9 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
           const selectedValue = button?.innerText;
           console.log(selectedValue, 'selectedvalue');
           if (selectedValue?.endsWith('시')) {
-            setSelectedHour(selectedValue.replace('시', '').trim() || '00');
+            setSelectedHour(selectedValue.replace('시', '').trim());
           } else if (selectedValue?.endsWith('분')) {
-            setSelectedMinute(selectedValue.replace('분', '').trim() || '00');
+            setSelectedMinute(selectedValue.replace('분', '').trim());
           }
         } else {
           button?.classList.remove(cn('active'));
@@ -64,7 +100,7 @@ const TimeInput = ({ onChange }: TimeInputProps) => {
     });
 
     return () => observer.disconnect();
-  }, [selectedHour, selectedMinute]); //observer장착은 최초마운트 시에만 하면 되는데, 초기값 세팅이 안되는 현상 때문에 일단 리렌더링으로 해결 -> 최적화 필요
+  }, []); //observer장착은 최초마운트 시에만 하면 되는데, 초기값 세팅이 안되는 현상 때문에 일단 리렌더링으로 해결 -> 최적화 필요
 
   // 선택된 시간 및 분이 변경될 때 상위 컴포넌트로 전달
   useEffect(() => {

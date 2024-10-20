@@ -4,6 +4,7 @@ import styles from './gatheringTitle.module.scss';
 import IconRefresh24X24 from '../../../../assets/svg/icon/IconRefresh24X24';
 import IconShare24X24 from '../../../../assets/svg/icon/IconShare24X24';
 import IconEdit16X162 from '../../../../assets/svg/icon/IconEdit16X162';
+import IconDownload24X24 from '../../../../assets/svg/icon/IconDownload24X24';
 
 const cn = classnames.bind(styles);
 
@@ -15,8 +16,9 @@ interface Props {
   onClickRefreshButton?: () => void;
   hasShareButton?: boolean;
   onClickShareButton?: () => void;
-  classNameForPage?: '' | 'invite_friends' | 'upcoming_page';
+  classNameForPage?: '' | 'invite_friends' | 'upcoming_page' | 'share_page';
   onClickEditButton?: () => void;
+  hasDownloadButton?: boolean;
   onClickFinishButton?: () => void;
   onClickUpcomingButton?: (mode: string) => void;
   isUserAndOwner?: boolean;
@@ -33,6 +35,7 @@ const GatheringTitle = ({
   onClickShareButton,
   hasEditButton = false,
   onClickEditButton,
+  hasDownloadButton = false,
   onClickFinishButton,
   classNameForPage = '',
   isUserAndOwner = false,
@@ -41,7 +44,7 @@ const GatheringTitle = ({
   onClickUpcomingButton,
 }: Props) => {
   return (
-    <div className={cn('gathering_title')}>
+    <div className={cn('gathering_title', classNameForPage)}>
       <strong className={cn('title')}>
         {title}
         {hasEditButton && (
@@ -56,7 +59,7 @@ const GatheringTitle = ({
         )}
       </strong>
       <div className={cn('description')}>{description}</div>
-      {(hasRefreshButton || hasShareButton) && (
+      {(hasRefreshButton || hasShareButton || hasDownloadButton) && (
         <button type="button" className={cn('button')}>
           {hasRefreshButton && (
             <>
@@ -74,6 +77,12 @@ const GatheringTitle = ({
                 onClick={onClickShareButton}
               />
               <span className={cn('blind')}>공유하기</span>
+            </>
+          )}
+          {hasDownloadButton && (
+            <>
+              <IconDownload24X24 className={cn('icon')} onClick={() => {}} />
+              <span className={cn('blind')}>다운로드</span>
             </>
           )}
         </button>

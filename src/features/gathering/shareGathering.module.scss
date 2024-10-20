@@ -1,0 +1,89 @@
+.share_gathering {
+  .wrap_scroll_photo_list {
+    margin-top: 21px;
+  }
+  .grid_area {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 8px;
+    padding: 8px 16px 40px;
+  }
+  .grid_item {
+    height: 159px;
+    padding: 8px;
+    border-radius: 12px;
+    background-color: $gray-50;
+    box-sizing: border-box;
+    &:nth-child(-n + 2) {
+      height: 76px;
+    }
+    &:nth-child(4) {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .days {
+        @include font-type('24-30');
+        color: $gray-800;
+      }
+      .date {
+        font-size: 32px;
+        line-height: 36px;
+        color: $gray-800;
+      }
+    }
+    .title {
+      @include font-type('12-20', 400);
+      display: block;
+      color: $gray-400;
+      .icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin: 2px 2px 0 0;
+        color: inherit;
+        vertical-align: top;
+      }
+    }
+    .profile_list {
+      margin-top: 8px;
+      .item {
+        overflow: hidden;
+        position: relative;
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid $gray-50;
+        background-color: $gray-300;
+        text-align: center;
+        vertical-align: top;
+        @for $i from 1 through 3 {
+          &:nth-child(#{$i + 1}) {
+            left: calc(-8px * $i);
+          }
+        }
+      }
+      .image {
+        width: 100%;
+        height: auto;
+      }
+      .text {
+        @include font-type('14-20');
+        display: inline-block;
+        margin-top: 6px;
+        color: $gray-500;
+        vertical-align: top;
+      }
+    }
+    .total_time {
+      @include font-type('16-22', 600);
+      display: block;
+      margin-top: 10px;
+      color: #000;
+      .number {
+        @include font-type('24-30');
+      }
+    }
+  }
+}

@@ -43,4 +43,9 @@
       color: $gray-400;
     }
   }
+  &:global(.share_page) {
+    .description {
+      color: $gray-50;
+    }
+  }
 }

@@ -9,12 +9,19 @@
     margin-top: 122px;
     color: $gray-50;
     text-align: center;
-    .text {
+    .logo {
       position: absolute;
       top: 50%;
       right: 0;
       left: 0;
       transform: translateY(-50%);
+      .icon {
+        display: block;
+        width: 253px;
+        height: 85px;
+        margin: 0 auto;
+        color: $green;
+      }
     }
   }
   .link_area {

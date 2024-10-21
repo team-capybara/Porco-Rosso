@@ -2,7 +2,7 @@ import { useState } from 'react';
 import classnames from 'classnames/bind';
 import styles from './ongoingGathering.module.scss';
 import RenderOngoingMain from './components/RenderOngoingMain/RenderOngoingMain';
-import Share from './Share';
+import Share from './ShareGathering';
 import { memoryType } from './types';
 import { getmoimId } from '../../common/utils/queryString';
 import { useLocation } from 'react-router-dom';

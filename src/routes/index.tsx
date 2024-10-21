@@ -4,7 +4,7 @@ import NewProfile from '../features/auth/NewProfile';
 import UpcomingGathering from '../features/gathering/UpcomingGathering';
 import OngoingGathering from '../features/gathering/OngoingGathering';
 import EndedGathering from '../features/gathering/EndedGathering';
-import Share from '../features/gathering/Share';
+import ShareGathering from '../features/gathering/ShareGathering';
 import MypagePage from '../features/mypage/MypagePage';
 import NotificationPage from '../features/notification/NotificationPage';
 import StatisticsPage from '../features/statistics/StatisticsPage';
@@ -24,7 +24,7 @@ const AppRoutes = () => {
       <Route path="/ongoing-gathering" element={<OngoingGathering />} />
       <Route path="/ended-gathering" element={<EndedGathering />} />
       <Route path="/memory-gathering" element={<MemoryGathering />} />
-      <Route path="/share" element={<Share />} />
+      <Route path="/share-gathering" element={<ShareGathering />} />
       <Route path="/mypage" element={<MypagePage />} />
       <Route path="/notification" element={<NotificationPage />} />
       <Route path="/statistics" element={<StatisticsPage />} />

@@ -16,6 +16,7 @@ const cn = classnames.bind(styles);
 interface Props {
   hiddenTitle?: boolean;
   isMiniPhotoCard?: boolean;
+  isLargePhotoCard?: boolean;
   moimeId: string;
   setRenderComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
   selectedPhoto?: PhotoCardProps;
@@ -27,6 +28,7 @@ interface Props {
 const ScrollPhotoList = ({
   hiddenTitle = false,
   isMiniPhotoCard = false,
+  isLargePhotoCard = false,
   moimeId = '0',
   setRenderComponent,
   selectedPhoto,
@@ -90,6 +92,7 @@ const ScrollPhotoList = ({
     <div
       className={cn('scroll_photo_list', {
         is_mini_photo_card: isMiniPhotoCard,
+        is_large_photo_card: isLargePhotoCard,
       })}
     >
       {!hiddenTitle && (
@@ -133,7 +136,6 @@ const ScrollPhotoList = ({
                   onClickHandler: isJustImg ? setSelectedPhotoId : undefined,
                   isJustImg: isJustImg,
                 };
-
                 return (
                   <li className={cn('item')} key={`photocard-${photo.photoId}`}>
                     <PhotoCard {...photoCardProps} />
@@ -142,27 +144,8 @@ const ScrollPhotoList = ({
               })}
             </React.Fragment>
           ))}
-          {isMiniPhotoCard ? (
-            <li
-              className={cn('item')}
-              style={{
-                backgroundColor: 'black',
-                width: '86px',
-                height: '86px',
-              }}
-              ref={targetRef}
-            ></li>
-          ) : (
-            <li
-              className={cn('item')}
-              style={{
-                backgroundColor: 'black',
-                width: '220px',
-                height: '220px',
-              }}
-              ref={targetRef}
-            ></li>
-          )}
+          {/* 페이지네이션 기준점을 잡기 위한 요소 */}
+          <li className={cn('item', 'base')} ref={targetRef} />
         </ul>
       </HorizontalScrollWrapper>
     </div>

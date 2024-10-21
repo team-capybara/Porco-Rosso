@@ -8,6 +8,12 @@
   .section {
     padding: 32px 0 28px;
     border-top: 2px solid $gray-500;
+    &:first-of-type {
+      padding-bottom: 67px;
+      .item {
+        margin-top: 0;
+      }
+    }
   }
   .section_title {
     @include font-type('20-26', 700);
@@ -37,14 +43,30 @@
       height: 20px;
       border-radius: 50%;
       background-color: $gray-50;
+      transition: all 0.1s ease-out;
       content: '';
     }
-
     &.off {
-      background-color: $gray-300; // off 상태의 배경색
+      background-color: $gray-300;
       &::after {
-        right: auto;
-        left: 2px; // 핸들을 왼쪽으로 이동
+        right: 22px;
+      }
+    }
+  }
+  &.is_off {
+    .section:not(:first-of-type) {
+      position: relative;
+      &::after {
+        position: absolute;
+        top: -2px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        content: '';
+      }
+      &:nth-of-type(2)::after {
+        top: 0;
       }
     }
   }

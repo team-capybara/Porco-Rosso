@@ -3,6 +3,7 @@ import {
   UseInfiniteQueryResult,
   InfiniteData,
   useQueryClient,
+  keepPreviousData,
 } from '@tanstack/react-query';
 import { getMoimePhotoResponse } from '../types';
 import { getMoimePhoto } from '../../../api/service/photoApi';
@@ -36,6 +37,13 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
         : lastPage.data[lastPage.data.length - 1]?.photoId || null;
     },
     initialPageParam: cursorId,
+
+    // REACT QUERY 옵션
+    staleTime: 1000 * 60 * 30, // 30분 동안 데이터를 fresh 상태로 유지
+    gcTime: 1000 * 60 * 120, // 120분 동안 동안 캐시에 데이터 유지
+    refetchOnWindowFocus: false, // 창 포커스 시 자동 refetch 비활성화
+    refetchOnReconnect: false, // 네트워크 재연결 시 refetch 비활성화
+    placeholderData: keepPreviousData, // 새로운 데이터가 로딩될 때 이전 데이터를 유지
   });
 
   // 첫 페이지부터 데이터를 다시 불러오는 함수
@@ -53,6 +61,9 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
   // 전체 사진 개수(total) 계산
   const totalPhotos = data?.pages[0]?.total || 0;
 
+  // 첫 번째 사진 ID
+  const firstPhotoId = data?.pages[0]?.data?.[0]?.photoId || null;
+
   return {
     data,
     fetchNextPage,
@@ -60,6 +71,7 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
     isFetchingNextPage,
     resetAndFetchFirstPage,
     totalPhotos,
+    firstPhotoId,
   } as {
     data: InfiniteData<getMoimePhotoResponse> | undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,5 +80,6 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
     isFetchingNextPage: boolean;
     resetAndFetchFirstPage: () => Promise<void>;
     totalPhotos: number;
+    firstPhotoId: number | null;
   };
 };

@@ -86,6 +86,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
           selectedPhoto={selectedPhoto}
           isJustImg={true}
           setSelectedPhoto={setSelectedPhoto}
+          isRefresh={false}
         />
       </div>
     </>

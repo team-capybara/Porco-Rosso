@@ -23,7 +23,6 @@ const cn = classnames.bind(styles);
 const CreateGathering = () => {
   // T는 CreateGatheringData로 설정되며, key와 value의 타입이 CreateGatheringData의 프로퍼티와 일치하게 됨
   // CreateGatheringData의 키값에 따라 각각의 타입을 모두 추론할 수 있게 맵핑해주는 제네릭
-  // const { data: gatheringInfoData } = getGatheringInfo(1);
 
   const [gatheringData, setGatheringData] = useState<CreateGatheringData>({
     title: '',
@@ -34,7 +33,7 @@ const CreateGathering = () => {
 
   const [timeData, setTimeData] = useState<string>('');
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
-  const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
+  const [textInputOpen, setTextInputOpen] = useState<boolean>(true);
   const [participantDataList, setParticipantDataList] = useState<
     IParticipants[]
   >([]);
@@ -43,6 +42,7 @@ const CreateGathering = () => {
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [moimCreateRes, setMoimCreateRes] = useState<string>('');
   const [ownerInfo, setOwnerInfo] = useState<IParticipants>();
+  const [modalErrMsg, setModalErrMsg] = useState<string>('');
 
   const { moimeToast } = useMoimeToast();
 
@@ -139,15 +139,17 @@ const CreateGathering = () => {
     if (errorMsg) {
       setMoimCreateRes('fail');
       setChkModalOpen(true);
-      // alert(errorMsg); // 공통 모달 띄움
+      setModalErrMsg(errorMsg);
       return;
     }
 
     // 모임생성 전 한번더 검증
-    if (participantDataList.length > 11) {
+    console.log(participantDataList.length, '뭐지');
+    // 방장 포함
+    if (participantDataList.length + 1 > 10) {
       setMoimCreateRes('fail');
       setChkModalOpen(true);
-      // alert('공통 모달 띄움, 친구는 최대 11명까지만 초대할 수 잇어요');
+      setModalErrMsg('모임 생성이 가능한 최대 인원은 10명입니다');
       return;
     }
 
@@ -174,11 +176,7 @@ const CreateGathering = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('Current gatheringData:', gatheringData);
-  }, [gatheringData]);
-
-  const renderCreateMoimChkModal = (chkStatus: string) => {
+  const renderCreateMoimChkModal = (chkStatus: string, modalErrMsg: string) => {
     if (chkStatus === 'success') {
       return (
         <Modal>
@@ -195,7 +193,7 @@ const CreateGathering = () => {
         <Modal>
           <ModalContents
             title="모임 생성에 실패했어요."
-            description="특정에러 구분해서 알려줌"
+            description={modalErrMsg}
             firstButton="확인"
             onClickFirstButton={handleChkModalClose}
           />
@@ -300,7 +298,7 @@ const CreateGathering = () => {
           ownerId={userData.id}
         />
       )}
-      {chkModalOpen && renderCreateMoimChkModal(moimCreateRes)}
+      {chkModalOpen && renderCreateMoimChkModal(moimCreateRes, modalErrMsg)}
     </div>
   );
 };

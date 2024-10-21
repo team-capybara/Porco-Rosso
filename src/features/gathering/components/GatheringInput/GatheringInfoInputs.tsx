@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import classnames from 'classnames/bind';
 import LocationSearchInput from './LocationSearchInput';
 import TimeInput from './TimeInput';
@@ -68,6 +68,31 @@ const GatheringInfoInputs = ({
     handleGatheringInfoLayerClose(okType as keyof OpenState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
+
+  const layerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        layerRef.current &&
+        (!layerRef.current.contains(event.target as Node) ||
+          layerRef.current === (event.target as Node))
+      ) {
+        handleGatheringInfoLayerClose(okType as keyof OpenState);
+      }
+    };
+
+    if (dateOpen || timeOpen || locationOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside); // 터치 이벤트 추가
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside); // 터치 이벤트 해제
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateOpen, timeOpen, locationOpen, okType]);
 
   return (
     <div className={cn('gathering_info_inputs')}>
@@ -142,7 +167,10 @@ const GatheringInfoInputs = ({
       </div>
       {/* Layer 활성화 시, 기존 화면 비활성화 부탁드립니다. */}
       {(dateOpen || locationOpen || timeOpen) && (
-        <Layer classNameForView={locationOpen ? 'location_search_input' : ''}>
+        <Layer
+          classNameForView={locationOpen ? 'location_search_input' : ''}
+          layerRef={layerRef}
+        >
           {dateOpen && (
             <CalendarInput
               value={gatheringData.startedAt}

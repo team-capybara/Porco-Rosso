@@ -14,6 +14,7 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   const hours = Array.from({ length: 24 }, (_, index) =>
     String(index).padStart(2, '0')
   ); // '00'부터 '23'까지 생성
+  console.log(timeData, 'timeData');
 
   const minutes = ['00', '15', '30', '45'];
 
@@ -54,10 +55,6 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   //     initializedRef.current = true; // 초기화 완료
   //   }
   // }, [timeData]);
-
-  useEffect(() => {
-    console.log(timeData, 'timeData');
-  }, [timeData]);
 
   // IntersectionObserver를 사용하여 현재 보이는 항목을 active 상태로 설정
   useEffect(() => {

@@ -10,6 +10,7 @@ import { IParticipants, InviteFriendsProps } from '../../types';
 import { addFriendsToMoim } from '../../../../api/service/gatheringApi';
 import { useFriendSearch } from '../../utils/useFriendSearch';
 import { useDebounce } from '../../utils/useDebounce';
+import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
 
 const cn = classnames.bind(styles);
 
@@ -36,6 +37,8 @@ const InviteFriends = ({
 
   const debouncedKeyword = useDebounce(searchKeyword, 300);
 
+  const { moimeToast } = useMoimeToast();
+
   // React Query로 친구 목록 데이터 가져오기
   const {
     data,
@@ -49,7 +52,6 @@ const InviteFriends = ({
   } = useFriendSearch(debouncedKeyword, cursorId, 10);
 
   const friendsData = data?.pages.flatMap((page) => page.data) || [];
-  console.log(friendsData, 'freindData');
 
   // 검색어 변경 처리
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,36 +150,47 @@ const InviteFriends = ({
 
   const inviteFriendValidation = () => {
     const totalFriendCnt = selectedFriends.length + participantData.length;
-    if (totalFriendCnt > 11) {
-      alert('친구는 최대 11명까지만 초대 가능'); // 토스트로 변경
+    // 카운트 값 찾아서 조절해야 할 듯
+    if (totalFriendCnt > 10) {
+      moimeToast({
+        message: '친구는 최대 10명까지 초대 가능합니다', // 메시지 커스터마이징
+        onClickEnabled: false, // onClick 활성화
+        duration: 3000, // 지속 시간 설정
+        id: 'invite-friend-validation-toast', // 고유 ID 설정
+      });
       return false;
     }
     return true;
   };
 
   const handleFinishButton = () => {
-    if (inviteFriendValidation()) {
-      // 진행중 모임에서 친구 추가 api 요청 보내기
-      if (
-        moimStart &&
-        moimStatus === 'ONGOING' &&
-        isUserAndOwner &&
-        ownerId !== null &&
-        moimId &&
-        selectedFriendsData.length
-      ) {
-        // 진행중 모임에서는 완료 버튼 눌렀을 때 친구 목록 수정 api 보내야함
+    // 진행중 모임에서 친구 추가 api 요청 보내기
+    if (
+      moimStart &&
+      moimStatus === 'ONGOING' &&
+      isUserAndOwner &&
+      ownerId !== null &&
+      moimId &&
+      selectedFriendsData.length
+    ) {
+      // 진행중 모임에서는 완료 버튼 눌렀을 때 친구 목록 수정 api 보내야함
+      if (inviteFriendValidation()) {
         const modifiedFriendList = [ownerId, ...selectedFriends];
         addFriendsToMoim(moimId, modifiedFriendList)
           .then(() => {
             setFriendAddSuccess && setFriendAddSuccess(true);
           })
-          .catch((error) => {
-            console.error('친구 목록 수정 실패:', error);
+          .catch(() => {
+            moimeToast({
+              message: '일시적인 오류로 친구 추가를 실패했습니다.', // 메시지 커스터마이징
+              onClickEnabled: false, // onClick 활성화
+              duration: 3000, // 지속 시간 설정
+              id: 'invite-friend-err-toast', // 고유 ID 설정
+            });
           });
       }
-      setLayerOpen?.(false);
     }
+    setLayerOpen?.(false);
   };
 
   const handleDeleteParticipant = (userId: number) => {

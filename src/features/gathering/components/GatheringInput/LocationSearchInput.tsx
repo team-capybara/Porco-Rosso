@@ -37,6 +37,7 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
   const [hasMore, setHasMore] = useState(true); // 더 많은 데이터 여부
 
   // 장소 검색
+  // 페이지네이션 기능이 먹는건가?
   const searchPlaces = (keyword: string, page: number) => {
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(
@@ -67,7 +68,7 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
       searchPlaces(debouncedSearchInput, 1); // 첫 페이지 검색
       setPage(1); // 페이지 초기화
     } else {
-      setPlaces([]); // 이전 데이터 ���기화
+      setPlaces([]); // 이전 데이터 초기화
     }
   }, [debouncedSearchInput]);
 
@@ -108,7 +109,6 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
         />
         <ArrowLeft24X24 className={cn('icon')} />
       </label>
-
       {/* 검색 결과 리스트 */}
       <LocationList places={places} onPlaceSelect={handlePlaceSelect} />
       <div ref={loadMoreRef} className={cn('load-more-target')}>

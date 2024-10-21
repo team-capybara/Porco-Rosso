@@ -29,7 +29,8 @@ const LocationList = ({ places, onPlaceSelect }: LocationListProps) => {
           ))
         ) : (
           <li className={cn('item')}>
-            <p>검색 결과가 없습니다.</p>
+            <strong className={cn('title')}>검색 결과가 없습니다.</strong>
+            <p className={cn('location')}>다른 키워드로 검색해 보세요.</p>
           </li>
         )}
       </ul>

@@ -19,7 +19,7 @@ const cn = classnames.bind(styles);
 const UpcomingGathering = (props: UpcomingGatheringProps) => {
   // const navigate = useNavigate();
   // const [moimId] = useState<number>(getmoimId(useLocation()));
-  const [moimId] = useState<number>(84);
+  const [moimId] = useState<number>(104);
   const [userId, setUserId] = useState<number>();
   console.log(userId, 'userId');
 

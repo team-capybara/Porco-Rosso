@@ -33,7 +33,7 @@ const CreateGathering = () => {
 
   const [timeData, setTimeData] = useState<string>('');
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
-  const [textInputOpen, setTextInputOpen] = useState<boolean>(true);
+  const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
   const [participantDataList, setParticipantDataList] = useState<
     IParticipants[]
   >([]);
@@ -127,8 +127,11 @@ const CreateGathering = () => {
       setChkModalOpen(true);
     },
     onError: (error) => {
+      console.log(error, '모임 생성 에러 로그');
       // 실패 시 처리할 로직
-      console.error('모임 생성 실패:', error);
+      setMoimCreateRes('fail');
+      setChkModalOpen(true);
+      setModalErrMsg('일시적인 오류로 모임 생성에 실패하였습니다.');
     },
   });
 
@@ -144,12 +147,23 @@ const CreateGathering = () => {
     }
 
     // 모임생성 전 한번더 검증
-    console.log(participantDataList.length, '뭐지');
-    // 방장 포함
-    if (participantDataList.length + 1 > 10) {
+    if (participantDataList.length > 10) {
       setMoimCreateRes('fail');
       setChkModalOpen(true);
-      setModalErrMsg('모임 생성이 가능한 최대 인원은 10명입니다');
+      setModalErrMsg('모임 생성이 가능한 최대 인원은 11명입니다');
+      return;
+    }
+
+    // 현재 시간과 비교하여 과거 시간인지 확인
+    const currentTime = new Date();
+    const selectedDateTime = new Date(
+      `${gatheringData.startedAt.slice(0, 4)}-${gatheringData.startedAt.slice(4, 6)}-${gatheringData.startedAt.slice(6, 8)}T${timeData.slice(0, 2)}:${timeData.slice(2, 4)}:00`
+    );
+
+    if (selectedDateTime <= currentTime) {
+      setMoimCreateRes('fail');
+      setChkModalOpen(true);
+      setModalErrMsg('현재 시간보다 과거 시간으로 모임을 생성할 수 없습니다.');
       return;
     }
 

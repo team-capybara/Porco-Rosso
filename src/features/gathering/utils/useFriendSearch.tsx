@@ -1,6 +1,7 @@
 import { getFriendsList } from '../../../api/service/gatheringApi';
 import {
   InfiniteData,
+  keepPreviousData,
   useInfiniteQuery,
   UseInfiniteQueryResult,
 } from '@tanstack/react-query';
@@ -32,7 +33,7 @@ const useFriendSearch = (
       return lastPage.last ? null : lastPage?.cursorId?.cursorId || null;
     },
     initialPageParam: cursorId,
-    placeholderData: (prev) => prev,
+    placeholderData: keepPreviousData,
   });
 
   return {

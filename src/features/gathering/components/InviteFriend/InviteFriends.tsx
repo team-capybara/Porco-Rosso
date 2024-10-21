@@ -7,10 +7,14 @@ import ParticipantList from '../ParticipantList/ParticipantList';
 import FriendSearchInput from './FriendSearchInput';
 import FriendSearchList from './FriendSearchList';
 import { IParticipants, InviteFriendsProps } from '../../types';
-import { addFriendsToMoim } from '../../../../api/service/gatheringApi';
+import {
+  addFriendsToMoim,
+  getFriendCnt,
+} from '../../../../api/service/gatheringApi';
 import { useFriendSearch } from '../../utils/useFriendSearch';
 import { useDebounce } from '../../utils/useDebounce';
 import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
+import { useQuery } from '@tanstack/react-query';
 
 const cn = classnames.bind(styles);
 
@@ -150,6 +154,8 @@ const InviteFriends = ({
 
   const inviteFriendValidation = () => {
     const totalFriendCnt = selectedFriends.length + participantData.length;
+    console.log(selectedFriends, participantData);
+    console.log(totalFriendCnt, '몇명인지 체크');
     // 카운트 값 찾아서 조절해야 할 듯
     if (totalFriendCnt > 10) {
       moimeToast({
@@ -212,6 +218,18 @@ const InviteFriends = ({
     );
   };
 
+  const {
+    // isLoading,
+    // isFetching,
+    data: friendCnt,
+    // isError,
+    // error,
+    // refetch,
+  } = useQuery<number>({
+    queryKey: ['friendCnt'],
+    queryFn: getFriendCnt,
+  });
+
   return (
     <div>
       <BackNavigation
@@ -240,7 +258,7 @@ const InviteFriends = ({
       <div className={cn('wrap_friend_search_input')}>
         <strong className={cn('title')}>
           내친구
-          <span className={cn('count')}>{friendsData?.length}명</span>
+          <span className={cn('count')}>{friendCnt}명</span>
         </strong>
         <FriendSearchInput onChange={handleSearchChange} />
       </div>

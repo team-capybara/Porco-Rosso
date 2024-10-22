@@ -2,7 +2,7 @@ import classnames from 'classnames/bind';
 import style from './alarmSetting.module.scss';
 import Modal from '../../../../common/components/Modal/Modal';
 import ModalContents from '../../../../common/components/Modal/ModalContents';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useAlarmSettings,
   AlarmSettingType,
@@ -18,7 +18,21 @@ interface ItemProps {
 
 const AlarmSetting = () => {
   const [modalOpen] = useState<boolean>(false);
+  const [systemAlarmSetting, setSystemAlarmSetting] = useState<boolean>(false);
   const { settings, updateSetting, loading } = useAlarmSettings();
+
+  useEffect(() => {
+    if (window.kmpJsBridge === undefined) return;
+
+    window.kmpJsBridge.callNative(
+      'onGetNotificationPermission',
+      '',
+      (data: string) => {
+        const grantedState: boolean = JSON.parse(data).granted;
+        setSystemAlarmSetting(grantedState);
+      }
+    );
+  }, []); // 시스템 알림 설정 확인
 
   const renderItem = ({ text, isOff, type }: ItemProps) => {
     return (
@@ -40,18 +54,15 @@ const AlarmSetting = () => {
     );
   };
 
-  // 테스트 코드로 개발 작업 시, 제거 및 수정부탁드립니다.
-  const testIsOff = true;
-
   return (
     // todo: 시스템 알림 off 인 경우, '.is_off' 클래스 활성화부탁드립니다.
-    <div className={cn('alarm_setting', { is_off: testIsOff })}>
+    <div className={cn('alarm_setting', { is_off: !systemAlarmSetting })}>
       <strong className={cn('title')}>알림 설정</strong>
       <div className={cn('section')}>
         <div className={cn('item')}>
           시스템 알림
           {/* todo: 활성화 여부에 따라 블라인드 텍스트 "ON/OFF" 변경부탁드립니다 */}
-          <div className={cn('text')}>{testIsOff ? 'ON' : 'OFF'}</div>
+          <div className={cn('text')}>{systemAlarmSetting ? 'ON' : 'OFF'}</div>
         </div>
       </div>
       <div className={cn('section')}>

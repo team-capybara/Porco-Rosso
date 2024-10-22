@@ -29,6 +29,7 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   useEffect(() => {
     // timeData 입력된 값 있을 시 입력 값으로 포커스 처리
     if (timeData && !initializedRef.current) {
+      console.log('이게 시행이 되나');
       const hourIndex = parseInt(timeData.slice(0, 2));
       const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
 

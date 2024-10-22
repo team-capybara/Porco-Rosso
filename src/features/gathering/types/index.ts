@@ -84,7 +84,11 @@ export type moimStatusType =
   | 'COMPLETED'
   | 'FAILED';
 
-export interface CreateGatheringProps {}
+export interface CreateGatheringProps {
+  mode: string;
+  initialData: CreateGatheringData;
+  initialTimeData: string;
+}
 
 export interface mapPoint {
   latitude: number;

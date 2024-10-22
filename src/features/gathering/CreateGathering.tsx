@@ -6,7 +6,11 @@ import styles from './createGathering.module.scss';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
 import ParticipantList from './components/ParticipantList/ParticipantList';
 import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs';
-import { CreateGatheringData, ChangeHandler } from './types/index';
+import {
+  CreateGatheringData,
+  ChangeHandler,
+  CreateGatheringProps,
+} from './types/index';
 import { textInputValidation } from '../../common/utils/authUtils';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getUserInfo } from '../../api/service/authApi';
@@ -20,18 +24,26 @@ import { useMoimeToast } from '../../common/utils/useMoimeToast.tsx';
 
 const cn = classnames.bind(styles);
 
-const CreateGathering = () => {
+const CreateGathering = ({
+  mode,
+  initialData,
+  initialTimeData,
+}: CreateGatheringProps) => {
   // T는 CreateGatheringData로 설정되며, key와 value의 타입이 CreateGatheringData의 프로퍼티와 일치하게 됨
   // CreateGatheringData의 키값에 따라 각각의 타입을 모두 추론할 수 있게 맵핑해주는 제네릭
 
-  const [gatheringData, setGatheringData] = useState<CreateGatheringData>({
-    title: '',
-    participantIds: [],
-    startedAt: '',
-    location: { name: '', latitude: 0, longitude: 0 },
-  });
+  const [gatheringData, setGatheringData] = useState<CreateGatheringData>(
+    mode === 'revise'
+      ? initialData
+      : {
+          title: '',
+          participantIds: [],
+          startedAt: '',
+          location: { name: '', latitude: 0, longitude: 0 },
+        }
+  );
 
-  const [timeData, setTimeData] = useState<string>('');
+  const [timeData, setTimeData] = useState<string>(initialTimeData || '');
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
   const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
   const [participantDataList, setParticipantDataList] = useState<

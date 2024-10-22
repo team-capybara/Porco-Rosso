@@ -101,7 +101,7 @@ export interface IGatheringInfo {
   id: number;
   title: string;
   startedAt: string;
-  endedAt: string | null;
+  finishedAt: string | null;
   location: GatheringLocation;
   status: moimStatusType;
   owner: IParticipants;

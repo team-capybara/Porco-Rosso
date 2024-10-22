@@ -1,75 +1,173 @@
 import classnames from 'classnames/bind';
-import BackNavigation from '../auth/components/signup/BackNavigation';
-import GatheringTitle from './components/GatheringTitle/GatheringTitle';
-// import PhotoList from './components/PhotoList/PhotoList';
 import styles from './endedGathering.module.scss';
-// import ScrollPhotoList from './components/PhotoList/ScrollPhotoList';
-// import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
+import RenderEndedGathering from './components/PhotoList/RenderEndedGathering/RenderEndedGathering';
+import RenderEndedDetail from './components/PhotoList/RenderEndedDetail/RenderEndedDetail';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { IGatheringInfo, ModalContentsProps, ongoingType } from './types';
+import { getmoimId } from '../../common/utils/queryString';
+import {
+  getGatheringInfo,
+  getMoimStatus,
+} from '../../api/service/gatheringApi';
+import Modal from '../../common/components/Modal/Modal';
+import ModalContents from '../../common/components/Modal/ModalContents';
 
 const cn = classnames.bind(styles);
 
+function parseDateString(dateString: string): Date {
+  // 문자열을 'YYYY-MM-DDTHH:mm:ss' 형식으로 변환
+  const formattedString = dateString.replace(
+    /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/,
+    '$1-$2-$3T$4:$5:$6'
+  );
+  // Date 객체 생성
+  return new Date(formattedString);
+}
+function getSecondsDifference(dateString: string): number {
+  const parsedDate: Date = parseDateString(dateString); // 입력된 날짜를 Date 객체로 변환
+  parsedDate.setMinutes(parsedDate.getMinutes() + 10); // 투표종료시간 : 모임종료시간 + 10분
+  const currentDate: Date = new Date(); // 현재 시간을 가져옴
+  // 밀리초 단위로 차이를 계산한 뒤 초 단위로 변환
+  const differenceInSeconds = Math.floor(
+    (parsedDate.getTime() - currentDate.getTime()) / 1000
+  );
+  return differenceInSeconds;
+}
+
 const EndedGathering = () => {
-  const renderEndedGathering = () => {
-    return (
-      <>
-        <BackNavigation
-          classNameForIconType="arrow_type"
-          blindText="메인으로"
-        />
-        <div className={cn('wrap_gathering_title')}>
-          <GatheringTitle
-            title="모임이 종료되었어요"
-            description={
-              <>
-                좋아요를 많이 받은 10개의 사진만
-                <br />
-                모임이 끝나도 볼 수 있어요!
-              </>
-            }
-            hasRefreshButton={true}
-          />
-        </div>
-        <div className={cn('wrap_photo_list')}>{/* <PhotoList /> */}</div>
-      </>
-    );
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [renderComponent, setRenderComponent] =
+    useState<ongoingType>('PhotoList');
+  const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
+  const [moimId] = useState<number>(getmoimId(useLocation()));
+  const [modal, setModal] = useState<ModalContentsProps | null>(null);
+
+  const remainTime = useRef<number>(600);
+  const [min, setMin] = useState(0);
+  const [sec, setSec] = useState(0);
+  const [finish, setFinish] = useState<boolean>(false);
+
+  // 모임 상세 정보 가져오기
+  const setGatheringInfoDataFunc = async () => {
+    const response: IGatheringInfo = await getGatheringInfo(moimId);
+    setGatheringInfoData(response);
   };
 
-  const renderEndedDetail = () => {
-    return (
-      <>
-        {/* todo: 디자인 확인 후, 아이콘 타입 변경 필요할 수 있음 */}
-        <BackNavigation
-          classNameForIconType="close_type"
-          blindText="이전으로"
-        />
-        <div className={cn('wrap_gathering_title')}>
-          <GatheringTitle
-            title="모이미 제목인데요오오오ㅗ오 ㅇ ㄹㄴㅇㄴㄹ ㄴㅇ ㄹㅇㄴ ㄹㅇㄴ"
-            description="2024년 5월 3일"
-          />
-        </div>
-        <div className={cn('wrap_photo_card')}>{/* <PhotoCard /> */}</div>
-        <div className={cn('wrap_scroll_photo_list')}>
-          {/* <ScrollPhotoList hiddenTitle={true} isMiniPhotoCard={true} /> */}
-        </div>
-      </>
-    );
+  // 진행 중 모임 때 상태 확인 후 모임종료로 redirect 하는 로직 추가
+  const checkMoimOngoingStatus = async () => {
+    const status = await getMoimStatus(moimId);
+    console.warn('status', status);
+    if (status == 'FINISHED') return;
+    else {
+      let current = 5;
+      const timerId = setInterval(function () {
+        if (current == 0) {
+          clearInterval(timerId);
+          navigate(`/memory-gathering?moimId=${moimId}`);
+        }
+        setModal({
+          title: '투표가 끝났습니다.',
+          description: '5초 후 추억조회로 자동이동됩니다.',
+          firstButton: current.toString(),
+          onClickFirstButton: () => {},
+        });
+        current--;
+      }, 1000);
+    }
   };
+
+  useEffect(() => {
+    // 쿼리스트링에 선택된 사진이 바뀔 때 photodetail로 변경
+    if (renderComponent === 'PhotoDetail') return;
+
+    const searchParams = new URLSearchParams(location.search);
+    const selectedPhotoId = searchParams.get('selectedPhotoId');
+
+    if (selectedPhotoId !== null && selectedPhotoId !== '-1') {
+      setRenderComponent('PhotoDetail');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]); // location.search를 의존성으로 설정
+
+  useEffect(() => {
+    checkMoimOngoingStatus();
+    setGatheringInfoDataFunc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (gatheringInfoData === null || gatheringInfoData === undefined) return;
+    if (gatheringInfoData.finishedAt === null) return;
+    remainTime.current = getSecondsDifference(gatheringInfoData.finishedAt);
+  }, [gatheringInfoData]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setMin(Math.floor(remainTime.current / 60));
+      setSec(remainTime.current % 60);
+      remainTime.current -= 1;
+      if (remainTime.current <= 0) {
+        setFinish(true);
+        clearInterval(timer);
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  });
 
   return (
-    <div className={cn('ended_gathering')}>
-      {false && renderEndedGathering()}
-      {true && renderEndedDetail()}
-      <div className={cn('button_area')}>
-        <div className={cn('button_inner')}>
-          {/* todo: 버튼 활성화 시, disabled={false} 토글 부탁드립니다. */}
-          {/* 승현 todo: 버튼 활성화 시, 디자인 확인 후 작업 필요 */}
-          <button type="button" className={cn('button')} disabled={true}>
-            00 : 09 : 20
-          </button>
+    moimId >= 0 && (
+      <>
+        <div className={cn('ended_gathering')}>
+          {renderComponent === 'PhotoList' && (
+            <RenderEndedGathering moimId={String(moimId)} />
+          )}
+          {renderComponent === 'PhotoDetail' && (
+            <RenderEndedDetail
+              moimId={String(moimId)}
+              setRenderComponent={setRenderComponent}
+            />
+          )}
+          <div className={cn('button_area')}>
+            <div className={cn('button_inner')}>
+              {finish ? (
+                <button
+                  type="button"
+                  className={cn('button')}
+                  disabled={!finish}
+                  onClick={() => {
+                    navigate(`/memory-gathering?moimId=${moimId}`);
+                  }}
+                >
+                  추억보러가기
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={cn('button')}
+                  disabled={finish}
+                >
+                  00 : {String(min).padStart(2, '0')} : {sec}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+        {modal && (
+          <Modal>
+            <ModalContents
+              title={modal.title}
+              description={modal.description}
+              firstButton={modal.firstButton}
+              secondButton={modal.secondButton}
+              onClickFirstButton={modal.onClickFirstButton}
+              onClickSecondButton={modal.onClickSecondButton}
+            />
+          </Modal>
+        )}
+      </>
+    )
   );
 };
 

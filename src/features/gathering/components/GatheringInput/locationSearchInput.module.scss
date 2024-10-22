@@ -1,5 +1,6 @@
 .location_search_input {
   margin: 0 16px;
+  height: 100%;
   .title {
     @include font-type('16-22', 600);
     display: flex;

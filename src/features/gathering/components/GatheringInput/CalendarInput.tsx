@@ -13,11 +13,13 @@ import {
   formatDateToYYYYMMDD,
   parseYYYYMMDDToDate,
 } from '../../../../common/utils/dateUtils';
+import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
 
 const cn = classnames.bind(styles);
 
 const CalendarInput = ({ value, onChange }: CalendarInputProps) => {
   const today = getToday();
+  const { moimeToast } = useMoimeToast();
   const [selectedDate, setSelectedDate] = useState<Date>(
     value ? parseYYYYMMDDToDate(value) : today
   );
@@ -48,11 +50,21 @@ const CalendarInput = ({ value, onChange }: CalendarInputProps) => {
   };
   const handleDateSelect = (date: Date, beforeToday?: boolean) => {
     if (beforeToday && !isToday(date)) {
-      alert('모임은 오늘 이후로만 만들 수 있어요'); // 토스트로 바꿔야함
+      moimeToast({
+        message: '모임은 오늘 이후로만 만들 수 있어요', // 메시지 커스터마이징
+        onClickEnabled: false, // onClick 활성화
+        duration: 3000, // 지속 시간 설정
+        id: 'moim-create-day-err-1', // 고유 ID 설정
+      });
       return;
     }
     if (date > today && !isWithinValidRange(date)) {
-      alert('모임 생성 날짜는 오늘 기준 최대 1년 뒤를 초과할 수 없음.');
+      moimeToast({
+        message: '모임 생성 날짜는 최대 1년까지 가능해요', // 메시지 커스터마이징
+        onClickEnabled: false, // onClick 활성화
+        duration: 3000, // 지속 시간 설정
+        id: 'moim-create-day-err-2', // 고유 ID 설정
+      });
       return;
     }
     setSelectedDate(date);

@@ -147,12 +147,13 @@ export interface GatheringInfoInputsProps {
 }
 
 export type Friend = {
+  blocked: boolean;
+  code: string;
   friendId: number;
-  userId: number;
-  targetId: number;
-  targetNickname: string;
-  targetProfile: string;
-  friendCreatedAt: string;
+  friendshipDate: string;
+  nickname: string;
+  id: number;
+  profile: string;
 };
 
 type Cursor = {

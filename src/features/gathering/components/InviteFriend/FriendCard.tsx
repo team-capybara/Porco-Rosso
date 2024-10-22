@@ -30,12 +30,12 @@ const FriendCard = ({
     >
       <div className={cn('thumbnail')}>
         <img
-          src={friend.targetProfile}
-          alt={friend.targetNickname}
+          src={friend.profile}
+          alt={friend.nickname}
           className={cn('image')}
         />
       </div>
-      <strong className={cn('nickname')}>{friend.targetNickname}</strong>
+      <strong className={cn('nickname')}>{friend.nickname}</strong>
       <div className={cn('mark')} />
       {isSelected && <span className="blind">선택됨</span>}
     </button>

@@ -22,7 +22,7 @@ interface Props {
   selectedPhoto?: PhotoCardProps;
   setSelectedPhoto?: React.Dispatch<React.SetStateAction<PhotoCardProps>>;
   isJustImg: boolean;
-  isRefresh: boolean;
+  isRefresh?: boolean;
 }
 
 const ScrollPhotoList = ({

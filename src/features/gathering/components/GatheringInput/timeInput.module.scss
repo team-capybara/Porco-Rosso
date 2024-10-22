@@ -21,6 +21,8 @@
   .time_list {
     overflow-y: auto;
     display: inline-block;
+    // scroll snap 테스트중
+    scroll-snap-type: y;
     width: 50%;
     padding: 0 4px;
     max-height: 100%;
@@ -37,6 +39,8 @@
     }
     .item + .item {
       margin-top: 15px;
+      // scroll snap 테스트중
+      scroll-snap-align: center;
     }
     .button {
       @include font-type('20-24');

@@ -26,6 +26,9 @@
     margin-top: 20px;
     padding: 4px 16px;
     color: $gray-50;
+    .text {
+      float: right;
+    }
   }
   .toggle_button {
     float: right;

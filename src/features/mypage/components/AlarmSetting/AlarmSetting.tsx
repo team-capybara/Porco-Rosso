@@ -40,17 +40,19 @@ const AlarmSetting = () => {
     );
   };
 
+  // 테스트 코드로 개발 작업 시, 제거 및 수정부탁드립니다.
+  const testIsOff = true;
+
   return (
     // todo: 시스템 알림 off 인 경우, '.is_off' 클래스 활성화부탁드립니다.
-    <div className={cn('alarm_setting', { is_off: true })}>
+    <div className={cn('alarm_setting', { is_off: testIsOff })}>
       <strong className={cn('title')}>알림 설정</strong>
       <div className={cn('section')}>
-        {/* todo: 시스템 알림 데이터 적용부탁드립니다. */}
-        {renderItem({
-          text: '시스템 알림',
-          isOff: !settings.isMoimInvitatedOn,
-          type: 'MOIM_INVITATED',
-        })}
+        <div className={cn('item')}>
+          시스템 알림
+          {/* todo: 활성화 여부에 따라 블라인드 텍스트 "ON/OFF" 변경부탁드립니다 */}
+          <div className={cn('text')}>{testIsOff ? 'ON' : 'OFF'}</div>
+        </div>
       </div>
       <div className={cn('section')}>
         <div className={cn('section_title')}>모임 알림</div>

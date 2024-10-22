@@ -18,7 +18,7 @@ const MemoryGathering = (_props: MemoryGatheringProps) => {
   const [moimId] = useState<number>(getmoimId(useLocation()));
 
   return (
-    <div className={cn('ongoing_gathering')}>
+    <div className={cn('ongoing_gathering', 'memory_gathering')}>
       {renderComponent === 'Memory' && (
         <RenderOngoingMain
           moimStatus="COMPLETED"

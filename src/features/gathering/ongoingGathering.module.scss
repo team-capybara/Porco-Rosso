@@ -31,4 +31,7 @@
   .wrap_scroll_photo_list {
     margin-top: 32px;
   }
+  &.memory_gathering .section:last-child {
+    margin-bottom: 40px;
+  }
 }

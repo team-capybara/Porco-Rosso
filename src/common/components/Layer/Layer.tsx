@@ -7,11 +7,12 @@ const cn = classnames.bind(styles);
 interface Props {
   children: ReactNode;
   classNameForView?: '' | 'location_search_input';
+  layerRef: React.RefObject<HTMLDivElement>;
 }
 
-const Layer = ({ children, classNameForView }: Props) => {
+const Layer = ({ children, classNameForView, layerRef }: Props) => {
   return (
-    <div className={cn('layer', classNameForView)}>
+    <div className={cn('layer', classNameForView)} ref={layerRef}>
       <div className={cn('inner')}>{children}</div>
     </div>
   );

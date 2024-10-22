@@ -114,3 +114,13 @@ export const finishMoim = async (moimId: number) => {
     throw error;
   }
 };
+
+export const getFriendCnt = async (): Promise<number> => {
+  try {
+    const response = await apiClient.get('/users/friends/followings/count');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user friend count:', error);
+    throw error;
+  }
+};

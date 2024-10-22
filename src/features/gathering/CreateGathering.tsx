@@ -23,7 +23,6 @@ const cn = classnames.bind(styles);
 const CreateGathering = () => {
   // T는 CreateGatheringData로 설정되며, key와 value의 타입이 CreateGatheringData의 프로퍼티와 일치하게 됨
   // CreateGatheringData의 키값에 따라 각각의 타입을 모두 추론할 수 있게 맵핑해주는 제네릭
-  // const { data: gatheringInfoData } = getGatheringInfo(1);
 
   const [gatheringData, setGatheringData] = useState<CreateGatheringData>({
     title: '',
@@ -43,6 +42,7 @@ const CreateGathering = () => {
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [moimCreateRes, setMoimCreateRes] = useState<string>('');
   const [ownerInfo, setOwnerInfo] = useState<IParticipants>();
+  const [modalErrMsg, setModalErrMsg] = useState<string>('');
 
   const { moimeToast } = useMoimeToast();
 
@@ -127,8 +127,11 @@ const CreateGathering = () => {
       setChkModalOpen(true);
     },
     onError: (error) => {
+      console.log(error, '모임 생성 에러 로그');
       // 실패 시 처리할 로직
-      console.error('모임 생성 실패:', error);
+      setMoimCreateRes('fail');
+      setChkModalOpen(true);
+      setModalErrMsg('일시적인 오류로 모임 생성에 실패하였습니다.');
     },
   });
 
@@ -139,15 +142,28 @@ const CreateGathering = () => {
     if (errorMsg) {
       setMoimCreateRes('fail');
       setChkModalOpen(true);
-      // alert(errorMsg); // 공통 모달 띄움
+      setModalErrMsg(errorMsg);
       return;
     }
 
     // 모임생성 전 한번더 검증
-    if (participantDataList.length > 11) {
+    if (participantDataList.length > 10) {
       setMoimCreateRes('fail');
       setChkModalOpen(true);
-      // alert('공통 모달 띄움, 친구는 최대 11명까지만 초대할 수 잇어요');
+      setModalErrMsg('모임 생성이 가능한 최대 인원은 11명입니다');
+      return;
+    }
+
+    // 현재 시간과 비교하여 과거 시간인지 확인
+    const currentTime = new Date();
+    const selectedDateTime = new Date(
+      `${gatheringData.startedAt.slice(0, 4)}-${gatheringData.startedAt.slice(4, 6)}-${gatheringData.startedAt.slice(6, 8)}T${timeData.slice(0, 2)}:${timeData.slice(2, 4)}:00`
+    );
+
+    if (selectedDateTime <= currentTime) {
+      setMoimCreateRes('fail');
+      setChkModalOpen(true);
+      setModalErrMsg('현재 시간보다 과거 시간으로 모임을 생성할 수 없습니다.');
       return;
     }
 
@@ -156,7 +172,7 @@ const CreateGathering = () => {
       startedAt: `${gatheringData.startedAt.slice(0, 8)}${timeData}`,
       participantIds: [
         ...participantDataList.map((participant) => participant.userId),
-        userData?.id, // 항상 userId 추가
+        // userData?.id, // 항상 userId 추가
       ],
     };
 
@@ -174,11 +190,7 @@ const CreateGathering = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('Current gatheringData:', gatheringData);
-  }, [gatheringData]);
-
-  const renderCreateMoimChkModal = (chkStatus: string) => {
+  const renderCreateMoimChkModal = (chkStatus: string, modalErrMsg: string) => {
     if (chkStatus === 'success') {
       return (
         <Modal>
@@ -195,7 +207,7 @@ const CreateGathering = () => {
         <Modal>
           <ModalContents
             title="모임 생성에 실패했어요."
-            description="특정에러 구분해서 알려줌"
+            description={modalErrMsg}
             firstButton="확인"
             onClickFirstButton={handleChkModalClose}
           />
@@ -222,17 +234,6 @@ const CreateGathering = () => {
             onChange={(value: string) => handleChange('title', value)} // 제목 변경 처리
           />
         </div>
-        {/* 버튼 위치 마크업 필요 */}
-        {/* <div className={cn('wrap_confirm_button')}>
-          <button
-            type="button"
-            className={cn('confirm_button')}
-            style={{ color: 'white' }}
-            onClick={() => checkTextInputValid(gatheringData.title)}
-          >
-            확인
-          </button>
-        </div> */}
       </>
     );
   };
@@ -273,6 +274,7 @@ const CreateGathering = () => {
             onPlaceSelect={handleLocationSelect}
             onTimeSelect={handleTimeSelect}
             timeData={timeData}
+            mode="update"
           />
         </div>
         <div className={cn('wrap_create_button')}>
@@ -311,7 +313,7 @@ const CreateGathering = () => {
           ownerId={userData.id}
         />
       )}
-      {chkModalOpen && renderCreateMoimChkModal(moimCreateRes)}
+      {chkModalOpen && renderCreateMoimChkModal(moimCreateRes, modalErrMsg)}
     </div>
   );
 };

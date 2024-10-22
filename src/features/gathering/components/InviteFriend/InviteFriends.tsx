@@ -6,20 +6,15 @@ import GatheringTitle from '../GatheringTitle/GatheringTitle';
 import ParticipantList from '../ParticipantList/ParticipantList';
 import FriendSearchInput from './FriendSearchInput';
 import FriendSearchList from './FriendSearchList';
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  UseInfiniteQueryResult,
-} from '@tanstack/react-query';
-import {
-  IParticipants,
-  GetFriendsListRes,
-  InviteFriendsProps,
-} from '../../types';
+import { IParticipants, InviteFriendsProps } from '../../types';
 import {
   addFriendsToMoim,
-  getFriendsList,
+  getFriendCnt,
 } from '../../../../api/service/gatheringApi';
+import { useFriendSearch } from '../../utils/useFriendSearch';
+import { useDebounce } from '../../utils/useDebounce';
+import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
+import { useQuery } from '@tanstack/react-query';
 
 const cn = classnames.bind(styles);
 
@@ -44,68 +39,27 @@ const InviteFriends = ({
     IParticipants[]
   >([]);
 
-  const useFriendSearch = (
-    keyword: string,
-    cursorId: number | null,
-    size: number
-  ) => {
-    const {
-      data, // 가져온 친구 목록 데이터
-      isLoading, // 데이터 로딩 중 상태
-      isFetching, // 추가 데이터 요청 중 상태
-      isError, // 에러 상태
-      error, // 발생한 에러 객체,
-      fetchNextPage,
-      hasNextPage,
-      isFetchingNextPage,
-    }: UseInfiniteQueryResult<
-      InfiniteData<GetFriendsListRes>,
-      Error
-    > = useInfiniteQuery({
-      queryKey: ['friendsList', keyword, size], // 쿼리 키에 keyword만 사용해 재사용성 향상
-      queryFn: ({ pageParam = null }) =>
-        getFriendsList(keyword, pageParam, size), // cursorId를 pageParam으로 사용
-      // enabled: !!searchKeyword, // 검색어가 있을 때만 쿼리가 실행되도록 설정
-      staleTime: 1000 * 60 * 5, // 데이터가 5분 동안 신선하다고 간주됨
-      getNextPageParam: (lastPage) => {
-        console.log('lastPage:', lastPage); // 디버깅: 응답 확인
-        console.log(lastPage?.cursorId?.cursorId, '뭐지');
-        return lastPage.last ? null : lastPage?.cursorId?.cursorId || null;
-      },
-      initialPageParam: cursorId,
-      placeholderData: (prev) => prev,
-    });
+  const debouncedKeyword = useDebounce(searchKeyword, 300);
 
-    return {
-      data,
-      isLoading,
-      isFetching,
-      isError,
-      error,
-      fetchNextPage,
-      hasNextPage,
-      isFetchingNextPage,
-    };
-  };
+  const { moimeToast } = useMoimeToast();
 
   // React Query로 친구 목록 데이터 가져오기
   const {
     data,
-    // isLoading,
-    // isFetching,
-    // isError,
+    isLoading,
+    isFetching,
+    isError,
     // error
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useFriendSearch(searchKeyword, cursorId, 10);
+  } = useFriendSearch(debouncedKeyword, cursorId, 10);
 
   const friendsData = data?.pages.flatMap((page) => page.data) || [];
 
   // 검색어 변경 처리
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(event.target.value);
-    // setCursorId(null); // 검색 시 커서를 초기화
   };
 
   const inviteFriendBackNavClickHandler = (
@@ -126,7 +80,7 @@ const InviteFriends = ({
 
       // friendsData에서 선택된 친구 찾기
       const selectedFriend = friendsData?.find(
-        (friend) => friend.targetId === friendId
+        (friend) => friend.id === friendId
       );
 
       if (!selectedFriend) return prevSelected; // 친구가 없으면 이전 선택을 반환
@@ -140,15 +94,15 @@ const InviteFriends = ({
         }
         // 이미 추가된 경우는 중복 방지, 추가되지 않은 경우만 추가
         const isAlreadyAdded = prevList.some(
-          (participant) => participant.userId === selectedFriend.targetId
+          (participant) => participant.userId === selectedFriend.id
         );
         if (!isAlreadyAdded) {
           return [
             ...prevList,
             {
-              userId: selectedFriend.targetId,
-              nickname: selectedFriend.targetNickname,
-              profileImageUrl: selectedFriend.targetProfile,
+              userId: selectedFriend.id,
+              nickname: selectedFriend.nickname,
+              profileImageUrl: selectedFriend.profile,
               isOwner: false, // 친구는 owner가 아니므로 false
             },
           ];
@@ -184,11 +138,11 @@ const InviteFriends = ({
         // || (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
       ) {
         const selectedData = friendsData
-          ?.filter((friend) => selectedFriends.includes(friend.targetId))
+          ?.filter((friend) => selectedFriends.includes(friend.id))
           .map((friend) => ({
-            userId: friend.targetId,
-            nickname: friend.targetNickname,
-            profileImageUrl: friend.targetProfile,
+            userId: friend.id,
+            nickname: friend.nickname,
+            profileImageUrl: friend.profile,
             isOwner: false,
           }));
 
@@ -199,35 +153,48 @@ const InviteFriends = ({
   }, [friendsData]);
 
   const inviteFriendValidation = () => {
-    const totalFriendCnt = selectedFriends.length + participantData.length;
-    if (totalFriendCnt > 11) {
-      alert('친구는 최대 11명까지만 초대 가능'); // 토스트로 변경
+    const totalFriendCnt = selectedFriends.length;
+    if (totalFriendCnt > 10) {
+      moimeToast({
+        message: '친구는 최대 10명까지 초대 가능합니다', // 메시지 커스터마이징
+        onClickEnabled: false, // onClick 활성화
+        duration: 3000, // 지속 시간 설정
+        id: 'invite-friend-validation-toast', // 고유 ID 설정
+      });
       return false;
     }
     return true;
   };
 
   const handleFinishButton = () => {
-    if (inviteFriendValidation()) {
-      // 진행중 모임에서 친구 추가 api 요청 보내기
-      if (
-        moimStart &&
-        moimStatus === 'ONGOING' &&
-        isUserAndOwner &&
-        ownerId !== null &&
-        moimId &&
-        selectedFriendsData.length
-      ) {
-        // 진행중 모임에서는 완료 버튼 눌렀을 때 친구 목록 수정 api 보내야함
-        const modifiedFriendList = [ownerId, ...selectedFriends];
+    // 진행중 모임에서 친구 추가 api 요청 보내기
+    if (
+      moimStart &&
+      moimStatus === 'ONGOING' &&
+      isUserAndOwner &&
+      ownerId !== null &&
+      moimId &&
+      selectedFriendsData.length
+    ) {
+      // 진행중 모임에서는 완료 버튼 눌렀을 때 친구 목록 수정 api 보내야함
+      if (inviteFriendValidation()) {
+        // const modifiedFriendList = [ownerId, ...selectedFriends];
+        const modifiedFriendList = [...selectedFriends];
         addFriendsToMoim(moimId, modifiedFriendList)
           .then(() => {
             setFriendAddSuccess && setFriendAddSuccess(true);
+            setLayerOpen?.(false);
           })
-          .catch((error) => {
-            console.error('친구 목록 수정 실패:', error);
+          .catch(() => {
+            moimeToast({
+              message: '일시적인 오류로 친구 추가를 실패했습니다.', // 메시지 커스터마이징
+              onClickEnabled: false, // onClick 활성화
+              duration: 3000, // 지속 시간 설정
+              id: 'invite-friend-err-toast', // 고유 ID 설정
+            });
           });
       }
+    } else {
       setLayerOpen?.(false);
     }
   };
@@ -250,6 +217,18 @@ const InviteFriends = ({
       prevSelected.filter((id) => id !== userId)
     );
   };
+
+  const {
+    // isLoading,
+    // isFetching,
+    data: friendCnt,
+    // isError,
+    // error,
+    // refetch,
+  } = useQuery<number>({
+    queryKey: ['friendCnt'],
+    queryFn: getFriendCnt,
+  });
 
   return (
     <div>
@@ -279,7 +258,7 @@ const InviteFriends = ({
       <div className={cn('wrap_friend_search_input')}>
         <strong className={cn('title')}>
           내친구
-          <span className={cn('count')}>{friendsData?.length}명</span>
+          <span className={cn('count')}>{friendCnt}명</span>
         </strong>
         <FriendSearchInput onChange={handleSearchChange} />
       </div>
@@ -294,6 +273,9 @@ const InviteFriends = ({
           fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          isError={isError}
         />
       </div>
     </div>

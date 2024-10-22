@@ -3,7 +3,11 @@
     @include font-type('16-22', 600);
     display: block;
     color: $gray-50;
-    margin-bottom: 12px;
+  }
+  .condition {
+    @include font-type('14-24', 500);
+    margin-bottom: 8px;
+    color: $gray-400;
   }
   .input_area {
     position: relative;
@@ -34,9 +38,9 @@
     color: $gray-700;
     transform: rotate(180deg);
   }
-  .description {
+  .error_message {
     @include font-type('14-24', 500);
-    margin-top: 12px;
-    color: $gray-400;
+    margin-top: 8px;
+    color: $red;
   }
 }

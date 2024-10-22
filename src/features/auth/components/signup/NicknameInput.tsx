@@ -22,6 +22,7 @@ const NicknameInput = ({
       <label htmlFor="nickname" className={cn('label')}>
         사용할 닉네임을 입력해주세요
       </label>
+      <p className={cn('condition')}>1~15자, 영문/한글/숫자 입력 가능</p>
       <div className={cn('input_area')}>
         <input
           type="text"
@@ -32,8 +33,7 @@ const NicknameInput = ({
           ref={inputRef}
         />
       </div>
-      <p className={cn('description')}>1~15자, 영문/한글/숫자 입력 가능</p>
-      {errMsg && <p>{errMsg}</p>}
+      {errMsg && <p className={cn('error_message')}>{errMsg}</p>}
     </div>
   );
 };

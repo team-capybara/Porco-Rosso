@@ -274,6 +274,7 @@ const CreateGathering = () => {
             onPlaceSelect={handleLocationSelect}
             onTimeSelect={handleTimeSelect}
             timeData={timeData}
+            mode="update"
           />
         </div>
         <div className={cn('wrap_create_button')}>

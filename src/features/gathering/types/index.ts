@@ -144,6 +144,7 @@ export interface GatheringInfoInputsProps {
   }) => void;
   onTimeSelect: (time: string) => void;
   timeData: string;
+  mode: 'read' | 'update';
 }
 
 export type Friend = {

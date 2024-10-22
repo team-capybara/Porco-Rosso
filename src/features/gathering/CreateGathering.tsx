@@ -172,7 +172,7 @@ const CreateGathering = () => {
       startedAt: `${gatheringData.startedAt.slice(0, 8)}${timeData}`,
       participantIds: [
         ...participantDataList.map((participant) => participant.userId),
-        userData?.id, // 항상 userId 추가
+        // userData?.id, // 항상 userId 추가
       ],
     };
 

@@ -24,37 +24,32 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   const hourRefs = useRef<(HTMLLIElement | null)[]>([]);
   const minuteRefs = useRef<(HTMLLIElement | null)[]>([]);
   const wrapTimeRef = useRef<HTMLDivElement | null>(null);
-  // const initializedRef = useRef<boolean>(false); // 초기 설정 여부 추적
+  const initializedRef = useRef<boolean>(false); // 초기 설정 여부 추적
 
-  // const smoothScroll = (element: HTMLElement | null) => {
-  //   return new Promise<void>((resolve) => {
-  //     if (element) {
-  //       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  //       setTimeout(resolve, 500); // 스크롤 애니메이션이 끝난 후 resolve 호출
-  //     } else {
-  //       resolve();
-  //     }
-  //   });
-  // };
+  useEffect(() => {
+    // timeData 입력된 값 있을 시 입력 값으로 포커스 처리
+    if (timeData && !initializedRef.current) {
+      const hourIndex = parseInt(timeData.slice(0, 2));
+      const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
 
-  // 초기 값 설정 (timeData가 있을 경우 한 번만 실행)
-  // useEffect(() => {
-  //   if (timeData && !initializedRef.current) {
-  //     const hourIndex = parseInt(timeData.slice(0, 2));
-  //     const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
+      if (hourIndex >= 0 && hourRefs.current[hourIndex]) {
+        hourRefs.current[hourIndex].scrollIntoView({
+          behavior: 'auto',
+          block: 'center',
+        });
+      }
 
-  //     (async () => {
-  //       if (hourIndex >= 0) {
-  //         await smoothScroll(hourRefs.current[hourIndex]);
-  //       }
-  //       if (minuteIndex >= 0) {
-  //         await smoothScroll(minuteRefs.current[minuteIndex]);
-  //       }
-  //     })();
+      if (minuteIndex >= 0 && minuteRefs.current[minuteIndex]) {
+        minuteRefs.current[minuteIndex].scrollIntoView({
+          behavior: 'auto',
+          block: 'center',
+        });
+      }
 
-  //     initializedRef.current = true; // 초기화 완료
-  //   }
-  // }, [timeData]);
+      initializedRef.current = true; // 초기화 완료
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeData]);
 
   // IntersectionObserver를 사용하여 현재 보이는 항목을 active 상태로 설정
   useEffect(() => {

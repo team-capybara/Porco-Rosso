@@ -153,10 +153,7 @@ const InviteFriends = ({
   }, [friendsData]);
 
   const inviteFriendValidation = () => {
-    const totalFriendCnt = selectedFriends.length + participantData.length;
-    console.log(selectedFriends, participantData);
-    console.log(totalFriendCnt, '몇명인지 체크');
-    // 카운트 값 찾아서 조절해야 할 듯
+    const totalFriendCnt = selectedFriends.length;
     if (totalFriendCnt > 10) {
       moimeToast({
         message: '친구는 최대 10명까지 초대 가능합니다', // 메시지 커스터마이징
@@ -181,10 +178,12 @@ const InviteFriends = ({
     ) {
       // 진행중 모임에서는 완료 버튼 눌렀을 때 친구 목록 수정 api 보내야함
       if (inviteFriendValidation()) {
-        const modifiedFriendList = [ownerId, ...selectedFriends];
+        // const modifiedFriendList = [ownerId, ...selectedFriends];
+        const modifiedFriendList = [...selectedFriends];
         addFriendsToMoim(moimId, modifiedFriendList)
           .then(() => {
             setFriendAddSuccess && setFriendAddSuccess(true);
+            setLayerOpen?.(false);
           })
           .catch(() => {
             moimeToast({
@@ -195,8 +194,9 @@ const InviteFriends = ({
             });
           });
       }
+    } else {
+      setLayerOpen?.(false);
     }
-    setLayerOpen?.(false);
   };
 
   const handleDeleteParticipant = (userId: number) => {

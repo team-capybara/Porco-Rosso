@@ -63,6 +63,16 @@ export interface getMoimePhotoResponse {
   total: number;
 }
 
+export interface LikesForPhoto {
+  photoId: number;
+  likes: number;
+}
+
+export interface FetchLikesForPhotosResponse {
+  data: Array<LikesForPhoto>;
+  total: number;
+}
+
 export type ongoingType = 'OngoingMain' | 'PhotoList' | 'PhotoDetail' | 'reset'; // reset => 리렌더링을 위해서
 
 export type memoryType = 'Memory' | 'Share';

@@ -1,4 +1,7 @@
-import { getMoimePhotoResponse } from '../../features/gathering/types';
+import {
+  FetchLikesForPhotosResponse,
+  getMoimePhotoResponse,
+} from '../../features/gathering/types';
 import apiClient from '../config';
 
 export const getMoimePhoto = async (
@@ -10,9 +13,6 @@ export const getMoimePhoto = async (
     const res = await apiClient.get(
       `/moims/${moimId}/photos?size=${size}&cursorId=${cursorId || ''}`
     );
-
-    console.warn('체크 response', res.data);
-    console.warn('체크 cursorId', cursorId);
 
     const response: getMoimePhotoResponse = res.data;
     return response;
@@ -42,5 +42,21 @@ export const updatePhotoLike = async (
   } catch (error) {
     console.error('Error fetching Moime photos:', error);
     throw new Error('사진 데이터를 불러오는 중 오류가 발생했습니다.');
+  }
+};
+
+export const fetchLikesForPhotos = async (
+  moimId: string,
+  photoIds: number[]
+): Promise<FetchLikesForPhotosResponse> => {
+  try {
+    const res = await apiClient.get(
+      `moims/${moimId}/photos/likes?photoIds=${photoIds.join(',')}`
+    );
+
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching Likes for Photos:', error);
+    throw new Error('좋아요 수를 불러오는 중 오류가 발생했습니다..');
   }
 };

@@ -4,11 +4,12 @@ import styles from './photoList.module.scss';
 import PhotoCard from './PhotoCard/PhotoCard';
 import { getMoimePhotoResponse, Photo } from '../../types';
 import React from 'react';
-// import useNewPhotoPolling from '../../utils/useNewPhotoPolling';
-// import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
+import useNewPhotoPolling from '../../utils/useNewPhotoPolling';
+import { useMoimeToast } from '../../../../common/utils/useMoimeToast';
 import { PhotoCardProps } from '../../types';
 import { useNavigate } from 'react-router-dom';
 import { useMoimePhotoQuery } from '../../utils/useMoimePhotoQuery';
+import useUpdatePhotoLikes from '../../utils/useUpdatePhotoLikes';
 
 const cn = classnames.bind(styles);
 
@@ -18,14 +19,16 @@ interface PhotoListProps {
 
 const PhotoList = ({ moimeId }: PhotoListProps) => {
   const navigate = useNavigate();
-  // const { moimeToast } = useMoimeToast();
+  const { moimeToast } = useMoimeToast();
   const targetsRef = useRef<HTMLDivElement[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const [pageNum, setPageNum] = useState<number>(0);
 
   // 새로운 사진 polling hooks => api 추가 필요
-  // const { isNew, setIsNew } = useNewPhotoPolling(5000);
+  const { isNew, setIsNew } = useNewPhotoPolling(5000, moimeId);
+  // 좋아요 수 업데이트 hooks
+  const { updatePhotoLikes } = useUpdatePhotoLikes(moimeId);
 
   // 사진 페이지네이션 로직 관련 START
   const {
@@ -33,20 +36,20 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    // resetAndFetchFirstPage,
+    resetAndFetchFirstPage,
   } = useMoimePhotoQuery(moimeId, null); // 초기 cursorId = null;
 
-  // const handleClick = () => {
-  //   if (observerRef.current) {
-  //     // unmount시 모든 감시 대상 해제
-  //     targetsRef.current.forEach((target) => {
-  //       if (target) observerRef.current?.unobserve(target);
-  //     });
-  //     observerRef.current.disconnect();
-  //     targetsRef.current = [];
-  //   }
-  //   resetAndFetchFirstPage();
-  // };
+  const handleClick = () => {
+    if (observerRef.current) {
+      // unmount시 모든 감시 대상 해제
+      targetsRef.current.forEach((target) => {
+        if (target) observerRef.current?.unobserve(target);
+      });
+      observerRef.current.disconnect();
+      targetsRef.current = [];
+    }
+    resetAndFetchFirstPage();
+  };
 
   const observerCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry: IntersectionObserverEntry) => {
@@ -93,7 +96,6 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     return () => {
       if (observerRef.current) {
         // unmount시 모든 감시 대상 해제
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         targetsRef.current.forEach((target) => {
           if (target) observerRef.current?.unobserve(target);
         });
@@ -110,21 +112,32 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     });
   };
 
-  // toast 공통화 필요함 => 폴링 추가 후 다시 추가
-  // useEffect(() => {
-  //   if (!isNew) return;
+  // 좋아요 수 업데이트 폴링
+  useEffect(() => {
+    if (pageNum === null) return;
 
-  //   //
-  //   moimeToast({
-  //     message: 'userName님이 사진을 업로드 했습니다.', // 메시지 커스터마이징
-  //     onClickEnabled: true, // onClick 활성화
-  //     onClick: handleClick, // 클릭 시 실행할 함수
-  //     duration: 3000, // 지속 시간 설정
-  //     id: 'new-photo-toast', // 고유 ID 설정
-  //   });
-  //   setIsNew(false);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isNew]);
+    const intervalId = setInterval(() => {
+      updatePhotoLikes(pageNum); // 현재 페이지의 좋아요 수 업데이트
+    }, 5000);
+
+    return () => clearInterval(intervalId); // Interval 해제
+  }, [pageNum, updatePhotoLikes]);
+
+  // toast 공통화 필요함 => 폴링 추가 후 다시 추가
+  useEffect(() => {
+    if (!isNew) return;
+
+    //
+    moimeToast({
+      message: '새로운 사진이 등록됐어요!', // 메시지 커스터마이징
+      onClickEnabled: true, // onClick 활성화
+      onClick: handleClick, // 클릭 시 실행할 함수
+      duration: 3000, // 지속 시간 설정
+      id: 'new-photo-toast', // 고유 ID 설정
+    });
+    setIsNew(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isNew]);
 
   // 디버깅용
   useEffect(() => {

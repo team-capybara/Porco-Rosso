@@ -55,7 +55,6 @@ const InviteFriends = ({
     hasNextPage,
     isFetchingNextPage,
   } = useFriendSearch(debouncedKeyword, cursorId, 10);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const friendsData = data?.pages.flatMap((page) => page.data) || [];
 
   // 검색어 변경 처리

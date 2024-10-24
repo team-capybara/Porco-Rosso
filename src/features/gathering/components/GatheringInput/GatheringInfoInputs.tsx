@@ -29,6 +29,7 @@ const GatheringInfoInputs = ({
   onPlaceSelect,
   onTimeSelect,
   timeData,
+  mode,
 }: GatheringInfoInputsProps) => {
   const { startedAt, location } = gatheringData;
   const [isOpen, setIsOpen] = useState<OpenState>({
@@ -107,6 +108,7 @@ const GatheringInfoInputs = ({
           type="button"
           className={cn('button', { active: startedAt ? true : false })}
           onClick={() => handleGatheringInfoLayerOpen('dateOpen')}
+          disabled={mode === 'read' ? true : false}
         >
           {startedAt ? (
             <span className={cn('text')}>
@@ -131,6 +133,7 @@ const GatheringInfoInputs = ({
           type="button"
           className={cn('button')}
           onClick={() => handleGatheringInfoLayerOpen('timeOpen')}
+          disabled={mode === 'read' ? true : false}
         >
           {timeData ? (
             // 마크업 font color 수정 부탁드립니다
@@ -153,6 +156,7 @@ const GatheringInfoInputs = ({
           type="button"
           className={cn('button')}
           onClick={() => handleGatheringInfoLayerOpen('locationOpen')}
+          disabled={mode === 'read' ? true : false}
         >
           {location.name ? (
             // 마크업 font color 수정 부탁드립니다

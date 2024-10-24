@@ -34,14 +34,14 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
       const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
 
       if (hourIndex >= 0 && hourRefs.current[hourIndex]) {
-        hourRefs.current[hourIndex].scrollIntoView({
+        hourRefs?.current[hourIndex]?.scrollIntoView({
           behavior: 'auto',
           block: 'center',
         });
       }
 
       if (minuteIndex >= 0 && minuteRefs.current[minuteIndex]) {
-        minuteRefs.current[minuteIndex].scrollIntoView({
+        minuteRefs?.current[minuteIndex]?.scrollIntoView({
           behavior: 'auto',
           block: 'center',
         });

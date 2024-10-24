@@ -49,12 +49,16 @@ const InviteFriends = ({
     isLoading,
     isFetching,
     isError,
+    isSuccess,
     // error
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = useFriendSearch(debouncedKeyword, cursorId, 10);
+  // console.log(statusMessage, 'satus');
+  console.log(isSuccess, 'isSuccess');
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const friendsData = data?.pages.flatMap((page) => page.data) || [];
 
   // 검색어 변경 처리
@@ -129,7 +133,8 @@ const InviteFriends = ({
   useEffect(() => {
     setFriendAddSuccess && setFriendAddSuccess(false);
     // 모임 생성 및 수정 단계(진행전 모임)에서는 선택된 친구 데이터를 바로 수정 및 확인해야 하므로, 초기 렌더 시 데이터 한번 세팅
-    if (selectedFriends.length) {
+    if (selectedFriends.length && isSuccess) {
+      console.log(friendsData, '여기에 안들어있음');
       // 모임생성 || 진행전이면서 유저가 오너 ||
       // 진행중이면서 유저가 오너일 때는 제외, 기존 애들은 못 건드리기 때문에, 세팅해줄 필요 없음
       if (
@@ -137,6 +142,7 @@ const InviteFriends = ({
         (moimStart && moimStatus === 'CREATED' && isUserAndOwner)
         // || (moimStart && moimStatus === 'ONGOING' && isUserAndOwner)
       ) {
+        console.log(selectedFriends, 'ㄴㅇㄹ안러');
         const selectedData = friendsData
           ?.filter((friend) => selectedFriends.includes(friend.id))
           .map((friend) => ({
@@ -150,6 +156,11 @@ const InviteFriends = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFriends, isSuccess]);
+
+  useEffect(() => {
+    console.log(friendsData);
+    console.log('무한루프 테스트');
   }, [friendsData]);
 
   const inviteFriendValidation = () => {

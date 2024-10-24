@@ -20,11 +20,11 @@ const cn = classnames.bind(styles);
 const UpcomingGathering = () => {
   // const navigate = useNavigate();
   const [moimId] = useState<number>(getmoimId(useLocation()));
-  // const [moimId] = useState<number>(108);
   const [userId, setUserId] = useState<number>();
   const [remainingTime, setRemainingTime] = useState<string>('00:00:00');
   console.log(userId, 'userId');
   const [reviseView, setReviseView] = useState<boolean>(false);
+  const [moimReviseRes, setMoimReviseRes] = useState<string>('');
 
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   // 모임 상세 정보 가져오기
@@ -61,10 +61,12 @@ const UpcomingGathering = () => {
   };
 
   useEffect(() => {
+    // 실패했으면 굳이 재 로딩 안해도됨
+    if (moimReviseRes === 'fail') return;
     setGatheringInfoDataFunc();
     setUserIdFromCookie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [moimReviseRes]);
 
   const isUserAndOwner = userId === gatheringInfoData?.owner.userId;
   const isParticipant = userId !== gatheringInfoData?.owner.userId;
@@ -87,14 +89,14 @@ const UpcomingGathering = () => {
   };
 
   useEffect(() => {
-    if (gatheringInfoData?.startedAt) {
+    if (gatheringInfoData?.startedAt && !reviseView) {
       const timer = setInterval(() => {
         setRemainingTime(calculateRemainingTime(gatheringInfoData.startedAt));
       }, 1000);
 
       return () => clearInterval(timer);
     }
-  }, [gatheringInfoData?.startedAt]);
+  }, [gatheringInfoData?.startedAt, reviseView]);
 
   const renderUpcomingMain = () => {
     // 방장이랑, 방원 구분
@@ -120,6 +122,7 @@ const UpcomingGathering = () => {
           isParticipant={isParticipant}
           onClickUpcomingButton={handleUpcomingTitleBtn}
           mode="readonly"
+          hasEditButton={false}
         />
         <div className={cn('wrap_participant_list')}>
           <ParticipantList
@@ -165,6 +168,12 @@ const UpcomingGathering = () => {
               mode="revise"
               initialData={transformGatheringInfoData(gatheringInfoData)}
               initialTimeData={extractTimeData(gatheringInfoData)} //
+              handleUpcomingTitleBtn={handleUpcomingTitleBtn}
+              moimId={moimId}
+              moimReviseRes={moimReviseRes}
+              setMoimReviseRes={setMoimReviseRes}
+              setReviseView={setReviseView}
+              participants={gatheringInfoData.participants}
             />
           )}
         </div>

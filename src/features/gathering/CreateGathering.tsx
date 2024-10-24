@@ -10,13 +10,14 @@ import {
   CreateGatheringData,
   ChangeHandler,
   CreateGatheringProps,
+  ReviseGatheringParams,
 } from './types/index';
 import { textInputValidation } from '../../common/utils/authUtils';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getUserInfo } from '../../api/service/authApi';
 import { IParticipants } from '../gathering/types/index';
 import InviteFriends from './components/InviteFriend/InviteFriends';
-import { createMoim } from '../../api/service/gatheringApi';
+import { createMoim, reviseMoim } from '../../api/service/gatheringApi';
 import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
 import { onPopBridge } from '../../bridge/gatheringBridge.ts';
@@ -28,12 +29,18 @@ const CreateGathering = ({
   mode,
   initialData,
   initialTimeData,
+  handleUpcomingTitleBtn,
+  moimId,
+  moimReviseRes,
+  setMoimReviseRes,
+  setReviseView,
+  participants,
 }: CreateGatheringProps) => {
   // T는 CreateGatheringData로 설정되며, key와 value의 타입이 CreateGatheringData의 프로퍼티와 일치하게 됨
   // CreateGatheringData의 키값에 따라 각각의 타입을 모두 추론할 수 있게 맵핑해주는 제네릭
 
   const [gatheringData, setGatheringData] = useState<CreateGatheringData>(
-    mode === 'revise'
+    mode === 'revise' && initialData
       ? initialData
       : {
           title: '',
@@ -45,10 +52,13 @@ const CreateGathering = ({
 
   const [timeData, setTimeData] = useState<string>(initialTimeData || '');
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
+  // const [textInputOpen, setTextInputOpen] = useState<boolean>(
+  //   mode === 'revise' ? false : true
+  // );
   const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
   const [participantDataList, setParticipantDataList] = useState<
     IParticipants[]
-  >([]);
+  >(mode === 'revise' && participants ? participants : []);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [chkModalOpen, setChkModalOpen] = useState<boolean>(false);
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
@@ -94,6 +104,7 @@ const CreateGathering = ({
 
   // userData를 participantList에 추가하는 로직
   useEffect(() => {
+    setMoimReviseRes?.(''); // 초기화
     if (userData) {
       setOwnerInfo({
         userId: userData.id,
@@ -102,7 +113,17 @@ const CreateGathering = ({
         isOwner: true,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
+
+  useEffect(() => {
+    if (mode === 'revise' && participants?.length) {
+      console.log('되나');
+      console.log(participants, '잘들어오나');
+      setSelectedFriends(participants.map((participant) => participant.userId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inviteFriendOpen]);
 
   const handleLocationSelect = (location: {
     name: string;
@@ -113,7 +134,7 @@ const CreateGathering = ({
   };
 
   const handleTimeSelect = (time: string) => {
-    setTimeData(`${time}00`);
+    setTimeData(`${time}`);
   };
 
   const handleTextInputOpen = () => {
@@ -144,6 +165,23 @@ const CreateGathering = ({
       setMoimCreateRes('fail');
       setChkModalOpen(true);
       setModalErrMsg('일시적인 오류로 모임 생성에 실패하였습니다.');
+    },
+  });
+
+  const mutationRevise = useMutation<void, Error, ReviseGatheringParams>({
+    mutationFn: ({ gatheringData, moimId }) =>
+      reviseMoim(gatheringData, moimId),
+    onSuccess: () => {
+      // 성공 시 처리할 로직
+      setMoimReviseRes?.('success');
+      setChkModalOpen(true);
+    },
+    onError: (error) => {
+      console.log(error, '모임 수정 에러 로그');
+      // 실패 시 처리할 로직
+      setMoimReviseRes?.('fail');
+      setChkModalOpen(true);
+      setModalErrMsg('일시적인 오류로 모임 수정에 실패하였습니다.');
     },
   });
 
@@ -181,21 +219,30 @@ const CreateGathering = ({
 
     const updatedGatheringData = {
       ...gatheringData,
-      startedAt: `${gatheringData.startedAt.slice(0, 8)}${timeData}`,
+      startedAt: `${gatheringData.startedAt.slice(0, 8)}${timeData}00`,
       participantIds: [
         ...participantDataList.map((participant) => participant.userId),
         // userData?.id, // 항상 userId 추가
       ],
     };
 
-    mutation.mutate(updatedGatheringData);
+    // 모임수정
+    if (moimId && mode === 'revise') {
+      mutationRevise.mutate({
+        gatheringData: updatedGatheringData,
+        moimId: moimId, // moimId도 함께 전달
+      });
+      // 모임생성
+    } else {
+      mutation.mutate(updatedGatheringData);
+    }
   };
 
   const textInputBackNavClickHandler = (
     e: React.MouseEvent<HTMLAnchorElement>
   ) => {
     e.preventDefault();
-    if (initialLoad) {
+    if (initialLoad && mode !== 'revise') {
       onPopBridge();
     } else {
       setTextInputOpen(false);
@@ -207,10 +254,14 @@ const CreateGathering = ({
       return (
         <Modal>
           <ModalContents
-            title="모임을 생성했어요!"
+            title={
+              mode === 'revise' ? '모임을 수정했어요.' : '모임을 생성했어요!'
+            }
             description="모임 시작 전까지 친구들을 꼭 초대해주세요."
-            firstButton="메인 화면으로 가기"
-            onClickFirstButton={onPopBridge}
+            firstButton={mode === 'revise' ? '확인' : '메인 화면으로 가기'}
+            onClickFirstButton={() => {
+              mode === 'revise' ? setReviseView?.(false) : onPopBridge();
+            }}
           />
         </Modal>
       );
@@ -218,7 +269,11 @@ const CreateGathering = ({
       return (
         <Modal>
           <ModalContents
-            title="모임 생성에 실패했어요."
+            title={
+              mode === 'revise'
+                ? '모임 수정에 실패했어요.'
+                : '모임 생성에 실패했어요.'
+            }
             description={modalErrMsg}
             firstButton="확인"
             onClickFirstButton={handleChkModalClose}
@@ -260,15 +315,27 @@ const CreateGathering = ({
           blindText="이전으로"
           isButton={true}
           onClick={() => {
-            onPopBridge();
+            mode === 'revise' ? setReviseView?.(false) : onPopBridge();
           }}
         />
-        <GatheringTitle
-          title={title || '제목 없는 모임'}
-          description="정보를 채우고 모임을 시작해보세요."
-          hasEditButton={true}
-          onClickEditButton={handleTextInputOpen}
-        />
+        {mode === 'revise' ? (
+          <GatheringTitle
+            title={title || '제목 없는 모임'}
+            description="모임 시작까지 설레는 마음으로 기다려요"
+            hasEditButton={true}
+            onClickEditButton={handleTextInputOpen}
+            onClickUpcomingButton={handleUpcomingTitleBtn}
+            mode={mode}
+            classNameForPage="upcoming_page"
+          />
+        ) : (
+          <GatheringTitle
+            title={title || '제목 없는 모임'}
+            description="정보를 채우고 모임을 시작해보세요."
+            hasEditButton={true}
+            onClickEditButton={handleTextInputOpen}
+          />
+        )}
         <div className={cn('wrap_participant_list')}>
           <ParticipantList
             hasAddButton={true}
@@ -293,14 +360,13 @@ const CreateGathering = ({
           {/* Markup todo: 모임 생성하기 버튼 상단에 버튼 색상으로 선 생기는 이슈 검토하기 */}
           <div className={cn('inner')}>
             {/* todo: 날짜, 시간, 장소 입력된 경우, disabled={false} 토글 부탁드려요 */}
-            {/* disabled일때 버튼 색이 어둡거나, ui에 변경이 있어야 할듯 */}
             <button
               type="button"
               className={cn('create_button')}
               disabled={!(title && location.name && startedAt)}
               onClick={handleMoimCreateBtn}
             >
-              모임 생성하기
+              {mode === 'revise' ? <>저장</> : <>모임 생성하기</>}
             </button>
           </div>
         </div>
@@ -317,7 +383,9 @@ const CreateGathering = ({
         <InviteFriends
           moimStatus="CREATED"
           moimStart={false}
-          participantData={[]}
+          participantData={
+            mode === 'revise' && participants ? participants : []
+          }
           setParticipantDataList={setParticipantDataList}
           selectedFriends={selectedFriends}
           setSelectedFriends={setSelectedFriends}
@@ -325,7 +393,11 @@ const CreateGathering = ({
           ownerId={userData.id}
         />
       )}
-      {chkModalOpen && renderCreateMoimChkModal(moimCreateRes, modalErrMsg)}
+      {chkModalOpen &&
+        renderCreateMoimChkModal(
+          mode === 'revise' && moimReviseRes ? moimReviseRes : moimCreateRes,
+          modalErrMsg
+        )}
     </div>
   );
 };

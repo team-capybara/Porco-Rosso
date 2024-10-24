@@ -84,12 +84,6 @@ export type moimStatusType =
   | 'COMPLETED'
   | 'FAILED';
 
-export interface CreateGatheringProps {
-  mode: string;
-  initialData: CreateGatheringData;
-  initialTimeData: string;
-}
-
 export interface mapPoint {
   latitude: number;
   longitude: number;
@@ -117,18 +111,34 @@ export interface IParticipants {
   userId: number;
   nickname: string;
   profileImageUrl: string;
-  isOwner: boolean;
+  isOwner?: boolean;
 }
 
 export interface GatheringLocation extends mapPoint {
   name: string;
 }
 
+export interface CreateGatheringProps {
+  mode?: string;
+  initialData?: CreateGatheringData;
+  initialTimeData?: string;
+  handleUpcomingTitleBtn?: (mode: string) => void;
+  moimId?: number;
+  moimReviseRes?: string;
+  setMoimReviseRes?: React.Dispatch<React.SetStateAction<string>>;
+  setReviseView?: React.Dispatch<React.SetStateAction<boolean>>;
+  participants?: Array<IParticipants>;
+}
 export interface CreateGatheringData {
   title: string;
   participantIds: number[]; // 참가자의 ID 목록
   startedAt: string; // 모임 시작 시간 (ISO 8601 형식)
   location: GatheringLocation; // 모임 장소
+}
+
+export interface ReviseGatheringParams {
+  gatheringData: CreateGatheringData;
+  moimId: number;
 }
 
 export interface CalendarInputProps {

@@ -21,6 +21,7 @@ const useFriendSearch = (
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isSuccess,
   }: UseInfiniteQueryResult<
     InfiniteData<GetFriendsListRes>,
     Error
@@ -45,6 +46,7 @@ const useFriendSearch = (
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isSuccess,
   };
 };
 export { useFriendSearch };

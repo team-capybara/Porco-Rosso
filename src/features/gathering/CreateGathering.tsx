@@ -118,9 +118,12 @@ const CreateGathering = ({
 
   useEffect(() => {
     if (mode === 'revise' && participants?.length) {
-      console.log('되나');
-      console.log(participants, '잘들어오나');
-      setSelectedFriends(participants.map((participant) => participant.userId));
+      setSelectedFriends((prevSelectedFriends) => [
+        ...new Set([
+          ...prevSelectedFriends,
+          ...participants.map((participant) => participant.userId),
+        ]),
+      ]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inviteFriendOpen]);
@@ -340,7 +343,7 @@ const CreateGathering = ({
           <ParticipantList
             hasAddButton={true}
             mode="read"
-            moimStart={false}
+            moimStart={mode === 'revise' ? true : false}
             participantData={participantDataList}
             onClickAddButton={handleInviteFriendLayer}
             owner={ownerInfo}
@@ -382,10 +385,8 @@ const CreateGathering = ({
         // 친구 초대 공통으로 사용해야해서 컴포넌트화 진행
         <InviteFriends
           moimStatus="CREATED"
-          moimStart={false}
-          participantData={
-            mode === 'revise' && participants ? participants : []
-          }
+          moimStart={mode === 'revise' ? true : false}
+          participantData={participantDataList}
           setParticipantDataList={setParticipantDataList}
           selectedFriends={selectedFriends}
           setSelectedFriends={setSelectedFriends}

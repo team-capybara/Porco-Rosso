@@ -22,7 +22,6 @@ const UpcomingGathering = () => {
   const [moimId] = useState<number>(getmoimId(useLocation()));
   const [userId, setUserId] = useState<number>();
   const [remainingTime, setRemainingTime] = useState<string>('00:00:00');
-  console.log(userId, 'userId');
   const [reviseView, setReviseView] = useState<boolean>(false);
   const [moimReviseRes, setMoimReviseRes] = useState<string>('');
 
@@ -56,7 +55,6 @@ const UpcomingGathering = () => {
 
   const extractTimeData = (gatheringData: IGatheringInfo) => {
     const timeData = gatheringData.startedAt.slice(8, 12);
-    console.log(timeData, '뭔가 이상한데');
     return timeData;
   };
 
@@ -101,8 +99,6 @@ const UpcomingGathering = () => {
   const renderUpcomingMain = () => {
     // 방장이랑, 방원 구분
     if (!gatheringInfoData) return null;
-    console.log(isParticipant, '머지');
-
     return (
       <>
         <BackNavigation

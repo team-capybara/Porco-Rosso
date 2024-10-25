@@ -49,12 +49,12 @@ const InviteFriends = ({
     isLoading,
     isFetching,
     isError,
+    isSuccess,
     // error
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = useFriendSearch(debouncedKeyword, cursorId, 10);
-
   const friendsData = data?.pages.flatMap((page) => page.data) || [];
 
   // 검색어 변경 처리
@@ -67,11 +67,16 @@ const InviteFriends = ({
   ) => {
     e.preventDefault();
     // 진행중 모임일 땐 모달 끄면 선택된 친구 초기화
-    if (moimStart) {
+    if (moimStart && moimStatus === 'ONGOING') {
+      console.log('이거 때문인듯?');
       setSelectedFriends([]);
     }
     setLayerOpen?.(false);
   };
+
+  useEffect(() => {
+    console.log(selectedFriends, '쒸익쉬익');
+  }, [selectedFriends]);
 
   // 친구 선택 처리
   const handleFriendSelect = (friendId: number) => {
@@ -110,12 +115,13 @@ const InviteFriends = ({
         return prevList;
       };
 
-      // 모임생성에서만, 바로바로 변경사항 반영
-      if (!moimStart) {
+      // 모임생성 || 진행 전이면서 유저가 오너, 바로바로 변경사항 반영
+      console.log(moimStart, moimStatus, isUserAndOwner, '허허허허');
+      if (!moimStart || (moimStart && moimStatus === 'CREATED')) {
+        console.log('되나');
         setParticipantDataList?.((prevList) => updateList(prevList));
       }
 
-      // 진행 전이거나 중인 경우에는, invite friend 내 참가자 목록만 가변임
       // 이미 모임이 생성된 경우에는 participantData에 서버에서 불러온 데이터로 업데이트 되기 때문
       setSelectedFriendsData((prevList) => updateList(prevList));
 
@@ -129,7 +135,7 @@ const InviteFriends = ({
   useEffect(() => {
     setFriendAddSuccess && setFriendAddSuccess(false);
     // 모임 생성 및 수정 단계(진행전 모임)에서는 선택된 친구 데이터를 바로 수정 및 확인해야 하므로, 초기 렌더 시 데이터 한번 세팅
-    if (selectedFriends.length) {
+    if (selectedFriends.length && isSuccess) {
       // 모임생성 || 진행전이면서 유저가 오너 ||
       // 진행중이면서 유저가 오너일 때는 제외, 기존 애들은 못 건드리기 때문에, 세팅해줄 필요 없음
       if (
@@ -150,7 +156,12 @@ const InviteFriends = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [friendsData]);
+  }, [selectedFriends, isSuccess]);
+
+  useEffect(() => {
+    console.log('selectedfriendsdata', selectedFriendsData);
+    console.log('participantdata', participantData);
+  }, [selectedFriendsData, participantData]);
 
   const inviteFriendValidation = () => {
     const totalFriendCnt = selectedFriends.length;
@@ -202,7 +213,7 @@ const InviteFriends = ({
   const handleDeleteParticipant = (userId: number) => {
     // 모임생성에서만, 바로바로 변경사항 반영
     // 모임생성에서만 participantDataList에서도 삭제
-    if (!moimStart) {
+    if (!moimStart || (moimStart && moimStatus === 'CREATED')) {
       setParticipantDataList?.((prevList) =>
         prevList.filter((participant) => participant.userId !== userId)
       );
@@ -251,7 +262,11 @@ const InviteFriends = ({
           hasAddButton={false}
           mode="update"
           moimStart={false}
-          participantData={selectedFriendsData}
+          participantData={
+            moimStart && moimStatus === 'CREATED'
+              ? participantData
+              : selectedFriendsData
+          }
           onClickDeleteButton={handleDeleteParticipant}
         />
       </div>

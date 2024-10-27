@@ -116,6 +116,7 @@ const CreateGathering = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
+  // 초기 한번만 실행해줘야, 기존 초대된 유저들도 삭제 가능
   useEffect(() => {
     if (mode === 'revise' && participants?.length) {
       setSelectedFriends((prevSelectedFriends) => [
@@ -126,7 +127,7 @@ const CreateGathering = ({
       ]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inviteFriendOpen]);
+  }, []);
 
   const handleLocationSelect = (location: {
     name: string;

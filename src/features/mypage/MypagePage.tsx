@@ -47,7 +47,11 @@ const MypagePage = (props: mypageProps) => {
 
   const handleMypageBackNav = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    onPopBridge();
+    if (renderComponent === 'mypageMain') {
+      onPopBridge();
+    } else {
+      setRenderComponent('mypageMain');
+    }
   };
 
   return (
@@ -81,7 +85,9 @@ const MypagePage = (props: mypageProps) => {
       {/* 알림 설정 */}
       {renderComponent === 'alarmSetting' && <AlarmSetting />}
       {/* 계정 삭제 */}
-      <DeleteUser />
+      {renderComponent === 'deleteUser' && (
+        <DeleteUser userProfile={userData!} />
+      )}
     </div>
   );
 };

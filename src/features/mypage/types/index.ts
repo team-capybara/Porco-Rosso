@@ -5,7 +5,8 @@ export interface mypageProps {}
 export type renderComponentType =
   | 'mypageMain'
   | 'reviseProfile'
-  | 'alarmSetting';
+  | 'alarmSetting'
+  | 'deleteUser';
 
 export interface MyPageMainProps {
   userProfile: UserProfile;

@@ -59,4 +59,14 @@ const userLogout = async () => {
   }
 };
 
-export { getUserInfo, updateProfile, userLogout };
+const userWithdraw = async () => {
+  try {
+    const response = await apiClient.put('/users/my/withdraw');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching userWithdraw:', error);
+    throw error; // 에러 처리 (필요에 따라 사용)
+  }
+};
+
+export { getUserInfo, updateProfile, userLogout, userWithdraw };

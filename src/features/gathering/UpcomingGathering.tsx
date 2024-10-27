@@ -8,7 +8,11 @@ import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs
 // import IconExport24X24 from '../../assets/svg/icon/IconExport24X24';
 import { useLocation } from 'react-router-dom';
 import { getmoimId } from '../../common/utils/queryString';
-import { getGatheringInfo } from '../../api/service/gatheringApi';
+import {
+  getGatheringInfo,
+  leaveMoim,
+  removeMoim,
+} from '../../api/service/gatheringApi';
 import { IGatheringInfo, ModalContentsProps } from '../gathering/types/index';
 import { getUserInfoId } from '../../common/utils/userInfo';
 import { onPopBridge } from '../../bridge/gatheringBridge';
@@ -157,17 +161,45 @@ const UpcomingGathering = () => {
   const handleUpcomingTitleBtn = (mode: string) => {
     // 읽기 모드에서 오너
     if (isUserAndOwner && mode === 'readonly') {
-      alert('읽기 모드에서 오너');
+      console.log('읽기 모드에서 오너');
       setReviseView(true);
     }
     // 읽기 모드에서 방원
     if (isParticipant && mode === 'readonly') {
-      alert('읽기 모드에서 방원');
+      console.log('읽기 모드에서 방원');
+      setModal({
+        title: '모임을 나가시겠어요?',
+        description: '일정에서 모임이 사라집니다.',
+        firstButton: '취소',
+        secondButton: '나가기',
+        onClickFirstButton: () => {
+          setModal(null);
+        },
+        onClickSecondButton: () => {
+          leaveMoim(moimId, false);
+          setModal(null);
+          onPopBridge();
+        },
+      });
     }
 
     // 수정 모드
     if (isUserAndOwner && mode === 'revise') {
-      alert('수정 모드일때 삭제 누름');
+      console.log('수정 모드일때 삭제 누름');
+      setModal({
+        title: '모임을 삭제해요.',
+        description: '모임을 삭제하면 복구할 수 없어요.',
+        firstButton: '취소',
+        secondButton: '삭제',
+        onClickFirstButton: () => {
+          setModal(null);
+        },
+        onClickSecondButton: () => {
+          removeMoim(moimId);
+          setModal(null);
+          onPopBridge();
+        },
+      });
     }
   };
 

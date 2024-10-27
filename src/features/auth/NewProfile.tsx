@@ -1,18 +1,14 @@
-import {
-  // useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 import { UpdateProfile } from './types/index';
 import classnames from 'classnames/bind';
 import styles from './newProfile.module.scss';
 import StepOne from './components/signup/StepOne';
-// import StepThree from './components/signup/StepThree';
 import { getUserInfo, updateProfile } from '../../api/service/authApi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserProfile } from './types/index';
 import StepThree from './components/signup/StepThree';
-// import { useLocation, useNavigate } from 'react-router-dom';
-// import { getCookie } from '../../common/utils/authUtils';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getCookie } from '../../common/utils/authUtils';
 
 const cn = classnames.bind(styles);
 
@@ -21,19 +17,19 @@ const NewProfile = () => {
   const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false);
   const [displayNickname, setDisplayNickname] = useState<string>('');
   // 원래라면 활성화해야함, 테스트를 위해 주석처리
-  // const navigate = useNavigate();
-  // const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // useEffect(() => {
-  //   // new bie 랜딩
-  //   const accessToken = getCookie('access_token');
+  useEffect(() => {
+    // new bie 랜딩
+    const accessToken = getCookie('access_token');
 
-  //   // 로그인 오류 처리
-  //   if (!accessToken) {
-  //     // 다시 로그인으로
-  //     navigate('/', { state: { from: location } });
-  //   }
-  // }, [location, navigate]);
+    // 로그인 오류 처리
+    if (!accessToken) {
+      // 다시 로그인으로
+      navigate('/', { state: { from: location } });
+    }
+  }, [location, navigate]);
 
   const {
     // isLoading,

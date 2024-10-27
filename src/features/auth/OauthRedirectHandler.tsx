@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { getCookie } from '../../common/utils/authUtils';
 import { useLocation, useNavigate } from 'react-router-dom';
-// import { goMain } from '../../bridge/authBridge';
+import { goMain } from '../../bridge/authBridge';
 
 const OauthRedirectHandler = () => {
   //old bie 랜딩
@@ -17,9 +17,9 @@ const OauthRedirectHandler = () => {
       navigate('/', { state: { from: location } });
     } else {
       // 앱 메인으로 브릿징, 원래라면 활성화 해야하는 코드
-      // goMain(accessToken);
+      goMain(accessToken);
       // 올드비로도 signup 페이지 테스트 필요할 때 활성화, 원래라면 비활성화
-      navigate('/signup', { state: { from: location } });
+      // navigate('/signup', { state: { from: location } });
     }
   }, [location, navigate]);
 

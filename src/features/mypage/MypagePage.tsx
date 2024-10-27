@@ -12,6 +12,7 @@ import StepOne from '../auth/components/signup/StepOne';
 import { updateProfile } from '../../api/service/authApi';
 import { UpdateProfile } from '../auth/types';
 import { onPopBridge } from '../../bridge/gatheringBridge';
+import DeleteUser from './components/DeleteUser/DeleteUser';
 
 const MypagePage = (props: mypageProps) => {
   const queryClient = useQueryClient();
@@ -79,6 +80,8 @@ const MypagePage = (props: mypageProps) => {
       )}
       {/* 알림 설정 */}
       {renderComponent === 'alarmSetting' && <AlarmSetting />}
+      {/* 계정 삭제 */}
+      <DeleteUser />
     </div>
   );
 };

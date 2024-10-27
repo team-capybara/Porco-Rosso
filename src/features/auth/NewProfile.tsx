@@ -20,6 +20,7 @@ const NewProfile = () => {
   const queryClient = useQueryClient();
   const [signUpSuccess, setSignUpSuccess] = useState<boolean>(false);
   const [displayNickname, setDisplayNickname] = useState<string>('');
+  // 원래라면 활성화해야함, 테스트를 위해 주석처리
   // const navigate = useNavigate();
   // const location = useLocation();
 

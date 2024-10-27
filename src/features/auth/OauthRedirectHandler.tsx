@@ -16,9 +16,9 @@ const OauthRedirectHandler = () => {
       // 다시 로그인으로
       navigate('/', { state: { from: location } });
     } else {
-      // 앱 메인으로 브릿징
-      // alert('앱 메인으로 브릿징 작업 필요');
+      // 앱 메인으로 브릿징, 원래라면 활성화 해야하는 코드
       // goMain(accessToken);
+      // 올드비로도 signup 페이지 테스트 필요할 때 활성화, 원래라면 비활성화
       navigate('/signup', { state: { from: location } });
     }
   }, [location, navigate]);

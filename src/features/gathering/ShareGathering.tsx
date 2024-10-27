@@ -1,34 +1,85 @@
 import classnames from 'classnames/bind';
 import styles from './shareGathering.module.scss';
-import { ShareProps } from './types/index';
+import { IGatheringInfo, memoryType, Photo } from './types/index';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import GatheringTitle from './components/GatheringTitle/GatheringTitle';
-import ScrollPhotoList from './components/PhotoList/ScrollPhotoList';
 import IconUsers16X16 from '../../assets/svg/icon/IconUsers16X16';
 import IconTimer16X16 from '../../assets/svg/icon/IconTimer16X16';
+import { useEffect, useState } from 'react';
+import {
+  getGatheringInfo,
+  getSelectedPhotos,
+} from '../../api/service/gatheringApi';
+import RouteMap from './components/RouteMap/RouteMap';
+import {
+  calculateElapsedTime,
+  getDateFromDatetime,
+  getDayString,
+} from '../../common/utils/dateUtils';
+import ParticipantSmallList from './components/ParticipantSmallLIst/ParticipantSmallList';
+import ScrollPhotoTop10List from './components/PhotoList/ScrollPhotoTop10List';
 
 const cn = classnames.bind(styles);
 
+interface ShareProps {
+  moimId: number;
+  setRenderComponent: React.Dispatch<React.SetStateAction<memoryType>>;
+}
+
 const ShareGathering = (props: ShareProps) => {
-  console.log(props);
+  const { moimId, setRenderComponent } = props;
+  const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
+  const [elapsedHours, setElapsedHours] = useState<string>('');
+  const [elapsedMinutes, setElapsedMinutes] = useState<string>('');
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo[]>([]);
+
+  // 모임 상세 정보 가져오기
+  const setGatheringInfoDataFunc = async () => {
+    const response: IGatheringInfo = await getGatheringInfo(moimId);
+    setGatheringInfoData(response);
+  };
+
+  const setSelectedPhotoDataFunc = async () => {
+    const response: Photo[] = await getSelectedPhotos(moimId);
+    setSelectedPhoto(response);
+  };
+
+  useEffect(() => {
+    if (gatheringInfoData === undefined) return;
+    const { hours, minutes } = calculateElapsedTime(
+      gatheringInfoData?.startedAt,
+      gatheringInfoData?.finishedAt
+    );
+    setElapsedHours(hours);
+    setElapsedMinutes(minutes);
+  }, [gatheringInfoData]);
+
+  useEffect(() => {
+    setGatheringInfoDataFunc();
+    setSelectedPhotoDataFunc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className={cn('share_gathering')}>
-      <BackNavigation classNameForIconType="close_type" />
+      <BackNavigation
+        classNameForIconType="close_type"
+        blindText="이전으로"
+        isButton={true}
+        onClick={(e) => {
+          e.preventDefault();
+          setRenderComponent('Memory');
+        }}
+      />
       <GatheringTitle
-        title="호남 향우회 술 라쓰고"
-        description="2024년 5월 24일"
+        title={gatheringInfoData?.title}
+        description={getDateFromDatetime(gatheringInfoData?.startedAt)}
         hasDownloadButton={true}
         classNameForPage="share_page"
       />
       <div className={cn('wrap_scroll_photo_list')}>
         {/* todo: 데이터 임의로 넣었는데, 수정부탁드립니다. */}
-        <ScrollPhotoList
-          hiddenTitle={true}
-          isLargePhotoCard={true}
-          moimeId=""
-          isJustImg={false}
-          isRefresh={false}
-        />
+        <ScrollPhotoTop10List data={selectedPhoto} />
       </div>
       <div className={cn('grid_area')}>
         <div className={cn('grid_item')}>
@@ -36,47 +87,36 @@ const ShareGathering = (props: ShareProps) => {
             <IconUsers16X16 className={cn('icon')} />
             참여인원
           </strong>
-          <ul className={cn('profile_list')}>
-            <li className={cn('item')}>
-              <img
-                src="src/assets/png/test_image.png"
-                alt=""
-                className={cn('image')}
-              />
-            </li>
-            <li className={cn('item')}>
-              <img
-                src="src/assets/png/test_image.png"
-                alt=""
-                className={cn('image')}
-              />
-            </li>
-            <li className={cn('item')}>
-              <img
-                src="src/assets/png/test_image.png"
-                alt=""
-                className={cn('image')}
-              />
-            </li>
-            <li className={cn('item')}>
-              <span className={cn('text')}>+2</span>
-            </li>
-          </ul>
+          {gatheringInfoData !== undefined && (
+            <ParticipantSmallList
+              participantData={gatheringInfoData.participants}
+            ></ParticipantSmallList>
+          )}
         </div>
         <div className={cn('grid_item')}>
           <strong className={cn('title')}>
             <IconTimer16X16 className={cn('icon')} />총 모인 시간
           </strong>
           <strong className={cn('total_time')}>
-            <span className={cn('number')}>1</span>시간{' '}
-            <span className={cn('number')}>29</span>분
+            <span className={cn('number')}>{elapsedHours}</span>시간{' '}
+            <span className={cn('number')}>{elapsedMinutes}</span>분
           </strong>
         </div>
         {/* todo: 지도 작업 부탁드립니다. */}
-        <div className={cn('grid_item')}></div>
         <div className={cn('grid_item')}>
-          <strong className={cn('days')}>수요일</strong>
-          <strong className={cn('date')}>5월 24일</strong>
+          <RouteMap
+            locationSummary={gatheringInfoData?.location}
+            moimId={moimId}
+            isRefresh={false}
+          />
+        </div>
+        <div className={cn('grid_item')}>
+          <strong className={cn('days')}>
+            {getDayString(gatheringInfoData?.startedAt)}
+          </strong>
+          <strong className={cn('date')}>
+            {getDateFromDatetime(gatheringInfoData?.startedAt).slice(6)}
+          </strong>
         </div>
       </div>
     </div>

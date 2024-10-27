@@ -35,7 +35,8 @@ const PhotoCard = memo(
     const likeLoading = useRef<boolean>(false); // 요청 상태 관리
 
     const toggleLike = async () => {
-      if (!likeButtonEnabled || likeLoading.current) return; // 이미 요청 중이면 중복 방지
+      if (!likeButtonEnabled || likeLoading.current || moimId === undefined)
+        return; // 이미 요청 중이면 중복 방지
 
       likeLoading.current = true;
       try {

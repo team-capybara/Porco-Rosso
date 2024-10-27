@@ -81,7 +81,12 @@ const GatheringTitle = ({
           )}
           {hasDownloadButton && (
             <>
-              <IconDownload24X24 className={cn('icon')} onClick={() => {}} />
+              <IconDownload24X24
+                className={cn('icon')}
+                onClick={() => {
+                  alert('개발중입니다');
+                }}
+              />
               <span className={cn('blind')}>다운로드</span>
             </>
           )}

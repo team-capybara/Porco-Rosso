@@ -32,7 +32,7 @@ export interface Photo {
 }
 
 export interface PhotoCardProps {
-  moimId: string;
+  moimId?: string;
   photoId: number;
   photoUrl?: string;
   profileUrl?: string;

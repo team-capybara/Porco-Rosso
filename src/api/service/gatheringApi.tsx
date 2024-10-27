@@ -3,6 +3,7 @@ import {
   IGatheringInfo,
   GetFriendsListRes,
   CreateGatheringData,
+  Photo,
 } from '../../features/gathering/types';
 
 // 진행중모임 - 지도 좌표
@@ -136,5 +137,16 @@ export const getFriendCnt = async (): Promise<number> => {
   } catch (error) {
     console.error('Error fetching user friend count:', error);
     throw error;
+  }
+};
+
+export const getSelectedPhotos = async (moimId: number) => {
+  try {
+    const response = await apiClient.get(`/moims/${moimId}/photos/selected`);
+    console.warn('response getSelectedPhotos', response.data);
+    return response.data.data as Photo[];
+  } catch (error) {
+    console.error('Error fetching getSelectedPhotos:', error);
+    throw error; // 에러 처리 (필요에 따라 사용)
   }
 };

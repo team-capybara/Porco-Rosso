@@ -71,6 +71,14 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const arrowButtonClickHandler = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    console.warn('클릭됨');
+    e.preventDefault();
+    setRenderComponent('PhotoList');
+  };
+
   return (
     moimId >= 0 && (
       <>
@@ -81,7 +89,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
               moimId={moimId}
               setModal={setModal}
               checkMoimOngoingStatus={checkMoimOngoingStatus}
-              setRenderOngoingComponent={setRenderComponent}
+              arrowButtonClickHandler={arrowButtonClickHandler}
               inviteFriendOpen={inviteFriendOpen}
               setInviteFriendOpen={setInviteFriendOpen}
             />

@@ -47,7 +47,6 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
       (data: any[], status: any, pagination: any) => {
         if (status === kakao.maps.services.Status.OK) {
           setPlaces((prevPlaces) => [...prevPlaces, ...data]); // 데이터 누적
-          console.log(pagination, 'pagination');
           setHasMore(pagination.hasNextPage); // 다음 페이지 여부 설정
 
           // 다음 페이지가 있을 경우 자동으로 페이지 요청 설정
@@ -67,7 +66,6 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
   // 검색어 변경 시 초기화 및 첫 페이지 검색
   useEffect(() => {
     if (debouncedSearchInput.trim()) {
-      console.log('엥뭐지');
       setPlaces([]); // 이전 데이터 초기화
       searchPlaces(debouncedSearchInput, 1); // 첫 페이지 검색
       setPage(1); // 페이지 초기화
@@ -80,7 +78,6 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
 
   // 무한 스크롤 처리: IntersectionObserver 사용
   useEffect(() => {
-    console.log('엥뭐지');
     const observer = new IntersectionObserver((entries) => {
       const [entry] = entries;
       if (entry.isIntersecting && hasMore) {

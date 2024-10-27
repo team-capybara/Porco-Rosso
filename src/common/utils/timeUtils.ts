@@ -11,7 +11,6 @@ export const calculateRemainingTime = (startTime: string) => {
   const diff = startDate.getTime() - now.getTime(); // 밀리초 차이 계산
 
   if (diff <= 0) {
-    console.log('타이머 종료: 시간이 이미 지났습니다.');
     return '00:00:00'; // 시간이 이미 지난 경우
   }
 

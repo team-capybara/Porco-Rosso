@@ -14,7 +14,6 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   const hours = Array.from({ length: 24 }, (_, index) =>
     String(index).padStart(2, '0')
   ); // '00'부터 '23'까지 생성
-  console.log(timeData, 'timeData');
 
   const minutes = ['00', '15', '30', '45'];
 
@@ -29,7 +28,6 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   useEffect(() => {
     // timeData 입력된 값 있을 시 입력 값으로 포커스 처리
     if (timeData && !initializedRef.current) {
-      console.log('이게 시행이 되나');
       const hourIndex = parseInt(timeData.slice(0, 2));
       const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
 
@@ -67,7 +65,6 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
         if (entry.isIntersecting) {
           button?.classList.add(cn('active'));
           const selectedValue = button?.innerText;
-          console.log(selectedValue, 'selectedvalue');
           if (selectedValue?.endsWith('시')) {
             setSelectedHour(selectedValue.replace('시', '').trim());
           } else if (selectedValue?.endsWith('분')) {

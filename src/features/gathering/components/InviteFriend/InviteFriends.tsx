@@ -73,61 +73,6 @@ const InviteFriends = ({
     setLayerOpen?.(false);
   };
 
-  // 친구 선택 처리
-  // const handleFriendSelect = (friendId: number) => {
-  //   setSelectedFriends((prevSelected) => {
-  //     const isAlreadySelected = prevSelected.includes(friendId);
-  //     console.log(isAlreadySelected, '대체뭐지');
-
-  //     // friendsData에서 선택된 친구 찾기
-  //     const selectedFriend = friendsData?.find(
-  //       (friend) => friend.id === friendId
-  //     );
-
-  //     if (!selectedFriend) return prevSelected; // 친구가 없으면 이전 선택을 반환
-
-  //     const updateList = (prevList: IParticipants[]) => {
-  //       if (isAlreadySelected) {
-  //         // 선택 해제된 경우 participantDataList 또는 selectedFriendsData에서 제거
-  //         return prevList.filter(
-  //           (participant) => participant.userId !== friendId
-  //         );
-  //       }
-  //       // 이미 추가된 경우는 중복 방지, 추가되지 않은 경우만 추가
-  //       const isAlreadyAdded = prevList.some(
-  //         (participant) => participant.userId === selectedFriend.id
-  //       );
-  //       if (!isAlreadyAdded) {
-  //         return [
-  //           ...prevList,
-  //           {
-  //             userId: selectedFriend.id,
-  //             nickname: selectedFriend.nickname,
-  //             profileImageUrl: selectedFriend.profile,
-  //             isOwner: false, // 친구는 owner가 아니므로 false
-  //           },
-  //         ];
-  //       }
-  //       return prevList;
-  //     };
-
-  //     // 모임생성 || 진행 전이면서 유저가 오너, 바로바로 변경사항 반영
-  //     console.log(moimStart, moimStatus, isUserAndOwner, '허허허허');
-  //     if (!moimStart || (moimStart && moimStatus === 'CREATED')) {
-  //       console.log('되나');
-  //       setParticipantDataList?.((prevList) => updateList(prevList));
-  //     }
-
-  //     // 이미 모임이 생성된 경우에는 participantData에 서버에서 불러온 데이터로 업데이트 되기 때문
-  //     setSelectedFriendsData((prevList) => updateList(prevList));
-
-  //     // selectedFriends 상태 업데이트
-  //     return isAlreadySelected
-  //       ? prevSelected.filter((id) => id !== friendId)
-  //       : [...prevSelected, friendId];
-  //   });
-  // };
-
   const handleFriendSelect = (friendId: number) => {
     const isAlreadySelected = selectedFriends.includes(friendId);
 

@@ -52,10 +52,9 @@ const CreateGathering = ({
 
   const [timeData, setTimeData] = useState<string>(initialTimeData || '');
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
-  // const [textInputOpen, setTextInputOpen] = useState<boolean>(
-  //   mode === 'revise' ? false : true
-  // );
-  const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
+  const [textInputOpen, setTextInputOpen] = useState<boolean>(
+    mode === 'revise' ? false : true
+  );
   const [participantDataList, setParticipantDataList] = useState<
     IParticipants[]
   >(mode === 'revise' && participants ? participants : []);

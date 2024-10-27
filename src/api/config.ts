@@ -33,8 +33,12 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const token = getCookie('access_token') || mockToken;
+    const deviceToken = localStorage.getItem('deviceToken') || '';
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    if (deviceToken) {
+      config.headers['Device-Token'] = deviceToken;
     }
     return config;
   },

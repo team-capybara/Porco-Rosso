@@ -6,7 +6,10 @@ const goOnboarding = () => {
     isNewbie: true,
     accessToken: accessToken,
   };
-  window.kmpJsBridge.callNative('onLoginSuccess', JSON.stringify(loginData));
+  // 앱 초기 오픈 시 브릿지가 등록되기 전 브릿지 호출 방지
+  setTimeout(() => {
+    window.kmpJsBridge?.callNative('onLoginSuccess', JSON.stringify(loginData));
+  }, 500);
 };
 
 interface DeviceTokenData {
@@ -18,7 +21,9 @@ const goMain = (accessToken: string) => {
     isNewbie: false,
     accessToken: accessToken,
   };
-  window.kmpJsBridge.callNative(
+  console.log(accessToken, 'accessToken');
+  console.log(loginData, 'loginData');
+  window.kmpJsBridge?.callNative(
     'onLoginSuccess',
     JSON.stringify(loginData),
     function (data: string) {

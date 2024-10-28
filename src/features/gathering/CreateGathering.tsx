@@ -52,10 +52,9 @@ const CreateGathering = ({
 
   const [timeData, setTimeData] = useState<string>(initialTimeData || '');
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
-  // const [textInputOpen, setTextInputOpen] = useState<boolean>(
-  //   mode === 'revise' ? false : true
-  // );
-  const [textInputOpen, setTextInputOpen] = useState<boolean>(false);
+  const [textInputOpen, setTextInputOpen] = useState<boolean>(
+    mode === 'revise' ? false : true
+  );
   const [participantDataList, setParticipantDataList] = useState<
     IParticipants[]
   >(mode === 'revise' && participants ? participants : []);
@@ -116,6 +115,7 @@ const CreateGathering = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
+  // 초기 한번만 실행해줘야, 기존 초대된 유저들도 삭제 가능
   useEffect(() => {
     if (mode === 'revise' && participants?.length) {
       setSelectedFriends((prevSelectedFriends) => [
@@ -126,7 +126,7 @@ const CreateGathering = ({
       ]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inviteFriendOpen]);
+  }, []);
 
   const handleLocationSelect = (location: {
     name: string;

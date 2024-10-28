@@ -66,7 +66,6 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
   };
 
   useEffect(() => {
-    console.log('checkMoimOngoingStatus() called');
     checkMoimOngoingStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

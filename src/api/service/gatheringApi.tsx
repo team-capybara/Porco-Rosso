@@ -62,6 +62,7 @@ export const createMoim = async (
   }
 };
 
+// 모임 수정
 export const reviseMoim = async (
   gatheringData: CreateGatheringData,
   moimId: number
@@ -69,6 +70,18 @@ export const reviseMoim = async (
   // void면 서버에서 응답 데이터가 빈값이라는 걸 의미하므로, 응답 값에도 타입 지정 필요함
   try {
     const response = await apiClient.put(`/moims/${moimId}`, gatheringData);
+    return response.data;
+  } catch (error) {
+    console.error('Error create gathering', error);
+    throw error;
+  }
+};
+
+// 모임삭제
+export const removeMoim = async (moimId: number): Promise<void> => {
+  try {
+    const response = await apiClient.delete(`/moims/${moimId}`);
+    console.log(response.data, '모임삭제 성공');
     return response.data;
   } catch (error) {
     console.error('Error create gathering', error);

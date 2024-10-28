@@ -21,6 +21,7 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
   const [searchInput, setSearchInput] = useState('');
   const [places, setPlaces] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
+  const [hasSearched, setHasSearched] = useState(false);
   console.log(page, 'page');
 
   const handlePlaceSelect = (place: any) => {
@@ -39,13 +40,13 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
   // 장소 검색
   // 페이지네이션 기능이 먹는건가?
   const searchPlaces = (keyword: string, page: number) => {
+    if (!keyword.trim()) return;
     const ps = new kakao.maps.services.Places();
     ps.keywordSearch(
       keyword,
       (data: any[], status: any, pagination: any) => {
         if (status === kakao.maps.services.Status.OK) {
           setPlaces((prevPlaces) => [...prevPlaces, ...data]); // 데이터 누적
-          console.log(pagination, 'pagination');
           setHasMore(pagination.hasNextPage); // 다음 페이지 여부 설정
 
           // 다음 페이지가 있을 경우 자동으로 페이지 요청 설정
@@ -56,6 +57,7 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
           setPlaces([]); // 검색 결과가 없을 때 초기화
           setHasMore(false); // 더 이상 데이터 없음
         }
+        setHasSearched(true);
       },
       { page } // 페이지 번호 전달
     );
@@ -67,8 +69,10 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
       setPlaces([]); // 이전 데이터 초기화
       searchPlaces(debouncedSearchInput, 1); // 첫 페이지 검색
       setPage(1); // 페이지 초기화
+      setHasSearched(false);
     } else {
       setPlaces([]); // 이전 데이터 초기화
+      setHasSearched(false);
     }
   }, [debouncedSearchInput]);
 
@@ -110,7 +114,11 @@ const LocationSearchInput = ({ onPlaceSelect }: LocationSearchInputProps) => {
         <ArrowLeft24X24 className={cn('icon')} />
       </label>
       {/* 검색 결과 리스트 */}
-      <LocationList places={places} onPlaceSelect={handlePlaceSelect} />
+      <LocationList
+        places={places}
+        onPlaceSelect={handlePlaceSelect}
+        hasSearched={hasSearched}
+      />
       <div ref={loadMoreRef} className={cn('load-more-target')}>
         {hasMore && <div>로딩 중...</div>}
       </div>

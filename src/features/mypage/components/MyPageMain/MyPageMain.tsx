@@ -96,7 +96,14 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
           로그아웃
         </a>
         {/* 계정 삭제 상세페이지 퍼블 필요(기획중..) */}
-        <a href="/" className={cn('account_link')}>
+        <a
+          href="/"
+          className={cn('account_link')}
+          onClick={(e) => {
+            e.preventDefault(); // href='/' 무효
+            setRenderComponent('deleteUser');
+          }}
+        >
           계정 삭제
         </a>
       </div>

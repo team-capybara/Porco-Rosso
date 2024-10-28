@@ -1,4 +1,4 @@
-import { getCookie } from '../common/utils/authUtils';
+import { getCookie, setCookie } from '../common/utils/authUtils';
 
 const goOnboarding = () => {
   const accessToken = getCookie('access_token');
@@ -29,9 +29,12 @@ const goMain = (accessToken: string) => {
     function (data: string) {
       // 브릿징은 string 형태 외에 주고 받을 수 없음
       const parsedData: DeviceTokenData = JSON.parse(data);
+      console.log(parsedData, 'parsedData');
       const { fcmToken = '' } = parsedData;
+      console.log(fcmToken, 'fcmToken');
       // deviceToken 서버로 전달
-      localStorage.setItem('deviceToken', fcmToken);
+      setCookie('deviceToken', fcmToken, 365);
+      // localStorage.setItem('deviceToken', fcmToken);
     }
   );
 };

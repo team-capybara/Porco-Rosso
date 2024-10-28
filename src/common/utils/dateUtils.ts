@@ -19,3 +19,73 @@ export const parseYYYYMMDDToDate = (yyyyMMdd: string): Date => {
 
   return new Date(year, month, day);
 };
+
+// yyyyMMddHHmmss => 월요일, 화요일...
+export const getDayString = (dateString?: string) => {
+  if (dateString === undefined) {
+    return '';
+  }
+  // 연, 월, 일 추출
+  const year = dateString.substring(0, 4);
+  const month = parseInt(dateString.substring(4, 6)); // 월은 숫자로 변환 필요
+  const day = parseInt(dateString.substring(6, 8)); // 일도 숫자로 변환
+
+  // 요일 구하기
+  const date = new Date(`${year}-${month}-${day}`);
+  const dayOfWeekNames = [
+    '일요일',
+    '월요일',
+    '화요일',
+    '수요일',
+    '목요일',
+    '금요일',
+    '토요일',
+  ];
+  const dayOfWeek = dayOfWeekNames[date.getDay()];
+
+  // '10월 25일 금요일' 형태의 문자열 반환
+  return `${dayOfWeek}`;
+};
+
+// 두 시간 간의 간격 => A 시간, B 분 => A, B string 반환
+
+// 두 시간 간의 간격 => A 시간, B 분 => A, B string 반환
+export const calculateElapsedTime = (
+  startedAt: string,
+  finishedAt: string | null
+) => {
+  if (finishedAt === null) {
+    return { hours: '', minutes: '' };
+  }
+
+  // 문자열을 Date 객체로 변환
+  const startDate = new Date(
+    parseInt(startedAt.substring(0, 4)), // 연도
+    parseInt(startedAt.substring(4, 6)) - 1, // 월 (0부터 시작하므로 -1)
+    parseInt(startedAt.substring(6, 8)), // 일
+    parseInt(startedAt.substring(8, 10)), // 시
+    parseInt(startedAt.substring(10, 12)), // 분
+    parseInt(startedAt.substring(12, 14)) // 초
+  );
+
+  const finishDate = new Date(
+    parseInt(finishedAt.substring(0, 4)),
+    parseInt(finishedAt.substring(4, 6)) - 1,
+    parseInt(finishedAt.substring(6, 8)),
+    parseInt(finishedAt.substring(8, 10)),
+    parseInt(finishedAt.substring(10, 12)),
+    parseInt(finishedAt.substring(12, 14))
+  );
+
+  // 두 시간의 차이를 밀리초로 계산
+  const elapsedTimeMs = finishDate.getTime() - startDate.getTime();
+
+  // 밀리초를 시간과 분으로 변환
+  const hours = Math.floor(elapsedTimeMs / (1000 * 60 * 60)).toString();
+  const minutes = Math.floor(
+    (elapsedTimeMs % (1000 * 60 * 60)) / (1000 * 60)
+  ).toString();
+
+  // 결과 문자열 반환
+  return { hours, minutes };
+};

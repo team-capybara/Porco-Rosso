@@ -45,37 +45,6 @@
         vertical-align: top;
       }
     }
-    .profile_list {
-      margin-top: 8px;
-      .item {
-        overflow: hidden;
-        position: relative;
-        display: inline-block;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 2px solid $gray-50;
-        background-color: $gray-300;
-        text-align: center;
-        vertical-align: top;
-        @for $i from 1 through 3 {
-          &:nth-child(#{$i + 1}) {
-            left: calc(-8px * $i);
-          }
-        }
-      }
-      .image {
-        width: 100%;
-        height: auto;
-      }
-      .text {
-        @include font-type('14-20');
-        display: inline-block;
-        margin-top: 6px;
-        color: $gray-500;
-        vertical-align: top;
-      }
-    }
     .total_time {
       @include font-type('16-22', 600);
       display: block;

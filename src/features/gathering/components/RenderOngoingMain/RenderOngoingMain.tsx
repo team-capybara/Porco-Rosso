@@ -9,10 +9,8 @@ import RouteMap from '../RouteMap/RouteMap';
 import { useEffect, useState } from 'react';
 import {
   IGatheringInfo,
-  memoryType,
   ModalContentsProps,
   moimStatusType,
-  ongoingType,
 } from '../../types';
 import {
   finishMoim,
@@ -30,9 +28,9 @@ interface RenderOngoingMainProps {
   moimStatus: moimStatusType;
   setModal?: React.Dispatch<React.SetStateAction<ModalContentsProps | null>>;
   checkMoimOngoingStatus?: () => void;
-  // 추후 두 개 합쳐도 될듯
-  setRenderOngoingComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
-  setRenderMemoryComponent?: React.Dispatch<React.SetStateAction<memoryType>>;
+  arrowButtonClickHandler?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
   inviteFriendOpen?: boolean;
   setInviteFriendOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -42,10 +40,9 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     moimStatus,
     setModal = () => {},
     checkMoimOngoingStatus = () => {},
-    setRenderOngoingComponent,
     inviteFriendOpen,
     setInviteFriendOpen,
-    // setRenderMemoryComponent,
+    arrowButtonClickHandler,
   } = props;
   const navigate = useNavigate();
   // const [leaveModal, setModal] = useState<boolean>(false);
@@ -151,7 +148,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                   hiddenTitle={false}
                   isMiniPhotoCard={false}
                   isJustImg={false}
-                  setRenderComponent={setRenderOngoingComponent}
+                  arrowButtonClickHandler={arrowButtonClickHandler}
                   isRefresh={isRefresh}
                 />
               </section>

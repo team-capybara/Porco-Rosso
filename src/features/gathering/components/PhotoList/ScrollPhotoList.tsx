@@ -4,7 +4,7 @@ import styles from './scrollPhotoList.module.scss';
 import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
 import HorizontalScrollWrapper from '../../../../common/components/HorizontalScrollWrapper/HorizontalScrollWrapper';
 import PhotoCard from './PhotoCard/PhotoCard';
-import { ongoingType, Photo } from '../../types';
+import { Photo } from '../../types';
 import { PhotoCardProps } from '../../types';
 import { getMoimePhotoResponse } from '../../types';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,9 @@ interface Props {
   isMiniPhotoCard?: boolean;
   isLargePhotoCard?: boolean;
   moimeId: string;
-  setRenderComponent?: React.Dispatch<React.SetStateAction<ongoingType>>;
+  arrowButtonClickHandler?: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
   selectedPhoto?: PhotoCardProps;
   setSelectedPhoto?: React.Dispatch<React.SetStateAction<PhotoCardProps>>;
   isJustImg: boolean;
@@ -30,7 +32,7 @@ const ScrollPhotoList = ({
   isMiniPhotoCard = false,
   isLargePhotoCard = false,
   moimeId = '0',
-  setRenderComponent,
+  arrowButtonClickHandler,
   selectedPhoto,
   isJustImg = false,
   isRefresh = false,
@@ -102,10 +104,14 @@ const ScrollPhotoList = ({
             <button
               type="button"
               className={cn('button')}
-              onClick={() => {
-                if (setRenderComponent === undefined) return;
-                setRenderComponent!('PhotoList');
+              onClick={(e) => {
+                if (arrowButtonClickHandler === undefined) return;
+                arrowButtonClickHandler(e);
               }}
+              // onClick={() => {
+              //   if (setRenderComponent === undefined) return;
+              //   setRenderComponent!('PhotoList');
+              // }}
             >
               <ArrowLeft24X24 className={cn('arrow_icon')} />
               <span className={cn('blind')}>더보기</span>

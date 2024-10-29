@@ -23,11 +23,7 @@ apiClient.interceptors.request.use(
   (config) => {
     // mock token 제거 했습니다 -> 테스트 시 필요하면 || 뒤에 넣어서 사용하세요.
     const token = getCookie('access_token') || '';
-    console.log(token, 'acccess_token담겨있나');
-    console.log(localStorage, 'localStorage');
-    console.log(window.localStorage, 'window.localstorage');
     const deviceToken = getCookie('deviceToken') || '';
-    console.log(deviceToken, 'deviceToken');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

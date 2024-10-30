@@ -89,3 +89,26 @@ export const calculateElapsedTime = (
   // 결과 문자열 반환
   return { hours, minutes };
 };
+
+// 지금으로부터 몇 분전인지 알려줌, 1시간 이상은 시간단위 string 반환
+export function minutesAgo(timeString: string) {
+  // 주어진 문자열을 Date 객체로 변환
+  const year = parseInt(timeString.slice(0, 4), 10);
+  const month = parseInt(timeString.slice(4, 6), 10) - 1; // 월은 0부터 시작
+  const day = parseInt(timeString.slice(6, 8), 10);
+  const hour = parseInt(timeString.slice(8, 10), 10);
+  const minute = parseInt(timeString.slice(10, 12), 10);
+  const second = parseInt(timeString.slice(12, 14), 10);
+
+  const givenDate = new Date(year, month, day, hour, minute, second);
+  const currentDate = new Date();
+
+  // 분 단위로 변환
+  const timeDifference = Math.floor(
+    (currentDate.getTime() - givenDate.getTime()) / 60000
+  );
+
+  return timeDifference < 60
+    ? `${timeDifference}분 전`
+    : `${Math.floor(timeDifference / 60)}시간 전`;
+}

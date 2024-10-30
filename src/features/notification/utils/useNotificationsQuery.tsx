@@ -20,6 +20,7 @@ export const useNotificationQuery = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isSuccess,
   }: UseInfiniteQueryResult<
     InfiniteData<GetNotificationsReponse>,
     Error
@@ -64,6 +65,7 @@ export const useNotificationQuery = () => {
     isFetchingNextPage,
     resetAndFetchFirstPage,
     totalNotifications,
+    isSuccess,
   } as {
     data: InfiniteData<GetNotificationsReponse> | undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,5 +74,6 @@ export const useNotificationQuery = () => {
     isFetchingNextPage: boolean;
     resetAndFetchFirstPage: () => Promise<void>;
     totalNotifications: number;
+    isSuccess: boolean;
   };
 };

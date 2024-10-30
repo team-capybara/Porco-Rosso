@@ -12,6 +12,8 @@ import React from 'react';
 import { GetNotificationsReponse, MoimeNotification } from './types';
 import { minutesAgo } from '../../common/utils/dateUtils';
 import IconCloseCircle24X24 from '../../assets/svg/icon/IconCloseCircle24X24';
+import { markNotiAsRead } from '../../api/service/notificationApi';
+import { onPopBridge } from '../../bridge/gatheringBridge';
 // import IconFlash24X24 from '../../assets/svg/icon/IconFlash24X24';
 // import IconDanger24X24 from '../../assets/svg/icon/IconDanger24X24';
 // import IconImage24X24 from '../../assets/svg/icon/IconImage24X24';
@@ -30,6 +32,7 @@ const NotificationPage = () => {
     // hasNextPage,
     isFetchingNextPage,
     // resetAndFetchFirstPage,
+    isSuccess,
   } = useNotificationQuery();
 
   const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -63,6 +66,12 @@ const NotificationPage = () => {
   useEffect(() => {
     console.warn('data is changed', data);
   }, [data]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      markNotiAsRead();
+    }
+  }, [isSuccess]);
 
   const renderItem = (notification: MoimeNotification) => {
     let isWarning = false;
@@ -120,7 +129,14 @@ const NotificationPage = () => {
 
   return (
     <div className={cn('notification_page')}>
-      <BackNavigation classNameForIconType="close_type" />
+      <BackNavigation
+        classNameForIconType="close_type"
+        blindText="이전으로"
+        isButton={true}
+        onClick={() => {
+          onPopBridge();
+        }}
+      />
       <h1 className={cn('title')}>알림</h1>
       <ul className={cn('notification_list')}>
         {data?.pages.map((page: GetNotificationsReponse, pageNum: number) => (

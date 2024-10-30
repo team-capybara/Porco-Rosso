@@ -60,6 +60,7 @@ const CreateGathering = ({
   >(mode === 'revise' && participants ? participants : []);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [chkModalOpen, setChkModalOpen] = useState<boolean>(false);
+  const [backDefense, setBackDefense] = useState<boolean>(false);
   const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [moimCreateRes, setMoimCreateRes] = useState<string>('');
   const [ownerInfo, setOwnerInfo] = useState<IParticipants>();
@@ -318,7 +319,7 @@ const CreateGathering = ({
           blindText="이전으로"
           isButton={true}
           onClick={() => {
-            mode === 'revise' ? setReviseView?.(false) : onPopBridge();
+            mode === 'revise' ? setReviseView?.(false) : setBackDefense(true);
           }}
         />
         {mode === 'revise' ? (
@@ -399,6 +400,22 @@ const CreateGathering = ({
           mode === 'revise' && moimReviseRes ? moimReviseRes : moimCreateRes,
           modalErrMsg
         )}
+      {backDefense && (
+        <Modal>
+          <ModalContents
+            title={'입력하던 내용이 사라져요. 모임을 그만 만드시겠어요?'}
+            description={'지금 나가면 모임 내용 저장이 안 돼요.'}
+            firstButton="나가기"
+            secondButton="계속 만들기"
+            onClickFirstButton={() => {
+              onPopBridge();
+            }}
+            onClickSecondButton={() => {
+              setBackDefense(false);
+            }}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

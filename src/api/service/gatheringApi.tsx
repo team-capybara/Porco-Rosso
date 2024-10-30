@@ -89,12 +89,25 @@ export const removeMoim = async (moimId: number): Promise<void> => {
   }
 };
 
-// 모임 나가기 (leaveTrace : 추억 남길지 여부)
-export const leaveMoim = async (moimId: number, leaveTrace: boolean) => {
+// 모임 나가기 (removeTrace : 추억 남길지 여부)
+export const leaveMoim = async (moimId: number, removeTrace: boolean) => {
   try {
-    const response = await apiClient.put(`/moims/${moimId}`, {
-      leaveTrace: leaveTrace,
+    //url = `/moims/${moimId}/leave?removeTrace=${removeTrace}`;
+    // 위처럼 보내는 거랑 같은 것
+    const response = await apiClient.put(`/moims/${moimId}/leave`, null, {
+      params: { removeTrace: removeTrace },
     });
+    return response.data;
+  } catch (error) {
+    console.error('Error leave Moim : ', error);
+    throw error;
+  }
+};
+
+// 진행 전 모임 나가기는 따로
+export const rejectMoim = async (moimId: number) => {
+  try {
+    const response = await apiClient.put(`/moims/${moimId}/reject`);
     return response.data;
   } catch (error) {
     console.error('Error leave Moim : ', error);

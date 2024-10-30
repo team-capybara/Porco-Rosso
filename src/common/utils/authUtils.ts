@@ -19,8 +19,9 @@ const setCookie = (name: string, value: string, days: number) => {
   document.cookie = name + '=' + value + ';' + expires + ';path=/';
 };
 
-const deleteCookie = (name: string) => {
-  document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+const deleteCookie = (name: string, domain: string) => {
+  // 쿠키가 저장된 도메인과 일치해야 삭제가능
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1999 00:00:10 GMT; path=/; domain=${domain};`;
 };
 
 const getQueryStringValue = (key: string, url = window.location.href) => {

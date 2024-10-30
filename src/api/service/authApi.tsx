@@ -51,7 +51,8 @@ const updateProfile = async ({
 const userLogout = async () => {
   try {
     const response = await apiClient.post('/users/logout');
-    deleteCookie('access_token');
+    window.kmpJsBridge.callNative('onLogout', ''); // 앱 로그아웃
+    deleteCookie('access_token', '.moime.app');
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);

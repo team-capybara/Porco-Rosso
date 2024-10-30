@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { getmoimId } from '../../common/utils/queryString';
 import {
   getGatheringInfo,
-  leaveMoim,
+  rejectMoim,
   removeMoim,
 } from '../../api/service/gatheringApi';
 import { IGatheringInfo, ModalContentsProps } from '../gathering/types/index';
@@ -176,7 +176,7 @@ const UpcomingGathering = () => {
           setModal(null);
         },
         onClickSecondButton: () => {
-          leaveMoim(moimId, false);
+          rejectMoim(moimId);
           setModal(null);
           onPopBridge();
         },

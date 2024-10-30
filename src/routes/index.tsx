@@ -11,22 +11,24 @@ import OauthRedirectHandler from '../features/auth/OauthRedirectHandler';
 import CreateGathering from '../features/gathering/CreateGathering';
 import ErrorPage from '../features/error/ErrorPage';
 import MemoryGathering from '../features/gathering/MemoryGathering';
+import PrivateRoute from './PrivateRoute';
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<SocialLogin />} />
-      <Route path="/signup" element={<NewProfile />} />
       <Route path="/redirect-handler" element={<OauthRedirectHandler />} />
-      <Route path="/create-gathering" element={<CreateGathering />} />
-      <Route path="/upcoming-gathering" element={<UpcomingGathering />} />
-      <Route path="/ongoing-gathering" element={<OngoingGathering />} />
-      <Route path="/ended-gathering" element={<EndedGathering />} />
-      <Route path="/memory-gathering" element={<MemoryGathering />} />
-      {/* <Route path="/share-gathering" element={<ShareGathering />} /> */}
-      <Route path="/mypage" element={<MypagePage />} />
-      <Route path="/notification" element={<NotificationPage />} />
-      <Route path="/statistics" element={<StatisticsPage />} />
+      <Route element={<PrivateRoute />}>
+        <Route path="/signup" element={<NewProfile />} />
+        <Route path="/create-gathering" element={<CreateGathering />} />
+        <Route path="/upcoming-gathering" element={<UpcomingGathering />} />
+        <Route path="/ongoing-gathering" element={<OngoingGathering />} />
+        <Route path="/ended-gathering" element={<EndedGathering />} />
+        <Route path="/memory-gathering" element={<MemoryGathering />} />
+        <Route path="/mypage" element={<MypagePage />} />
+        <Route path="/notification" element={<NotificationPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
+      </Route>
       <Route path="/error" element={<ErrorPage buttonText={'ERROR'} />} />
     </Routes>
   );

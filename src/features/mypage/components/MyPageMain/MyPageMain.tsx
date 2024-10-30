@@ -4,7 +4,7 @@ import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
 import Modal from '../../../../common/components/Modal/Modal';
 import ModalContents from '../../../../common/components/Modal/ModalContents';
 import { MyPageMainProps } from '../../types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { userLogout } from '../../../../api/service/authApi';
 
 const cn = classnames.bind(style);
@@ -17,6 +17,21 @@ interface ItemProps {
 
 const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [appVersion, setAppVersion] = useState<string>('');
+
+  useEffect(() => {
+    window.kmpJsBridge?.callNative(
+      'onGetAppVersion',
+      '',
+      function (data: string) {
+        // 브릿징은 string 형태 외에 주고 받을 수 없음
+        const parsedData = JSON.parse(data);
+        const { version = '' } = parsedData;
+
+        setAppVersion(version);
+      }
+    );
+  }, []);
 
   const renderItem = ({ text, url, handleClick }: ItemProps) => {
     return (
@@ -79,7 +94,7 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
         {/* 버전정보 브릿지 및 위치정보? 기획필요 */}
         <div className={cn('version_area')}>
           <div className={cn('version')}>
-            버전정보<span className={cn('number')}>1.0.0(1)</span>
+            버전정보<span className={cn('number')}>{appVersion}</span>
           </div>
           <div className={cn('text')}>강남구 근처</div>
         </div>

@@ -47,8 +47,8 @@ jobs:
         VERSION_TYPE=${{ steps.bump.outputs.version }}
         if [ "$VERSION_TYPE" != "none" ]; then
           npm version $VERSION_TYPE
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "zsda3131@naver.com"
+          git config --local user.name "nuriring"
           git add package.json package-lock.json
           git commit -m "Bump version to $(node -p "require('./package.json').version")"
           git push

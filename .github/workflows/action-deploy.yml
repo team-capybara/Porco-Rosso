@@ -54,7 +54,7 @@ jobs:
           npm version $VERSION_TYPE
           git add package.json package-lock.json
           git commit -m "Bump version to $(node -p "require('./package.json').version")"
-          git push
+          git push origin dev
         fi
 
     - name: Build project

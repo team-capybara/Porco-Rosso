@@ -49,12 +49,19 @@ jobs:
 
     - name: Bump version
       run: |
-        VERSION_TYPE=${{ steps.bump.outputs.version }}
-        if [ "$VERSION_TYPE" != "none" ]; then
-          npm version $VERSION_TYPE
+          VERSION_TYPE=${{ steps.bump.outputs.version }}
+          if [ "$VERSION_TYPE" != "none" ]; then
+            npm version $VERSION_TYPE --no-git-tag-version  # 태그 생성을 방지합니다.
+            echo "Version bumped to $(node -p "require('./package.json').version")"
+          fi
+
+    - name: Commit version change
+      run: |
+        if [ "$(git status --porcelain)" ]; then
           git add package.json package-lock.json
           git commit -m "Bump version to $(node -p "require('./package.json').version")"
-          git push origin dev
+        else
+          echo "No changes to commit."
         fi
 
     - name: Build project

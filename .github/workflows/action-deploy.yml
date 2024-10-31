@@ -1,26 +1,15 @@
 name: Deploy to S3 and CloudFront
 
 on:
-  workflow_dispatch:
-    inputs:
-      version_bump:
-        description: 'Which part of the version to bump (none, major, minor, patch)'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-          - none
-          - major
-          - minor
-          - patch
+  push:
+    branches:
+    - dev
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     env:
-      DEPLOY_BRANCH: ${{ github.event.inputs.deploy_branch }}
-      VERSION_BUMP: ${{ github.event.inputs.version_bump }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: 'us-east-1'  # AWS 리전으로 수정
@@ -40,59 +29,33 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Build project
-      run: npm run build
-
-    - name: Bump version
-      id: bump_version
+    - name: Determine version bump type
+      id: bump
       run: |
-        if [ "${{ env.VERSION_BUMP }}" != "none" ]; then
-          # 현재 버전 가져오기
-          current_version=$(cat version.txt)
-
-          # 버전 번호 증가
-          IFS='.' read -r -a version_parts <<< "$current_version"
-          case "${{ env.VERSION_BUMP }}" in
-            major)
-              ((version_parts[0]++))
-              version_parts[1]=0
-              version_parts[2]=0
-              ;;
-            minor)
-              ((version_parts[1]++))
-              version_parts[2]=0
-              ;;
-            patch)
-              ((version_parts[2]++))
-              ;;
-            *)
-              echo "Invalid version bump type. Use none, major, minor, or patch."
-              exit 1
-              ;;
-          esac
-          new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
-
-          # 새로운 버전 저장
-          echo $new_version > version.txt
-
-          # 새로운 버전을 GitHub Actions 출력 변수로 설정
-          echo "::set-output name=new_version::$new_version"
+        if git log -1 --pretty=%B | grep -q 'BREAKING CHANGE'; then
+          echo "::set-output name=version::major"
+        elif git log -1 --pretty=%B | grep -q '^feat:'; then
+          echo "::set-output name=version::minor"
+        elif git log -1 --pretty=%B | grep -q '^fix:'; then
+          echo "::set-output name=version::patch"
         else
-          # 버전 증가를 원하지 않는 경우 현재 버전을 사용하고 타임스탬프 추가
-          new_version=$(cat version.txt)
-          timestamp=$(date +%Y%m%d%H%M%S)
-          new_version="${new_version}-${timestamp}"
-          echo "::set-output name=new_version::$new_version"
+          echo "::set-output name=version::none"
         fi
 
-    - name: Commit and push version bump
-      if: steps.bump_version.outputs.new_version != 'none'
+    - name: Bump version
       run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add version.txt
-        git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
-        git push origin ${{ env.DEPLOY_BRANCH }}
+        VERSION_TYPE=${{ steps.bump.outputs.version }}
+        if [ "$VERSION_TYPE" != "none" ]; then
+          npm version $VERSION_TYPE
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add package.json package-lock.json
+          git commit -m "Bump version to $(node -p "require('./package.json').version")"
+          git push
+        fi
+
+    - name: Build project
+      run: npm run build
 
     - name: Upload to S3
       run: |
@@ -101,15 +64,3 @@ jobs:
     - name: Invalidate CloudFront cache
       run: |
         aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
-
-    - name: Create release branch and tag
-      run: |
-        new_version=${{ steps.bump_version.outputs.new_version }}
-
-        # 릴리즈 브랜치 생성
-        git checkout -b release-$new_version
-        git push origin release-$new_version
-
-        # 릴리즈 태그 생성
-        git tag v$new_version
-        git push origin v$new_version

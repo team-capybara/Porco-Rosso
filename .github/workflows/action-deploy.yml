@@ -59,17 +59,25 @@ jobs:
       run: |
         if [ "$(git status --porcelain)" ]; then
           git add package.json package-lock.json
-          git commit -m "Bump version to $(node -p "require('./package.json').version")"
+          git commit -m "Bump version to $(node -p "require('./package.json').version") [ci-skip]"
         else
           echo "No changes to commit."
         fi
+
+    - name: Push changes
+      if: steps.bump.outputs.version != 'none'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git push origin dev
 
     - name: Build project
       run: npm run build
 
     - name: Upload to S3
       run: |
-        aws s3 sync dist/ s3://$S3_BUCKET --delete
+        aws s3 sync dist/index.html s3://$S3_BUCKET/index.html --delete
+        aws s3 sync dist/assets/ s3://$S3_BUCKET/assets/ --delete
 
     - name: Invalidate CloudFront cache
       run: |

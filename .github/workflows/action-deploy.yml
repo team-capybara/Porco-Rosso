@@ -32,7 +32,7 @@ jobs:
     - name: Determine version bump type
       id: bump
       run: |
-        if git log -1 --pretty=%B | grep -q 'BREAKING CHANGE'; then
+        if git log -1 --pretty=%B | grep -q '^BIGBANG:'; then
           echo "::set-output name=version::major"
         elif git log -1 --pretty=%B | grep -q '^feat:'; then
           echo "::set-output name=version::minor"

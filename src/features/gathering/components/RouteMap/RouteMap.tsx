@@ -19,7 +19,9 @@ interface RouteMapProps {
   locationSummary?: GatheringLocation;
   moimId: number;
   isRefresh: boolean;
+  classNameForPage?: '' | 'share_gathering';
 }
+
 const RouteMap = (props: RouteMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null); //map이 들어가야 할 DOM
   const mapInstance = useRef<any>(); //map 객체 kakao.maps.Map
@@ -104,7 +106,7 @@ const RouteMap = (props: RouteMapProps) => {
   };
 
   return (
-    <div className={cn('route_map')}>
+    <div className={cn('route_map', props.classNameForPage)}>
       <div className={cn('title_area')}>
         <strong className={cn('title')}>장소</strong>
         <div className={cn('description')}>{props.locationSummary?.name}</div>

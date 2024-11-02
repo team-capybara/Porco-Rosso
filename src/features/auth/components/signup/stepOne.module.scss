@@ -34,19 +34,26 @@
   .wrap_login {
     margin-top: 11px;
     text-align: center;
-    .icon {
+  }
+  .login {
+    @include font-type('14-20');
+    display: block;
+    margin: 11px auto 0;
+    line-height: 30px;
+    color: $gray-300;
+    text-align: center;
+    &.apple .icon {
       width: 14px;
       height: 16px;
       margin: 6px 4px 0 0;
       color: $gray-300;
     }
-  }
-  .apple_login {
-    @include font-type('14-20');
-    display: inline-block;
-    line-height: 30px;
-    color: $gray-300;
-    vertical-align: top;
+    &.kakao .icon {
+      width: 14px;
+      height: 16px;
+      margin: 6px 4px 0 0;
+      color: $gray-300;
+    }
   }
   .wrap_profile_image {
     margin-top: 56px;

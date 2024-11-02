@@ -1,8 +1,8 @@
 import classnames from 'classnames/bind';
 import style from './socialLogin.module.scss';
-import IconGoogle24X24 from '../../assets/svg/icon/IconGoogle24X24';
 import IconApple24X24 from '../../assets/svg/icon/IconApple24X24';
 import IconMoime253X85 from '../../assets/svg/icon/IconMoime253X85';
+import IconKakao20X19 from '../../assets/svg/icon/IconKakao20X19';
 
 const cn = classnames.bind(style);
 
@@ -21,10 +21,9 @@ const SocialLogin = () => {
       <div className={cn('link_area')}>
         <a
           href="https://api.moime.app/oauth2/authorization/kakao"
-          className={cn('link', 'google')}
+          className={cn('link', 'kakao')}
         >
-          {/* 카카오 로그인으로 변경 마크업 필요 */}
-          <IconGoogle24X24 className={cn('icon')} />
+          <IconKakao20X19 className={cn('icon')} />
           Continue with Kakao
         </a>
         <a

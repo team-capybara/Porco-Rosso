@@ -27,6 +27,7 @@ const ScrollPhotoTop10List = ({ data }: Props) => {
               onClickHandler: undefined,
               isJustImg: false,
             };
+            console.log(photo);
             return (
               <li className={cn('item')} key={`photocard-${photo.photoId}`}>
                 <PhotoCard {...photoCardProps} />

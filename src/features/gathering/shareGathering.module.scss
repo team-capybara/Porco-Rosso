@@ -5,18 +5,19 @@
   .grid_area {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, auto);
     gap: 8px;
     padding: 8px 16px 40px;
   }
   .grid_item {
-    height: 159px;
     padding: 8px;
     border-radius: 12px;
     background-color: $gray-50;
     box-sizing: border-box;
-    &:nth-child(-n + 2) {
-      height: 76px;
+    &:nth-child(n + 3) {
+      height: 159px;
+    }
+    &:nth-child(3) {
+      padding: 0;
     }
     &:nth-child(4) {
       display: inline-flex;
@@ -30,6 +31,7 @@
         font-size: 32px;
         line-height: 36px;
         color: $gray-800;
+        word-break: keep-all;
       }
     }
     .title {
@@ -53,6 +55,28 @@
       .number {
         @include font-type('24-30');
       }
+    }
+  }
+  .inner_modal {
+    .moime_title {
+      @include ellipsis(1);
+      @include font-type('24-30');
+      color: $gray-50;
+      text-align: center;
+    }
+    .moime_date {
+      @include font-type('12-20', 600);
+      color: $gray-50;
+      text-align: center;
+    }
+    .wrap_photo_card {
+      overflow: hidden;
+      margin-top: 25px;
+      border-radius: 8px;
+    }
+    .grid_area {
+      padding: 0;
+      margin-top: 8px;
     }
   }
 }

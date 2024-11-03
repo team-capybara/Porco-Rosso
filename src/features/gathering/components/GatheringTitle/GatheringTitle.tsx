@@ -19,6 +19,7 @@ interface Props {
   classNameForPage?: '' | 'invite_friends' | 'upcoming_page' | 'share_page';
   onClickEditButton?: () => void;
   hasDownloadButton?: boolean;
+  onClickDownloadButton?: () => void;
   onClickFinishButton?: () => void;
   onClickUpcomingButton?: (mode: string) => void;
   isUserAndOwner?: boolean;
@@ -36,6 +37,7 @@ const GatheringTitle = ({
   hasEditButton = false,
   onClickEditButton,
   hasDownloadButton = false,
+  onClickDownloadButton,
   onClickFinishButton,
   classNameForPage = '',
   isUserAndOwner = false,
@@ -83,9 +85,7 @@ const GatheringTitle = ({
             <>
               <IconDownload24X24
                 className={cn('icon')}
-                onClick={() => {
-                  alert('개발중입니다');
-                }}
+                onClick={onClickDownloadButton}
               />
               <span className={cn('blind')}>다운로드</span>
             </>

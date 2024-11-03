@@ -22,6 +22,7 @@ import Modal from '../../common/components/Modal/Modal';
 import ModalContents from '../../common/components/Modal/ModalContents';
 import { getMoimStatus } from '../../api/service/gatheringApi';
 import { useNavigate } from 'react-router-dom';
+import { CustomError } from '../error/types';
 
 const cn = classnames.bind(styles);
 
@@ -39,40 +40,60 @@ const UpcomingGathering = () => {
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
 
   const checkMoimUpcomingStatus = async () => {
-    const status = await getMoimStatus(moimId);
-    console.log(status, 'status 체크');
-    if (status == 'CREATED') return;
-    else if (status === 'FAILED') {
-      let current = 5;
-      const timerId = setInterval(function () {
-        if (current == 0) {
-          clearInterval(timerId);
-          onPopBridge();
-        }
+    try {
+      const status = await getMoimStatus(moimId);
+      console.log(status, 'status 체크');
+      if (status == 'CREATED') return;
+      else if (status === 'FAILED') {
+        let current = 5;
+        const timerId = setInterval(function () {
+          if (current == 0) {
+            clearInterval(timerId);
+            onPopBridge();
+          }
+          setModal({
+            title: '모임을 시작할 수 없어요.',
+            description: '인원이 부족해요. 새로운 모임을 만들어 보세요.',
+            firstButton: '확인',
+            onClickFirstButton: () => {
+              onPopBridge();
+            },
+          });
+          current--;
+        }, 1000);
+      } else {
+        let current = 5;
+        const timerId = setInterval(function () {
+          if (current == 0) {
+            clearInterval(timerId);
+            navigate(`/ongoing-gathering?moimId=${moimId}`);
+          }
+          setModal({
+            title: '모임이 시작됐어요.',
+            description: '5초 뒤에 자동으로 진행 중 모임으로 이동해요.',
+            firstButton: '확인',
+            onClickFirstButton: () => {
+              navigate(`/ongoing-gathering?moimId=${moimId}`);
+            },
+          });
+          current--;
+        }, 1000);
+      }
+    } catch (error) {
+      const customError = error as CustomError; // error를 CustomError 타입으로 캐스팅
+      // errorCode에 안전하게 접근
+      console.log(customError, 'customError');
+      if (customError.errorCode === -23004) {
+        // 에러 코드가 -23004일 때의 처리 // 사용자가 볼 수 없는 상태의 모임임
         setModal({
-          title:
-            '혼자서 모임을 시작할 수 없어 모임 생성에 실패했어요. 다시 시작하고 싶다면 새로운 모임을 만들어주세요.',
-          description: '5초 이내 자동으로 메인화면으로 이동합니다.',
-          firstButton: current.toString(),
-          onClickFirstButton: () => {},
+          title: '모임에 참여할 수 없어요.',
+          description: '새로운 모임을 시작해 보세요.',
+          firstButton: '확인',
+          onClickFirstButton: () => {
+            onPopBridge();
+          },
         });
-        current--;
-      }, 1000);
-    } else {
-      let current = 5;
-      const timerId = setInterval(function () {
-        if (current == 0) {
-          clearInterval(timerId);
-          navigate(`/ongoing-gathering?moimId=${moimId}`);
-        }
-        setModal({
-          title: '모임이 시작되었습니다.',
-          description: ' 5초 이내 자동으로 입장됩니다',
-          firstButton: current.toString(),
-          onClickFirstButton: () => {},
-        });
-        current--;
-      }, 1000);
+      }
     }
   };
 
@@ -85,10 +106,9 @@ const UpcomingGathering = () => {
     if (remainingTime === '00:00:00' && timerComplete) {
       if (gatheringInfoData?.participants?.length === 0) {
         setModal({
-          title:
-            '혼자서 모임을 시작할 수 없어 모임 생성에 실패했어요. 다시 시작하고 싶다면 새로운 모임을 만들어주세요.',
-          description: '5초 이내 자동으로 메인화면으로 이동합니다.',
-          firstButton: '메인으로 가기',
+          title: '모임을 시작할 수 없어요.',
+          description: '인원이 부족해요. 새로운 모임을 만들어 보세요.',
+          firstButton: '확인',
           onClickFirstButton: () => {
             onPopBridge();
           },
@@ -99,9 +119,9 @@ const UpcomingGathering = () => {
         }, 5000);
       } else {
         setModal({
-          title: '모임이 시작되었습니다.',
-          description: '5초 이내 자동으로 입장됩니다.',
-          firstButton: '입장하기',
+          title: '모임이 시작됐어요.',
+          description: '5초 뒤에 자동으로 진행 중 모임으로 이동해요.',
+          firstButton: '확인',
           onClickFirstButton: () => {
             navigate(`/ongoing-gathering?moimId=${moimId}`); // 페이지 이동
           },
@@ -159,6 +179,7 @@ const UpcomingGathering = () => {
   const isParticipant = userId !== gatheringInfoData?.owner.userId;
 
   const handleUpcomingTitleBtn = (mode: string) => {
+    checkMoimUpcomingStatus();
     // 읽기 모드에서 오너
     if (isUserAndOwner && mode === 'readonly') {
       console.log('읽기 모드에서 오너');

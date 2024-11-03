@@ -7,6 +7,7 @@ import { NewProfileProps } from '../../types';
 import { textInputValidation } from '../../../../common/utils/authUtils';
 import NextStepButton from './NextStepButton';
 import IconApple14X16 from '../../../../assets/svg/icon/IconApple14X16';
+import IconKakao20X19 from '../../../../assets/svg/icon/IconKakao20X19';
 
 const cn = classnames.bind(styles);
 
@@ -101,20 +102,15 @@ const StepOne = ({
       {mode === 'mypage' && (
         <>
           {providerType === 'APPLE' && (
-            <div className={cn('wrap_login')}>
-              <a href="/" className={cn('apple_login')}>
-                <IconApple14X16 className={cn('icon')} />
-                애플 간편 로그인
-              </a>
+            <div className={cn('login', 'apple')}>
+              <IconApple14X16 className={cn('icon')} />
+              애플 간편 로그인
             </div>
           )}
-          {/* 카카오 로그인 마크업 추가 필요 */}
-          {/* to markup */}
           {providerType === 'KAKAO' && (
-            <div className={cn('wrap_login')}>
-              <a href="/" className={cn('kakao_login')}>
-                카카오 간편 로그인
-              </a>
+            <div className={cn('login', 'kakao')}>
+              <IconKakao20X19 className={cn('icon')} />
+              카카오 간편 로그인
             </div>
           )}
         </>

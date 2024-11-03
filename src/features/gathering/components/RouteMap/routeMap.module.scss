@@ -17,4 +17,15 @@
     margin: 0 16px;
     border-radius: 12px;
   }
+  &:global(.share_gathering) {
+    height: 100%;
+    .title_area {
+      @include blind;
+      padding: 0;
+    }
+    .map_area {
+      height: 100%;
+      margin: 0;
+    }
+  }
 }

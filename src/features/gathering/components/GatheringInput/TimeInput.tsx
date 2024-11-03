@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './timeInput.module.scss';
 import IconClock18X18 from '../../../../assets/svg/icon/IconClock18X18';
+import { getNextQuarterHour } from '../../../../common/utils/timeUtils';
 
 const cn = classnames.bind(styles);
 
@@ -24,27 +25,39 @@ const TimeInput = ({ onChange, timeData }: TimeInputProps) => {
   const minuteRefs = useRef<(HTMLLIElement | null)[]>([]);
   const wrapTimeRef = useRef<HTMLDivElement | null>(null);
   const initializedRef = useRef<boolean>(false); // 초기 설정 여부 추적
+  const setDefaultTime = (timeData: string) => {
+    console.log(timeData);
+    const hourIndex = parseInt(timeData.slice(0, 2));
+    const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
+
+    if (hourIndex >= 0 && hourRefs.current[hourIndex]) {
+      hourRefs?.current[hourIndex]?.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+      });
+    }
+
+    if (minuteIndex >= 0 && minuteRefs.current[minuteIndex]) {
+      minuteRefs?.current[minuteIndex]?.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+      });
+    }
+  };
+
+  useEffect(() => {
+    // 기존에 입력된 타임데이타 없으면, 기본 값 세팅
+    if (!timeData && !initializedRef.current) {
+      setDefaultTime(getNextQuarterHour().replace(':', ''));
+      initializedRef.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     // timeData 입력된 값 있을 시 입력 값으로 포커스 처리
     if (timeData && !initializedRef.current) {
-      const hourIndex = parseInt(timeData.slice(0, 2));
-      const minuteIndex = minutes.indexOf(timeData.slice(2, 4));
-
-      if (hourIndex >= 0 && hourRefs.current[hourIndex]) {
-        hourRefs?.current[hourIndex]?.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-        });
-      }
-
-      if (minuteIndex >= 0 && minuteRefs.current[minuteIndex]) {
-        minuteRefs?.current[minuteIndex]?.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-        });
-      }
-
+      setDefaultTime(timeData);
       initializedRef.current = true; // 초기화 완료
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -27,7 +27,7 @@ const NewProfile = () => {
     // 로그인 오류 처리
     if (!accessToken) {
       // 다시 로그인으로
-      navigate('/', { state: { from: location } });
+      // navigate('/', { state: { from: location } });
     }
   }, [location, navigate]);
 

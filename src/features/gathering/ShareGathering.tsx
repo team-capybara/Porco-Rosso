@@ -18,6 +18,8 @@ import {
 } from '../../common/utils/dateUtils';
 import ParticipantSmallList from './components/ParticipantSmallLIst/ParticipantSmallList';
 import ScrollPhotoTop10List from './components/PhotoList/ScrollPhotoTop10List';
+import ShareModal from '../../common/components/Modal/ShareModal';
+import PhotoCard from './components/PhotoList/PhotoCard/PhotoCard';
 
 const cn = classnames.bind(styles);
 
@@ -42,6 +44,50 @@ const ShareGathering = (props: ShareProps) => {
   const setSelectedPhotoDataFunc = async () => {
     const response: Photo[] = await getSelectedPhotos(moimId);
     setSelectedPhoto(response);
+  };
+
+  const renderGridArea = () => {
+    return (
+      <div className={cn('grid_area')}>
+        <div className={cn('grid_item')}>
+          <strong className={cn('title')}>
+            <IconUsers16X16 className={cn('icon')} />
+            참여인원
+          </strong>
+          {gatheringInfoData !== undefined && (
+            <ParticipantSmallList
+              participantData={gatheringInfoData.participants}
+            ></ParticipantSmallList>
+          )}
+        </div>
+        <div className={cn('grid_item')}>
+          <strong className={cn('title')}>
+            <IconTimer16X16 className={cn('icon')} />총 모인 시간
+          </strong>
+          <strong className={cn('total_time')}>
+            <span className={cn('number')}>{elapsedHours}</span>시간{' '}
+            <span className={cn('number')}>{elapsedMinutes}</span>분
+          </strong>
+        </div>
+        {/* todo: 지도 작업 부탁드립니다. */}
+        <div className={cn('grid_item')}>
+          <RouteMap
+            locationSummary={gatheringInfoData?.location}
+            moimId={moimId}
+            isRefresh={false}
+            classNameForPage="share_gathering"
+          />
+        </div>
+        <div className={cn('grid_item')}>
+          <strong className={cn('days')}>
+            {getDayString(gatheringInfoData?.startedAt)}
+          </strong>
+          <strong className={cn('date')}>
+            {getDateFromDatetime(gatheringInfoData?.startedAt).slice(6)}
+          </strong>
+        </div>
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -77,48 +123,40 @@ const ShareGathering = (props: ShareProps) => {
         hasDownloadButton={true}
         classNameForPage="share_page"
       />
+      {/* todo: 스크롤 이미지 없는 경우, div.wrap_scroll_photo_list 미노출 부탁드립니다. */}
       <div className={cn('wrap_scroll_photo_list')}>
         {/* todo: 데이터 임의로 넣었는데, 수정부탁드립니다. */}
         <ScrollPhotoTop10List data={selectedPhoto} />
       </div>
-      <div className={cn('grid_area')}>
-        <div className={cn('grid_item')}>
-          <strong className={cn('title')}>
-            <IconUsers16X16 className={cn('icon')} />
-            참여인원
-          </strong>
-          {gatheringInfoData !== undefined && (
-            <ParticipantSmallList
-              participantData={gatheringInfoData.participants}
-            ></ParticipantSmallList>
+      {renderGridArea()}
+      {/* todo: 공유하기 모달 */}
+      <ShareModal>
+        <div className={cn('inner_modal')}>
+          {gatheringInfoData?.title && (
+            <strong className={cn('moime_title')}>
+              {gatheringInfoData.title}
+            </strong>
           )}
+          {gatheringInfoData?.startedAt && (
+            <p className={cn('moime_date')}>
+              {getDateFromDatetime(gatheringInfoData?.startedAt)}
+            </p>
+          )}
+          <div className={cn('wrap_photo_card')}>
+            <PhotoCard
+              profileUrl={'../../'}
+              photoUrl={'../../'}
+              photoId={123}
+              likes={123}
+              liked={true}
+              likeButtonEnabled={false}
+              onClickHandler={undefined}
+              isJustImg={false}
+            />
+          </div>
+          {renderGridArea()}
         </div>
-        <div className={cn('grid_item')}>
-          <strong className={cn('title')}>
-            <IconTimer16X16 className={cn('icon')} />총 모인 시간
-          </strong>
-          <strong className={cn('total_time')}>
-            <span className={cn('number')}>{elapsedHours}</span>시간{' '}
-            <span className={cn('number')}>{elapsedMinutes}</span>분
-          </strong>
-        </div>
-        {/* todo: 지도 작업 부탁드립니다. */}
-        <div className={cn('grid_item')}>
-          <RouteMap
-            locationSummary={gatheringInfoData?.location}
-            moimId={moimId}
-            isRefresh={false}
-          />
-        </div>
-        <div className={cn('grid_item')}>
-          <strong className={cn('days')}>
-            {getDayString(gatheringInfoData?.startedAt)}
-          </strong>
-          <strong className={cn('date')}>
-            {getDateFromDatetime(gatheringInfoData?.startedAt).slice(6)}
-          </strong>
-        </div>
-      </div>
+      </ShareModal>
     </div>
   );
 };

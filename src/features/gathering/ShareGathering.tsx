@@ -34,6 +34,8 @@ const ShareGathering = (props: ShareProps) => {
   const [elapsedHours, setElapsedHours] = useState<string>('');
   const [elapsedMinutes, setElapsedMinutes] = useState<string>('');
   const [selectedPhoto, setSelectedPhoto] = useState<Photo[]>([]);
+  const [modalShow, setModalShow] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   // 모임 상세 정보 가져오기
   const setGatheringInfoDataFunc = async () => {
@@ -121,42 +123,48 @@ const ShareGathering = (props: ShareProps) => {
         title={gatheringInfoData?.title}
         description={getDateFromDatetime(gatheringInfoData?.startedAt)}
         hasDownloadButton={true}
+        onClickDownloadButton={() => setModalShow(true)}
         classNameForPage="share_page"
       />
       {/* todo: 스크롤 이미지 없는 경우, div.wrap_scroll_photo_list 미노출 부탁드립니다. */}
       <div className={cn('wrap_scroll_photo_list')}>
         {/* todo: 데이터 임의로 넣었는데, 수정부탁드립니다. */}
-        <ScrollPhotoTop10List data={selectedPhoto} />
+        <ScrollPhotoTop10List
+          data={selectedPhoto}
+          setCurrentIndex={setCurrentIndex}
+        />
       </div>
-      {renderGridArea()}
+      {gatheringInfoData !== undefined && renderGridArea()}
       {/* todo: 공유하기 모달 */}
-      <ShareModal>
-        <div className={cn('inner_modal')}>
-          {gatheringInfoData?.title && (
-            <strong className={cn('moime_title')}>
-              {gatheringInfoData.title}
-            </strong>
-          )}
-          {gatheringInfoData?.startedAt && (
-            <p className={cn('moime_date')}>
-              {getDateFromDatetime(gatheringInfoData?.startedAt)}
-            </p>
-          )}
-          <div className={cn('wrap_photo_card')}>
-            <PhotoCard
-              profileUrl={'../../'}
-              photoUrl={'../../'}
-              photoId={123}
-              likes={123}
-              liked={true}
-              likeButtonEnabled={false}
-              onClickHandler={undefined}
-              isJustImg={false}
-            />
+      {modalShow && (
+        <ShareModal setModalShow={setModalShow}>
+          <div className={cn('inner_modal')}>
+            {gatheringInfoData?.title && (
+              <strong className={cn('moime_title')}>
+                {gatheringInfoData.title}
+              </strong>
+            )}
+            {gatheringInfoData?.startedAt && (
+              <p className={cn('moime_date')}>
+                {getDateFromDatetime(gatheringInfoData?.startedAt)}
+              </p>
+            )}
+            <div className={cn('wrap_photo_card')}>
+              <PhotoCard
+                profileUrl={selectedPhoto[currentIndex].uploaderProfile}
+                photoUrl={selectedPhoto[currentIndex].url}
+                photoId={selectedPhoto[currentIndex].photoId}
+                likes={selectedPhoto[currentIndex].likes}
+                liked={selectedPhoto[currentIndex].liked}
+                likeButtonEnabled={false}
+                onClickHandler={undefined}
+                isJustImg={false}
+              />
+            </div>
+            {renderGridArea()}
           </div>
-          {renderGridArea()}
-        </div>
-      </ShareModal>
+        </ShareModal>
+      )}
     </div>
   );
 };

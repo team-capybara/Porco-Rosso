@@ -24,8 +24,10 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
       'onGetAppVersion',
       '',
       function (data: string) {
+        console.warn('앱 버전 데이터 확인', data);
         // 브릿징은 string 형태 외에 주고 받을 수 없음
         const parsedData = JSON.parse(data);
+        console.warn('앱 버전 parsedData 데이터 확인', parsedData);
         setAppVersion(parsedData.version);
       }
     );

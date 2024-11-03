@@ -26,9 +26,7 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
       function (data: string) {
         // 브릿징은 string 형태 외에 주고 받을 수 없음
         const parsedData = JSON.parse(data);
-        const { version = '' } = parsedData;
-
-        setAppVersion(version);
+        setAppVersion(parsedData.version);
       }
     );
   }, []);

@@ -40,7 +40,7 @@ const DeleteUser = ({ userProfile }: DeleteUserProps) => {
           clearInterval(timerId);
           setShowModal(false);
           userLogout().then(() => {
-            window.location.href = '/'; // to SocialLogin
+            window.location.href = '/login'; // to SocialLogin
           });
         }
         setModal({

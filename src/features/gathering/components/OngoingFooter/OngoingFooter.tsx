@@ -3,9 +3,13 @@ import styles from './ongoingFooter.module.scss';
 import IconCamera24X24 from '../../../../assets/svg/icon/IconCamera24X24';
 import IconOut24X24 from '../../../../assets/svg/icon/IconOut24X24';
 import { onNavigateCamera } from '../../../../bridge/ongoingBridge';
-import { ModalContentsProps } from '../../types';
+import { IGatheringInfo, ModalContentsProps } from '../../types';
 import { onPopBridge } from '../../../../bridge/gatheringBridge';
-import { leaveMoim } from '../../../../api/service/gatheringApi';
+import {
+  getGatheringInfo,
+  leaveMoim,
+} from '../../../../api/service/gatheringApi';
+import { getUserInfoId } from '../../../../common/utils/userInfo';
 
 const cn = classnames.bind(styles);
 interface OngoingFooterProps {
@@ -29,6 +33,15 @@ const OngoingFooter = (props: OngoingFooterProps) => {
     },
   };
 
+  const exitDepenseModal: ModalContentsProps = {
+    title: '모임을 나갈 수 없어요.',
+    description: '혼자 남은 모임에서는 모임을 종료해 주세요.',
+    firstButton: '확인',
+    onClickFirstButton: () => {
+      setModal(null);
+    },
+  };
+
   const memoryMoimYesOrNoModal: ModalContentsProps = {
     title: '나간 모임이 종료되면 내 추억에 남길까요?',
     description: '삭제하시면 오늘 모임에 대한 기록이 남지 않아요.',
@@ -47,9 +60,22 @@ const OngoingFooter = (props: OngoingFooterProps) => {
       setModal(null);
     },
   };
-  const exitMoim = () => {
-    setModal(exitYesOrNoModal);
+
+  const exitMoim = async () => {
+    // 최신 데이터를 불러와서 isOwnerLeftAlone 값을 업데이트
+    const response: IGatheringInfo = await getGatheringInfo(moimId);
+    const userId = await getUserInfoId();
+    const isUserAndOwner = Number(userId) === response.owner?.userId;
+    const isOwnerLeftAlone =
+      response.participants?.length === 0 && isUserAndOwner;
+
+    if (isOwnerLeftAlone) {
+      setModal(exitDepenseModal);
+    } else {
+      setModal(exitYesOrNoModal);
+    }
   };
+
   return (
     <div className={cn('ongoing_footer')}>
       <div className={cn('footer')}>

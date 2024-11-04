@@ -45,10 +45,8 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     arrowButtonClickHandler,
   } = props;
   const navigate = useNavigate();
-  // const [leaveModal, setModal] = useState<boolean>(false);
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   const [userId, setUserId] = useState<number>();
-  // const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
   const [isFriendAddSuccess, setIsFriendAddSuccess] = useState<boolean>(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
@@ -75,7 +73,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
   };
 
   useEffect(() => {
-    // checkMoimOngoingStatus();
+    checkMoimOngoingStatus();
     console.log('다시불러오기');
     setGatheringInfoDataFunc();
     setUserIdFromCookie();
@@ -86,7 +84,6 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
 
   const handleInviteFriendLayer = (type: string) => {
     if (type === 'open') {
-      console.log('오픈');
       setInviteFriendOpen?.(true);
     }
     if (type === 'close') {

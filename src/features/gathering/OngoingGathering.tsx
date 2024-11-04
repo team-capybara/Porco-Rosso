@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import classnames from 'classnames/bind';
-import {
-  ModalContentsProps,
-  OngoingGatheringProps,
-  ongoingType,
-} from './types/index';
+import { ModalContentsProps, ongoingType } from './types/index';
 import styles from './ongoingGathering.module.scss';
 import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import RenderOngoingMain from './components/RenderOngoingMain/RenderOngoingMain';
@@ -19,14 +15,12 @@ import { getMoimStatus } from '../../api/service/gatheringApi';
 const cn = classnames.bind(styles);
 
 // 진행 중 모임 (moimStatus = Ongoing)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const OngoingGathering = (_props: OngoingGatheringProps) => {
+const OngoingGathering = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
   const [moimId] = useState<number>(getmoimId(useLocation()));
-  // const [moimId] = useState<number>(92);
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
 

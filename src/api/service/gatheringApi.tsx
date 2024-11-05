@@ -28,8 +28,8 @@ export const getGatheringInfo = async (moimId: number) => {
     const response = await apiClient.get(`/moims/${moimId}`);
     return response.data as IGatheringInfo;
   } catch (error) {
-    console.error('Unknown Error:', error);
-    throw error;
+    console.error('Error fetching getGatheringInfo:', error);
+    throw error; // 에러 처리 (필요에 따라 사용)
   }
 };
 

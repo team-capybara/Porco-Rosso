@@ -15,10 +15,11 @@ const cn = classnames.bind(styles);
 interface OngoingFooterProps {
   moimId: number;
   setModal: React.Dispatch<React.SetStateAction<ModalContentsProps | null>>;
+  setExitBtnClicked: React.Dispatch<React.SetStateAction<boolean>>;
   checkMoimOngoingStatus: () => void;
 }
 const OngoingFooter = (props: OngoingFooterProps) => {
-  const { moimId, setModal, checkMoimOngoingStatus } = props;
+  const { moimId, setModal, checkMoimOngoingStatus, setExitBtnClicked } = props;
 
   const exitYesOrNoModal: ModalContentsProps = {
     title: '모임을 나갈까요?',
@@ -62,6 +63,7 @@ const OngoingFooter = (props: OngoingFooterProps) => {
   };
 
   const exitMoim = async () => {
+    setExitBtnClicked(true);
     // 최신 데이터를 불러와서 isOwnerLeftAlone 값을 업데이트
     const response: IGatheringInfo = await getGatheringInfo(moimId);
     const userId = await getUserInfoId();
@@ -69,11 +71,14 @@ const OngoingFooter = (props: OngoingFooterProps) => {
     const isOwnerLeftAlone =
       response.participants?.length === 0 && isUserAndOwner;
 
-    if (isOwnerLeftAlone) {
-      setModal(exitDepenseModal);
-    } else {
-      setModal(exitYesOrNoModal);
-    }
+    setTimeout(() => {
+      if (isOwnerLeftAlone) {
+        setModal(exitDepenseModal);
+      } else {
+        setModal(exitYesOrNoModal);
+      }
+      setExitBtnClicked(false);
+    }, 0);
   };
 
   return (

@@ -44,10 +44,14 @@ const DeleteUser = ({ userProfile }: DeleteUserProps) => {
           });
         }
         setModal({
-          title: '정상적으로 탈퇴되었습니다.',
-          description: '5초 후 로그인 화면으로 돌아갑니다.',
-          firstButton: current.toString(),
-          onClickFirstButton: () => {},
+          title: '정상적으로 탈퇴되었어요.',
+          description: '5초 뒤에 자동으로 로그인 화면으로 이동해요.',
+          firstButton: '확인',
+          onClickFirstButton: () => {
+            userLogout().then(() => {
+              window.location.href = '/login'; // to SocialLogin
+            });
+          },
         });
         current--;
       }, 1000);

@@ -68,10 +68,12 @@ const EndedGathering = () => {
           navigate(`/memory-gathering?moimId=${moimId}`);
         }
         setModal({
-          title: '투표가 끝났습니다.',
-          description: '5초 후 추억조회로 자동이동됩니다.',
-          firstButton: current.toString(),
-          onClickFirstButton: () => {},
+          title: '베스트 사진 선정이 끝났어요.',
+          description: '5초 뒤에 자동으로 추억으로 이동해요.',
+          firstButton: '확인',
+          onClickFirstButton: () => {
+            navigate(`/memory-gathering?moimId=${moimId}`);
+          },
         });
         current--;
       }, 1000);

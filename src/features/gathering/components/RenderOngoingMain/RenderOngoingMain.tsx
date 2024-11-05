@@ -32,6 +32,7 @@ interface RenderOngoingMainProps {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void;
   inviteFriendOpen?: boolean;
+  exitBtnClicked?: boolean;
   setInviteFriendOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const RenderOngoingMain = (props: RenderOngoingMainProps) => {
@@ -41,6 +42,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     setModal = () => {},
     checkMoimOngoingStatus = () => {},
     inviteFriendOpen,
+    exitBtnClicked,
     setInviteFriendOpen,
     arrowButtonClickHandler,
   } = props;
@@ -78,7 +80,7 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     setGatheringInfoDataFunc();
     setUserIdFromCookie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFriendAddSuccess]);
+  }, [isFriendAddSuccess, exitBtnClicked]);
 
   const isUserAndOwner = userId === gatheringInfoData?.owner.userId;
 

@@ -5,6 +5,7 @@ import {
   CreateGatheringData,
   Photo,
 } from '../../features/gathering/types';
+import axios from 'axios';
 
 // 진행중모임 - 지도 좌표
 export const getMapLngLat = async (moimId: number) => {
@@ -121,8 +122,26 @@ export const getMoimStatus = async (moimId: number) => {
     const response = await apiClient.get(`/moims/${moimId}/status`);
     return response.data.status;
   } catch (error) {
-    console.error('Error get Moim Status : ', error);
-    throw error;
+    // error를 AxiosError 타입으로 안전하게 캐스팅
+    if (axios.isAxiosError(error)) {
+      const {
+        errorCode = 0,
+        errorMessage = '',
+        errorName = '',
+        statusCode = 0,
+      } = error.response?.data || {};
+      console.error('Error get Moim Status:', errorCode, error);
+      // 에러 코드가 포함된 에러 객체를 그대로 throw
+      throw {
+        errorCode,
+        errorMessage,
+        errorName,
+        statusCode,
+      };
+    } else {
+      console.error('Unknown Error:', error);
+      throw error;
+    }
   }
 };
 

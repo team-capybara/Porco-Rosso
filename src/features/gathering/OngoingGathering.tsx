@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import classnames from 'classnames/bind';
-import {
-  ModalContentsProps,
-  OngoingGatheringProps,
-  ongoingType,
-} from './types/index';
+import { ModalContentsProps, ongoingType } from './types/index';
 import styles from './ongoingGathering.module.scss';
 import OngoingFooter from './components/OngoingFooter/OngoingFooter';
 import RenderOngoingMain from './components/RenderOngoingMain/RenderOngoingMain';
@@ -19,16 +15,15 @@ import { getMoimStatus } from '../../api/service/gatheringApi';
 const cn = classnames.bind(styles);
 
 // 진행 중 모임 (moimStatus = Ongoing)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const OngoingGathering = (_props: OngoingGatheringProps) => {
+const OngoingGathering = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [renderComponent, setRenderComponent] =
     useState<ongoingType>('OngoingMain');
   const [moimId] = useState<number>(getmoimId(useLocation()));
-  // const [moimId] = useState<number>(92);
   const [modal, setModal] = useState<ModalContentsProps | null>(null);
   const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
+  const [exitBtnClicked, setExitBtnClicked] = useState<boolean>(false);
 
   useEffect(() => {
     // 쿼리스트링에 선택된 사진이 바뀔 때 photodetail로 변경
@@ -55,10 +50,12 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
           navigate(`/ended-gathering?moimId=${moimId}`);
         }
         setModal({
-          title: '모임이 종료되었습니다.',
-          description: '5초 이내 모임종료 페이지로 이동됩니다.',
-          firstButton: current.toString(),
-          onClickFirstButton: () => {},
+          title: '모임이 종료됐어요.',
+          description: '5초 뒤에 자동으로 모임종료 페이지로 이동해요.',
+          firstButton: '확인',
+          onClickFirstButton: () => {
+            navigate(`/ended-gathering?moimId=${moimId}`);
+          },
         });
         current--;
       }, 1000);
@@ -91,6 +88,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
               arrowButtonClickHandler={arrowButtonClickHandler}
               inviteFriendOpen={inviteFriendOpen}
               setInviteFriendOpen={setInviteFriendOpen}
+              exitBtnClicked={exitBtnClicked}
             />
           )}
           {renderComponent === 'PhotoList' && (
@@ -110,6 +108,7 @@ const OngoingGathering = (_props: OngoingGatheringProps) => {
               moimId={moimId}
               setModal={setModal}
               checkMoimOngoingStatus={checkMoimOngoingStatus}
+              setExitBtnClicked={setExitBtnClicked}
             />
           )}
         </div>

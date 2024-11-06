@@ -32,6 +32,7 @@ interface RenderOngoingMainProps {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => void;
   inviteFriendOpen?: boolean;
+  exitBtnClicked?: boolean;
   setInviteFriendOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const RenderOngoingMain = (props: RenderOngoingMainProps) => {
@@ -41,14 +42,13 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
     setModal = () => {},
     checkMoimOngoingStatus = () => {},
     inviteFriendOpen,
+    exitBtnClicked,
     setInviteFriendOpen,
     arrowButtonClickHandler,
   } = props;
   const navigate = useNavigate();
-  // const [leaveModal, setModal] = useState<boolean>(false);
   const [gatheringInfoData, setGatheringInfoData] = useState<IGatheringInfo>();
   const [userId, setUserId] = useState<number>();
-  // const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]); // 선택된 친구 ID 관리
   const [isFriendAddSuccess, setIsFriendAddSuccess] = useState<boolean>(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
@@ -75,18 +75,17 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
   };
 
   useEffect(() => {
-    // checkMoimOngoingStatus();
+    checkMoimOngoingStatus();
     console.log('다시불러오기');
     setGatheringInfoDataFunc();
     setUserIdFromCookie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFriendAddSuccess]);
+  }, [isFriendAddSuccess, exitBtnClicked]);
 
   const isUserAndOwner = userId === gatheringInfoData?.owner.userId;
 
   const handleInviteFriendLayer = (type: string) => {
     if (type === 'open') {
-      console.log('오픈');
       setInviteFriendOpen?.(true);
     }
     if (type === 'close') {

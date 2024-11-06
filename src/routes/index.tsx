@@ -16,7 +16,7 @@ import MemoryGathering from '../features/gathering/MemoryGathering';
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<SocialLogin />} />
+      <Route path="/login" element={<SocialLogin />} />
       <Route path="/redirect-handler" element={<OauthRedirectHandler />} />
       {/* 개발을 위해 프라이빗 라우터 처리 일시 주석 */}
       {/* <Route element={<PrivateRoute />}> */}

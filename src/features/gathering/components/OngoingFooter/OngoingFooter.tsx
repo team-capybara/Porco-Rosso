@@ -3,18 +3,23 @@ import styles from './ongoingFooter.module.scss';
 import IconCamera24X24 from '../../../../assets/svg/icon/IconCamera24X24';
 import IconOut24X24 from '../../../../assets/svg/icon/IconOut24X24';
 import { onNavigateCamera } from '../../../../bridge/ongoingBridge';
-import { ModalContentsProps } from '../../types';
+import { IGatheringInfo, ModalContentsProps } from '../../types';
 import { onPopBridge } from '../../../../bridge/gatheringBridge';
-import { leaveMoim } from '../../../../api/service/gatheringApi';
+import {
+  getGatheringInfo,
+  leaveMoim,
+} from '../../../../api/service/gatheringApi';
+import { getUserInfoId } from '../../../../common/utils/userInfo';
 
 const cn = classnames.bind(styles);
 interface OngoingFooterProps {
   moimId: number;
   setModal: React.Dispatch<React.SetStateAction<ModalContentsProps | null>>;
+  setExitBtnClicked: React.Dispatch<React.SetStateAction<boolean>>;
   checkMoimOngoingStatus: () => void;
 }
 const OngoingFooter = (props: OngoingFooterProps) => {
-  const { moimId, setModal, checkMoimOngoingStatus } = props;
+  const { moimId, setModal, checkMoimOngoingStatus, setExitBtnClicked } = props;
 
   const exitYesOrNoModal: ModalContentsProps = {
     title: '모임을 나갈까요?',
@@ -26,6 +31,15 @@ const OngoingFooter = (props: OngoingFooterProps) => {
     },
     onClickSecondButton: () => {
       setModal(memoryMoimYesOrNoModal);
+    },
+  };
+
+  const exitDepenseModal: ModalContentsProps = {
+    title: '모임을 나갈 수 없어요.',
+    description: '혼자 남은 모임에서는 모임을 종료해 주세요.',
+    firstButton: '확인',
+    onClickFirstButton: () => {
+      setModal(null);
     },
   };
 
@@ -47,9 +61,26 @@ const OngoingFooter = (props: OngoingFooterProps) => {
       setModal(null);
     },
   };
-  const exitMoim = () => {
-    setModal(exitYesOrNoModal);
+
+  const exitMoim = async () => {
+    setExitBtnClicked(true);
+    // 최신 데이터를 불러와서 isOwnerLeftAlone 값을 업데이트
+    const response: IGatheringInfo = await getGatheringInfo(moimId);
+    const userId = await getUserInfoId();
+    const isUserAndOwner = Number(userId) === response.owner?.userId;
+    const isOwnerLeftAlone =
+      response.participants?.length === 0 && isUserAndOwner;
+
+    setTimeout(() => {
+      if (isOwnerLeftAlone) {
+        setModal(exitDepenseModal);
+      } else {
+        setModal(exitYesOrNoModal);
+      }
+      setExitBtnClicked(false);
+    }, 0);
   };
+
   return (
     <div className={cn('ongoing_footer')}>
       <div className={cn('footer')}>

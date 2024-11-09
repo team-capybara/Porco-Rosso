@@ -22,7 +22,9 @@ const ShareModal = ({ children, setModalShow }: Props) => {
       useCORS: true, //to enable cross origin perms
     });
 
-    const data = canvas.toDataURL('image/jpeg');
+    let data = canvas.toDataURL('image/jpeg');
+    data = data.replace('data:image/jpeg;base64,', '');
+
     // 앱으로 url 전달
     if (window.kmpJsBridge !== undefined) {
       window.kmpJsBridge.callNative(

@@ -26,12 +26,12 @@ export const getDayString = (dateString?: string) => {
     return '';
   }
   // 연, 월, 일 추출
-  const year = dateString.substring(0, 4);
+  const year = parseInt(dateString.substring(0, 4));
   const month = parseInt(dateString.substring(4, 6)); // 월은 숫자로 변환 필요
   const day = parseInt(dateString.substring(6, 8)); // 일도 숫자로 변환
 
   // 요일 구하기
-  const date = new Date(`${year}-${month}-${day}`);
+  const date = new Date(year, month - 1, day);
   const dayOfWeekNames = [
     '일요일',
     '월요일',

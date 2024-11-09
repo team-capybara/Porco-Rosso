@@ -29,6 +29,8 @@ const PhotoCard = memo(
     likeButtonEnabled = true, // 기본값은 true로 설정
     onClickHandler,
     isJustImg = false,
+    pageNum,
+    photoLikeUpdateHandler = () => {},
   }: PhotoCardProps) => {
     const [isLiked, setLiked] = useState(liked);
     const [likeCount, setLikeCount] = useState(likes);
@@ -41,6 +43,9 @@ const PhotoCard = memo(
       likeLoading.current = true;
       try {
         await updatePhotoLike(moimId, photoId, isLiked);
+        if (pageNum !== undefined) {
+          photoLikeUpdateHandler(photoId, !isLiked, pageNum);
+        }
         setLiked(!isLiked);
         setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
       } catch (error) {

@@ -37,6 +37,7 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
     hasNextPage,
     isFetchingNextPage,
     resetAndFetchFirstPage,
+    photoLikeUpdate,
   } = useMoimePhotoQuery(moimeId, null); // 초기 cursorId = null;
 
   const handleClick = () => {
@@ -159,6 +160,8 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
                 liked: photo.liked,
                 likeButtonEnabled: true,
                 onClickHandler: setSelectedPhotoId,
+                pageNum: pageNum,
+                photoLikeUpdateHandler: photoLikeUpdate,
               };
 
               const isLastItemInPage = idx === page.data.length - 1;

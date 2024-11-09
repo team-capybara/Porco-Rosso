@@ -69,8 +69,8 @@ const AlarmSetting = () => {
         <div className={cn('section_title')}>모임 알림</div>
         {renderItem({
           text: '모임 초대',
-          isOff: !settings.isMoimInvitatedOn,
-          type: 'MOIM_INVITATED',
+          isOff: !settings.isMoimInvitedOn,
+          type: 'MOIM_INVITED',
         })}
         {renderItem({
           text: '모임 시작',

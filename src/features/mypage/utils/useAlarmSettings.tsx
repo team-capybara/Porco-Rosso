@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import apiClient from '../../../api/config';
 
 export type AlarmSettingType =
-  | 'MOIM_INVITATED'
+  | 'MOIM_INVITED'
   | 'MOIM_STARTED'
   | 'MOIM_FINISHED'
   | 'MOIM_COMPLETED'
@@ -10,7 +10,7 @@ export type AlarmSettingType =
   | 'FOLLOWER_ADDED';
 
 interface Settings {
-  isMoimInvitatedOn: boolean;
+  isMoimInvitedOn: boolean;
   isMoimStartedOn: boolean;
   isMoimFinishedOn: boolean;
   isMoimCompletedOn: boolean;
@@ -27,7 +27,7 @@ interface UseSettingsResult {
 
 export const useAlarmSettings = (): UseSettingsResult => {
   const [settings, setSettings] = useState<Settings>({
-    isMoimInvitatedOn: false,
+    isMoimInvitedOn: false,
     isMoimStartedOn: false,
     isMoimFinishedOn: false,
     isMoimCompletedOn: false,

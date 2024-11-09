@@ -64,6 +64,29 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
   // 첫 번째 사진 ID
   const firstPhotoId = data?.pages[0]?.data?.[0]?.photoId || null;
 
+  const photoLikeUpdate = (
+    photoId: number,
+    newLikedState: boolean,
+    pageIndex: number
+  ) => {
+    const data = queryClient.getQueryData<InfiniteData<getMoimePhotoResponse>>([
+      QUERY_KEYS.MOIM_PHOTO,
+      moimId,
+    ]);
+
+    if (data) {
+      const targetPage = data.pages[pageIndex]; // pageIndex로 페이지에 직접 접근
+      const targetPhoto = targetPage.data.find(
+        (photo) => photo.photoId === photoId
+      );
+
+      if (targetPhoto) {
+        targetPhoto.liked = newLikedState;
+        targetPhoto.likes += newLikedState ? 1 : -1;
+      }
+    }
+  };
+
   return {
     data,
     fetchNextPage,
@@ -72,6 +95,7 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
     resetAndFetchFirstPage,
     totalPhotos,
     firstPhotoId,
+    photoLikeUpdate,
   } as {
     data: InfiniteData<getMoimePhotoResponse> | undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,5 +105,10 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
     resetAndFetchFirstPage: () => Promise<void>;
     totalPhotos: number;
     firstPhotoId: number | null;
+    photoLikeUpdate: (
+      photoId: number,
+      newLikedState: boolean,
+      pageIndex: number
+    ) => void;
   };
 };

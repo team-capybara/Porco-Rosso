@@ -14,6 +14,7 @@ function App() {
   useEffect(() => {
     // 액세스 토큰 유실 방지용 JS 함수를 전역으로 등록
     window.setAccessToken = function (token: string) {
+      console.log(token, '앱에서 웹뷰로 토큰을 받아서 찔러주나요?');
       setCookie('access_token', token, 1);
     };
   }, []);

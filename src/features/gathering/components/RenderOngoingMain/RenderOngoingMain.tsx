@@ -133,7 +133,9 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
               </div>
               <section className={cn('section')}>
                 <ParticipantList
-                  hasAddButton={isUserAndOwner ? true : false}
+                  hasAddButton={
+                    isUserAndOwner && moimStatus !== 'COMPLETED' ? true : false
+                  }
                   mode="read"
                   moimStart={true}
                   owner={gatheringInfoData?.owner}

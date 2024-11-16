@@ -2,8 +2,6 @@ import { useState } from 'react';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import AlarmSetting from './components/AlarmSetting/AlarmSetting';
 import MyPageMain from './components/MyPageMain/MyPageMain';
-// import ReviseProfile from './components/ReviseProfile/ReviseProfile';
-import { mypageProps } from './types/index';
 import { UserProfile } from '../auth/types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getUserInfo } from '../../api/service/authApi';
@@ -14,7 +12,7 @@ import { UpdateProfile } from '../auth/types';
 import { onPopBridge } from '../../bridge/gatheringBridge';
 import DeleteUser from './components/DeleteUser/DeleteUser';
 
-const MypagePage = (props: mypageProps) => {
+const MypagePage = () => {
   const queryClient = useQueryClient();
   const [renderComponent, setRenderComponent] =
     useState<renderComponentType>('mypageMain');
@@ -31,7 +29,6 @@ const MypagePage = (props: mypageProps) => {
     },
   });
 
-  console.warn(props, 'props');
   const mutation = useMutation({
     mutationFn: updateProfile,
     onSuccess: () => {

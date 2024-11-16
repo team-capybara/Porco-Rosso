@@ -41,7 +41,6 @@ export const useAlarmSettings = (): UseSettingsResult => {
   const fetchSettings = async () => {
     try {
       const response = await apiClient.get('/users/notifications/settings');
-      console.warn(response.data);
       setSettings(response.data);
     } catch (err) {
       console.error('설정 값을 가져오는 중 오류 발생:', err);

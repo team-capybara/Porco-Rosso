@@ -14,11 +14,6 @@ import { minutesAgo } from '../../common/utils/dateUtils';
 import IconCloseCircle24X24 from '../../assets/svg/icon/IconCloseCircle24X24';
 import { markNotiAsRead } from '../../api/service/notificationApi';
 import { onPopBridge } from '../../bridge/gatheringBridge';
-// import IconFlash24X24 from '../../assets/svg/icon/IconFlash24X24';
-// import IconDanger24X24 from '../../assets/svg/icon/IconDanger24X24';
-// import IconImage24X24 from '../../assets/svg/icon/IconImage24X24';
-// import IconCloseCircle24X24 from '../../assets/svg/icon/IconCloseCircle24X24';
-// import IconAddUser24X24 from '../../assets/svg/icon/IconAddUser24X24';
 
 const cn = classnames.bind(styles);
 
@@ -62,10 +57,6 @@ const NotificationPage = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.warn('data is changed', data);
-  }, [data]);
 
   useEffect(() => {
     if (isSuccess) {

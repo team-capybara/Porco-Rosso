@@ -8,6 +8,8 @@ import { ongoingType, PhotoCardProps } from '../../types';
 import { useEffect, useState } from 'react';
 import PhotoCard from '../PhotoList/PhotoCard/PhotoCard';
 import { useMoimePhotoQuery } from '../../utils/useMoimePhotoQuery';
+import { useGatheringInfoQuery } from '../../../../api/service/gatheringApi';
+import { getDateFromDatetime } from '../../../../common/utils/dateUtils';
 // import { useLocation, useNavigate } from 'react-router-dom';
 const cn = classnames.bind(styles);
 
@@ -26,6 +28,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
 
   // moimeId = '1'
   const { data } = useMoimePhotoQuery(moimId, null); // 초기 cursorId = null;
+  const { data: moimData } = useGatheringInfoQuery(moimId);
 
   useEffect(() => {
     // 쿼리스트링이 변경될 때마다 실행됨
@@ -70,9 +73,9 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
       />
       <div className={cn('wrap_gathering_title')}>
         <GatheringTitle
-          title="모이미 제목인데요오오오ㅗ오 ㅇ ㄹㄴㅇㄴㄹ ㄴㅇ ㄹㅇㄴ ㄹㅇㄴ"
-          description="2024년 5월 3일"
-          hasShareButton={true}
+          title={moimData?.title}
+          description={getDateFromDatetime(moimData?.startedAt)}
+          hasShareButton={false}
         />
       </div>
       <div className={cn('wrap_photo_card')}>

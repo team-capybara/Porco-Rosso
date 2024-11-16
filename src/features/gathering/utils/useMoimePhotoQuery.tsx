@@ -26,8 +26,6 @@ export const useMoimePhotoQuery = (moimId: string, cursorId: number | null) => {
   > = useInfiniteQuery({
     queryKey: [QUERY_KEYS.MOIM_PHOTO, moimId], // queryKey
     queryFn: ({ queryKey, pageParam }) => {
-      console.warn('queryKey', 'pageParam', queryKey, pageParam);
-      // 수정필요함
       const queryMoimId = queryKey[1] as string;
       return getMoimePhoto(queryMoimId, pageParam, 18); // queryFn
     },

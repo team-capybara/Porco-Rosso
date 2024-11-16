@@ -78,10 +78,9 @@ const ParticipantList = (props: Props) => {
                 <div className={cn('thumbnail_area')}>
                   <div className={cn('thumbnail')}>
                     <img
-                      src={
-                        props.owner.profileImageUrl ??
+                      src={`${props.owner.profileImageUrl}?timestamp=${Date.now()} ??
                         'src/assets/png/test_image.png'
-                      }
+                      `}
                       alt=""
                       className={cn('image')}
                     />
@@ -103,10 +102,9 @@ const ParticipantList = (props: Props) => {
                   <div className={cn('thumbnail_area')}>
                     <div className={cn('thumbnail')}>
                       <img
-                        src={
-                          data.profileImageUrl ??
+                        src={`${data.profileImageUrl}?timestamp=${Date.now()} ??
                           'src/assets/png/test_image.png'
-                        }
+                        `}
                         alt=""
                         className={cn('image')}
                       />
@@ -126,46 +124,6 @@ const ParticipantList = (props: Props) => {
               </li>
             );
           })}
-
-          {/* <li className={cn('item')}>
-            <button type="button" className={cn('button')}>
-              <div className={cn('thumbnail_area')}>
-                <div className={cn('thumbnail')}>
-                  <img
-                    src="src/assets/png/test_image.png"
-                    alt=""
-                    className={cn('image')}
-                  />
-                </div>
-                <div className={cn('crown_icon')}>
-                  <IconCrown14X11 className={cn('icon')} />
-                  <span className={cn('blind')}>방장</span>
-                </div>
-              </div>
-              <div className={cn('text')}>나</div>
-            </button>
-            {/* todo: 친구 삭제 버튼입니다 */}
-          {/* <button type="button" className={cn('delete_button')}>
-              <IconX12X12 className={cn('icon')} />
-            </button>
-          </li> */}
-          {/* <li className={cn('item')}>
-            <button type="button" className={cn('button')}>
-              <div className={cn('thumbnail_area')}>
-                <div className={cn('thumbnail')}>
-                  <img
-                    src="src/assets/png/test_image.png"
-                    alt=""
-                    className={cn('image')}
-                  />
-                </div>
-              </div>
-              <button type="button" className={cn('delete_button')}>
-                <IconX12X12 className={cn('icon')} />
-              </button>
-              <div className={cn('text')}>맥주사랑이린</div>
-            </button>
-          </li> */}
         </ul>
       </HorizontalScrollWrapper>
     </div>

@@ -30,7 +30,7 @@ const FriendCard = ({
     >
       <div className={cn('thumbnail')}>
         <img
-          src={friend.profile}
+          src={`${friend.profile}?timestamp=${Date.now()}`}
           alt={friend.nickname}
           className={cn('image')}
         />

@@ -124,7 +124,9 @@ export const getDaysInMonth = (month: number, year: number): number => {
 };
 
 export const getFirstWeekdayOfMonth = (month: number, year: number): number => {
-  return new Date(year, month - 1, 1).getDay(); // 1일을 기준으로 요일 반환 (0 = 일요일)
+  const day = new Date(year, month - 1, 1).getDay(); // 기존 요일 (0 = 일요일)
+  return (day + 6) % 7; // 월요일 = 0, 화요일 = 1, ..., 일요일 = 6
+  // return new Date(year, month - 1, 1).getDay(); // 1일을 기준으로 요일 반환 (0 = 일요일)
 };
 
 export const getPrevMonthYear = (month: number, year: number): MonthYear => {

@@ -46,6 +46,19 @@ const CalendarInput = ({ value, onChange }: CalendarInputProps) => {
     const nextDate = getMonthSet(new Date(year, month - 1, 1)).next;
     const nextMonth = nextDate.getMonth() + 1; // 0-based index를 1-based index로 변환
     const nextYear = nextDate.getFullYear();
+
+    // 오늘 기준으로 1년 뒤의 month와 year 계산
+    const lastValidMonth = oneYearFromToday.getMonth() + 1;
+    const lastValidYear = oneYearFromToday.getFullYear();
+
+    // 다음 달이 1년 뒤를 넘어가면 동작하지 않음
+    if (
+      nextYear > lastValidYear || // 다음 연도로 넘어가는 경우
+      (nextYear === lastValidYear && nextMonth > lastValidMonth) //같은 연도에서 월이 초과하는 경우
+    ) {
+      return;
+    }
+
     setCurrentMonthYear({ month: nextMonth, year: nextYear });
   };
   const handleDateSelect = (date: Date, beforeToday?: boolean) => {
@@ -100,13 +113,13 @@ const CalendarInput = ({ value, onChange }: CalendarInputProps) => {
       </div>
       <div>
         <ul className={cn('day_of_the_week')}>
-          <li className={cn('item')}>일</li>
           <li className={cn('item')}>월</li>
           <li className={cn('item')}>화</li>
           <li className={cn('item')}>수</li>
           <li className={cn('item')}>목</li>
           <li className={cn('item')}>금</li>
           <li className={cn('item')}>토</li>
+          <li className={cn('item')}>일</li>
         </ul>
         <ul className={cn('days_calendar')}>
           {datesInMonth.map((day) => {

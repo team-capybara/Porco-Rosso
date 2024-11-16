@@ -100,6 +100,13 @@ const CreateGathering = ({
     queryFn: getUserInfo,
     gcTime: 1000 * 60 * 10,
     staleTime: 1000 * 60 * 5, // 신선한 시간 5분
+    select: (data) => {
+      // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
+      return {
+        ...data,
+        profile: `${data.profile}?t=${new Date().getTime()}`,
+      };
+    },
   });
 
   // userData를 participantList에 추가하는 로직
@@ -191,7 +198,7 @@ const CreateGathering = ({
 
   const handleMoimCreateBtn = () => {
     // 최종 검증
-    const errorMsg = textInputValidation(gatheringData.title, 'withEmoji');
+    const errorMsg = textInputValidation(gatheringData.title, 'withoutEmoji');
     // 밸리데이션 통과
     if (errorMsg) {
       setMoimCreateRes('fail');

@@ -104,11 +104,27 @@ export function minutesAgo(timeString: string) {
   const currentDate = new Date();
 
   // 분 단위로 변환
-  const timeDifference = Math.floor(
+  const timeDifferenceMinutes = Math.floor(
     (currentDate.getTime() - givenDate.getTime()) / 60000
   );
 
-  return timeDifference < 60
-    ? `${timeDifference}분 전`
-    : `${Math.floor(timeDifference / 60)}시간 전`;
+  // 방금 전 (2분 이내)
+  if (timeDifferenceMinutes < 2) {
+    return '방금 전';
+  }
+
+  // 시간 전 (60분 이내)
+  if (timeDifferenceMinutes < 60) {
+    return `${timeDifferenceMinutes}분 전`;
+  }
+
+  // 하루 이하 (24시간 이내)
+  const timeDifferenceHours = Math.floor(timeDifferenceMinutes / 60);
+  if (timeDifferenceHours < 24) {
+    return `${timeDifferenceHours}시간 전`;
+  }
+
+  // 일 단위 표시 (24시간 이상)
+  const timeDifferenceDays = Math.floor(timeDifferenceHours / 24);
+  return `${timeDifferenceDays}일 전`;
 }

@@ -6,6 +6,7 @@ import {
   Photo,
 } from '../../features/gathering/types';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 // 진행중모임 - 지도 좌표
 export const getMapLngLat = async (moimId: number) => {
@@ -167,7 +168,6 @@ export const addFriendsToMoim = async (
 export const finishMoim = async (moimId: number) => {
   try {
     const response = await apiClient.put(`/moims/${moimId}/finish`);
-    console.warn('모임종료 response: ' + response);
     return response.data.status;
   } catch (error) {
     console.error('Error finish Moim : ', error);
@@ -188,10 +188,21 @@ export const getFriendCnt = async (): Promise<number> => {
 export const getSelectedPhotos = async (moimId: number) => {
   try {
     const response = await apiClient.get(`/moims/${moimId}/photos/selected`);
-    console.warn('response getSelectedPhotos', response.data);
     return response.data.data as Photo[];
   } catch (error) {
     console.error('Error fetching getSelectedPhotos:', error);
     throw error; // 에러 처리 (필요에 따라 사용)
   }
+};
+
+// 모임정보 전역으로 쓰기 위해서(캐싱용)
+const GATHRING_INFO = 'GATHRING_INFO';
+export const useGatheringInfoQuery = (moimId: string) => {
+  return useQuery({
+    queryKey: [GATHRING_INFO, moimId],
+    queryFn: () => getGatheringInfo(Number(moimId)),
+    staleTime: 1 * 60 * 1000, // 5분 동안 데이터를 신선한 상태로 유지
+    gcTime: 5 * 60 * 1000, // 30분 동안 캐시 유지
+    refetchOnWindowFocus: true, // 창 포커스시 자동 refetch
+  });
 };

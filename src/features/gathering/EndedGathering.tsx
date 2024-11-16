@@ -58,7 +58,6 @@ const EndedGathering = () => {
   // 진행 중 모임 때 상태 확인 후 모임종료로 redirect 하는 로직 추가
   const checkMoimOngoingStatus = async () => {
     const status = await getMoimStatus(moimId);
-    console.warn('status', status);
     if (status == 'FINISHED') return;
     else {
       let current = 5;

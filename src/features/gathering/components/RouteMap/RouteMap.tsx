@@ -56,6 +56,9 @@ const RouteMap = (props: RouteMapProps) => {
       ), // 중심점 -> locationSummary 위경도로 초기화 (추후 변경 예정)
       draggable: false, // 드래그 막기
       zoomEnabled: false, // 줌 막기
+      scrollWheel: false, // 마우스 휠, 모바일 터치 막기
+      disableDoubleClick: false, // 더블클릭 막기
+      disableDoubleClickZoom: false, //더블클릭 확대 막기
     });
 
     // 방문 좌표가 없으면 지도만 띄우고 리턴

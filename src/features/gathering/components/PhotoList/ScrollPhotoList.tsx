@@ -120,40 +120,45 @@ const ScrollPhotoList = ({
           <div className={cn('description')}>{`${totalPhotos}장의 사진`}</div>
         </div>
       )}
-      <HorizontalScrollWrapper>
-        <ul className={cn('photo_list')}>
-          {data?.pages.map((page: getMoimePhotoResponse, pageNum: number) => (
-            <React.Fragment key={`page-${pageNum}`}>
-              {page.data.map((photo: Photo) => {
-                const photoCardProps: PhotoCardProps = {
-                  moimId: moimeId,
-                  profileUrl: photo.uploaderProfile,
-                  photoUrl: photo.url,
-                  photoId: photo.photoId,
-                  likes:
-                    photo.photoId === selectedPhoto?.photoId
-                      ? selectedPhoto.likes
-                      : photo.likes,
-                  liked:
-                    photo.photoId === selectedPhoto?.photoId
-                      ? selectedPhoto.liked
-                      : photo.liked,
-                  likeButtonEnabled: false,
-                  onClickHandler: isJustImg ? setSelectedPhotoId : undefined,
-                  isJustImg: isJustImg,
-                };
-                return (
-                  <li className={cn('item')} key={`photocard-${photo.photoId}`}>
-                    <PhotoCard {...photoCardProps} />
-                  </li>
-                );
-              })}
-            </React.Fragment>
-          ))}
-          {/* 페이지네이션 기준점을 잡기 위한 요소 */}
-          <li className={cn('item', 'base')} ref={targetRef} />
-        </ul>
-      </HorizontalScrollWrapper>
+      {totalPhotos !== 0 && (
+        <HorizontalScrollWrapper>
+          <ul className={cn('photo_list')}>
+            {data?.pages.map((page: getMoimePhotoResponse, pageNum: number) => (
+              <React.Fragment key={`page-${pageNum}`}>
+                {page.data.map((photo: Photo) => {
+                  const photoCardProps: PhotoCardProps = {
+                    moimId: moimeId,
+                    profileUrl: photo.uploaderProfile,
+                    photoUrl: photo.url,
+                    photoId: photo.photoId,
+                    likes:
+                      photo.photoId === selectedPhoto?.photoId
+                        ? selectedPhoto.likes
+                        : photo.likes,
+                    liked:
+                      photo.photoId === selectedPhoto?.photoId
+                        ? selectedPhoto.liked
+                        : photo.liked,
+                    likeButtonEnabled: false,
+                    onClickHandler: isJustImg ? setSelectedPhotoId : undefined,
+                    isJustImg: isJustImg,
+                  };
+                  return (
+                    <li
+                      className={cn('item')}
+                      key={`photocard-${photo.photoId}`}
+                    >
+                      <PhotoCard {...photoCardProps} />
+                    </li>
+                  );
+                })}
+              </React.Fragment>
+            ))}
+            {/* 페이지네이션 기준점을 잡기 위한 요소 */}
+            <li className={cn('item', 'base')} ref={targetRef} />
+          </ul>
+        </HorizontalScrollWrapper>
+      )}
     </div>
   );
 };

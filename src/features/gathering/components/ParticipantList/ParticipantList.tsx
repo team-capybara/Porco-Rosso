@@ -99,7 +99,16 @@ const ParticipantList = (props: Props) => {
             return (
               <li key={data.userId} className={cn('item')}>
                 {/* todo: 버튼 클릭시, 유저 프로필 모달 노출됩니다.(작업 전) */}
-                <button type="button" className={cn('button')}>
+                <button
+                  type="button"
+                  className={cn('button')}
+                  onClick={() => {
+                    window.kmpJsBridge?.callNative(
+                      'onNavigateToFriendDetail',
+                      JSON.stringify({ friendId: data.userId })
+                    );
+                  }}
+                >
                   <div className={cn('thumbnail_area')}>
                     <div className={cn('thumbnail')}>
                       <img

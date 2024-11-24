@@ -34,7 +34,6 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
   const {
     data,
     fetchNextPage,
-    hasNextPage,
     isFetchingNextPage,
     resetAndFetchFirstPage,
     photoLikeUpdate,
@@ -191,18 +190,6 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
           </React.Fragment>
         ))}
       </ul>
-      <div
-        style={{
-          height: '100px',
-          backgroundColor: 'black',
-          color: 'white',
-          textAlign: 'center',
-          paddingTop: '40px',
-        }}
-      >
-        {isFetchingNextPage && <p>로딩중입니다...</p>}
-        {!hasNextPage && <p>마지막페이지입니다.</p>}
-      </div>
     </>
   );
 };

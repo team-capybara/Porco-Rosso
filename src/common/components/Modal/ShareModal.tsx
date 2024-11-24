@@ -30,7 +30,8 @@ const ShareModal = ({ children, setModalShow }: Props) => {
       window.kmpJsBridge.callNative(
         'onDownloadEndingImage',
         JSON.stringify({ image: data }),
-        () => {
+        function (data: string) {
+          console.log(data);
           setModalShow(false);
         }
       );

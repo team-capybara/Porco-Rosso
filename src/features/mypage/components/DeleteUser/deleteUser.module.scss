@@ -26,8 +26,8 @@
   }
   .image {
     width: 100%;
-    height: auto;
-    margin: auto;
+    height: 100%;
+    object-fit: cover;
   }
   .nickname {
     @include font-type('20-26');

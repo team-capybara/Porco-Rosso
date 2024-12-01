@@ -63,10 +63,8 @@ const textInputValidation = (
 
 const getTokenFromApp = () => {
   const accessTokenFromApp = getCookie('Authorization');
-  console.log(accessTokenFromApp, 'accessTokenFromApp');
   if (accessTokenFromApp) {
     const extractedToken = accessTokenFromApp.split(' ')[1];
-    console.log(extractedToken, 'extractedToken');
     return extractedToken;
   }
   return null;

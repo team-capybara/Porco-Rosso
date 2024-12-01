@@ -21,20 +21,15 @@ const goMain = (accessToken: string) => {
     isNewbie: false,
     accessToken: accessToken,
   };
-  console.log(accessToken, 'accessToken');
-  console.log(loginData, 'loginData');
   window.kmpJsBridge?.callNative(
     'onLoginSuccess',
     JSON.stringify(loginData),
     function (data: string) {
       // 브릿징은 string 형태 외에 주고 받을 수 없음
       const parsedData: DeviceTokenData = JSON.parse(data);
-      console.log(parsedData, 'parsedData');
       const { fcmToken = '' } = parsedData;
-      console.log(fcmToken, 'fcmToken');
       // deviceToken 서버로 전달
       setCookie('deviceToken', fcmToken, 365);
-      // localStorage.setItem('deviceToken', fcmToken);
     }
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import BackNavigation from '../auth/components/signup/BackNavigation';
 import AlarmSetting from './components/AlarmSetting/AlarmSetting';
 import MyPageMain from './components/MyPageMain/MyPageMain';
@@ -11,7 +11,6 @@ import { updateProfile } from '../../api/service/authApi';
 import { UpdateProfile } from '../auth/types';
 import { onPopBridge } from '../../bridge/gatheringBridge';
 import DeleteUser from './components/DeleteUser/DeleteUser';
-import { getTokenFromApp } from '../../common/utils/authUtils';
 
 const MypagePage = () => {
   const queryClient = useQueryClient();
@@ -29,21 +28,6 @@ const MypagePage = () => {
       };
     },
   });
-
-  const [test, setTest] = useState<string | null>(null);
-  const [test2, setTest2] = useState<string | null>(null);
-  const tokenMake = () => {
-    const token = getTokenFromApp();
-    setTest(token);
-  };
-  const tokenMake2 = () => {
-    const token = getTokenFromApp();
-    setTest2(token);
-  };
-  useEffect(() => {
-    tokenMake();
-    setTimeout(() => tokenMake2(), 3000);
-  }, []);
 
   const mutation = useMutation({
     mutationFn: updateProfile,
@@ -74,8 +58,6 @@ const MypagePage = () => {
         isButton={true}
         onClick={handleMypageBackNav}
       />
-      <p style={{ color: 'white' }}>{test}</p>
-      <p style={{ color: 'white' }}>{test2}</p>
       {/* 마이페이지 메인 */}
       {renderComponent === 'mypageMain' && (
         <MyPageMain

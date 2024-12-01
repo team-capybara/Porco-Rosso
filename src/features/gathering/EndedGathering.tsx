@@ -144,11 +144,7 @@ const EndedGathering = () => {
                   추억보러가기
                 </button>
               ) : (
-                <button
-                  type="button"
-                  className={cn('button')}
-                  disabled={finish}
-                >
+                <button type="button" className={cn('button')} disabled={true}>
                   00 : {String(min).padStart(2, '0')} : {sec}
                 </button>
               )}

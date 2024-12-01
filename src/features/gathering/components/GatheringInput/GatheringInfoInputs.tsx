@@ -103,7 +103,6 @@ const GatheringInfoInputs = ({
           <IconCalendar18X18 className={cn('icon')} />
           날짜
         </strong>
-        {/* todo: 입력이 활성화된 경우, 'active' 클래스 활성화부탁드립니다.  */}
         <button
           type="button"
           className={cn('button', { active: startedAt ? true : false })}
@@ -136,8 +135,7 @@ const GatheringInfoInputs = ({
           disabled={mode === 'read' ? true : false}
         >
           {timeData ? (
-            // 마크업 font color 수정 부탁드립니다
-            <span className={cn('number')} style={{ color: 'white' }}>
+            <span className={cn('number')}>
               {timeData.slice(0, 2) + '시 ' + timeData.slice(2, 4) + '분'}
             </span>
           ) : (
@@ -159,10 +157,7 @@ const GatheringInfoInputs = ({
           disabled={mode === 'read' ? true : false}
         >
           {location.name ? (
-            // 마크업 font color 수정 부탁드립니다
-            <span className={cn('number')} style={{ color: 'white' }}>
-              {location.name}
-            </span>
+            <span className={cn('text', 'active')}>{location.name}</span>
           ) : (
             <span className={cn('text')}>장소를 선택해 주세요</span>
           )}

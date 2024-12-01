@@ -26,16 +26,23 @@
     background-color: $gray-500;
     box-sizing: border-box;
     .text {
+      @include ellipsis(1);
       @include font-type('16-22', 600);
+      flex: 1 1 auto;
       overflow-x: auto;
       color: $gray-400;
       white-space: nowrap;
+      text-align: left;
       &::-webkit-scrollbar {
         display: none;
+      }
+      &.active {
+        color: $gray-50;
       }
     }
     .number {
       @include number-font-type('16-22', 400);
+      color: $gray-50;
     }
     .icon {
       flex: none;

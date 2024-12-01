@@ -6,6 +6,7 @@ import GatheringTitle from './components/GatheringTitle/GatheringTitle';
 import ParticipantList from './components/ParticipantList/ParticipantList';
 import GatheringInfoInputs from './components/GatheringInput/GatheringInfoInputs';
 // import IconExport24X24 from '../../assets/svg/icon/IconExport24X24';
+import IconDanger24X24 from '../../assets/svg/icon/IconDanger24X24';
 import { useLocation } from 'react-router-dom';
 import { getmoimId } from '../../common/utils/queryString';
 import {
@@ -245,21 +246,11 @@ const UpcomingGathering = () => {
 
   const renderSingleAlertWarning = () => {
     return (
-      <div
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          backgroundColor: '#ff4d4f',
-          color: '#fff',
-          padding: '10px 20px',
-          borderRadius: '8px',
-          fontSize: '14px',
-          boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.15)',
-          zIndex: 1000,
-        }}
-      >
-        친구를 초대해야 모임이 시작되요.
+      <div className={cn('wrap_alert_warning')}>
+        <div className={cn('alert_warning')}>
+          <IconDanger24X24 className={cn('icon')} />
+          친구를 초대해야 모임이 시작돼요.
+        </div>
       </div>
     );
   };

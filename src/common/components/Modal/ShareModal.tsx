@@ -35,6 +35,10 @@ const ShareModal = ({ children, setModalShow }: Props) => {
           setModalShow(false);
         }
       );
+
+      setTimeout(() => {
+        setModalShow(false);
+      }, 2000);
     } else {
       // 로컬 테스트용
       const link = document.createElement('a');

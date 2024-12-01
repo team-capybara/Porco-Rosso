@@ -28,7 +28,7 @@ const ParticipantSmallList = (props: Props) => {
               key={`participantSmallData-${participantData.userId}`}
             >
               <img
-                src={participantData.profileImageUrl}
+                src={`${participantData.profileImageUrl}?timestamp=${Date.now()}`}
                 alt=""
                 className={cn('image')}
               />

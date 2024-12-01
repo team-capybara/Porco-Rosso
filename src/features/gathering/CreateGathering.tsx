@@ -100,13 +100,6 @@ const CreateGathering = ({
     queryFn: getUserInfo,
     gcTime: 1000 * 60 * 10,
     staleTime: 1000 * 60 * 5, // 신선한 시간 5분
-    select: (data) => {
-      // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
-      return {
-        ...data,
-        profile: `${data.profile}?t=${new Date().getTime()}`,
-      };
-    },
   });
 
   // userData를 participantList에 추가하는 로직
@@ -116,7 +109,7 @@ const CreateGathering = ({
       setOwnerInfo({
         userId: userData.id,
         nickname: userData.nickname,
-        profileImageUrl: userData.profile,
+        profileImageUrl: `${userData.profile}?t=${new Date().getTime()}`,
         isOwner: true,
       });
     }

@@ -24,9 +24,7 @@ apiClient.interceptors.request.use(
   (config) => {
     // 앱 -> 웹 토큰으로 통일
     // mock token 제거 했습니다 -> 테스트 시 필요하면 || 뒤에 넣어서 사용하세요.
-    // const token = getTokenFromApp() || getCookie('access_token') || '';
-    const token = getTokenFromApp() || '';
-    console.log(token, '이걸로만 승부본다');
+    const token = getTokenFromApp() || getCookie('access_token') || '';
     const deviceToken = getCookie('deviceToken') || '';
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;

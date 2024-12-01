@@ -59,6 +59,7 @@ const ShareGathering = (props: ShareProps) => {
           {gatheringInfoData !== undefined && (
             <ParticipantSmallList
               participantData={gatheringInfoData.participants}
+              owner={gatheringInfoData.owner}
             ></ParticipantSmallList>
           )}
         </div>

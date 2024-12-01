@@ -27,7 +27,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
   });
 
   // moimeId = '1'
-  const { data } = useMoimePhotoQuery(moimId, null); // 초기 cursorId = null;
+  const { data, photoLikeUpdate } = useMoimePhotoQuery(moimId, null); // 초기 cursorId = null;
   const { data: moimData } = useGatheringInfoQuery(moimId);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
 
     if (selectedPhotoId !== null && selectedPhotoId !== '-1') {
       if (data !== undefined) {
-        data.pages.forEach((page) => {
+        data.pages.forEach((page, pageNum: number) => {
           page.data.forEach((photo) => {
             if (photo.photoId === Number(selectedPhotoId)) {
               setSelectedPhoto({
@@ -50,6 +50,8 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
                 likes: photo.likes,
                 liked: photo.liked,
                 likeButtonEnabled: true,
+                pageNum: pageNum,
+                photoLikeUpdateHandler: photoLikeUpdate,
               });
             }
           });

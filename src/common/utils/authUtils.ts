@@ -70,6 +70,21 @@ const getTokenFromApp = () => {
   return null;
 };
 
+const getTokenFromAppByBridge = () => {
+  window.kmpJsBridge?.callNative('getAccessToken', '', function (data: string) {
+    // 브릿징은 string 형태 외에 주고 받을 수 없음
+    const parsedData = JSON.parse(data);
+    console.log(parsedData, 'parsedData from access token app');
+    if (parsedData) {
+      console.log(parsedData.accessToken, 'parsedData.accessToken');
+      return parsedData.accessToken;
+    } else {
+      return null;
+    }
+  });
+  return null;
+};
+
 export {
   getCookie,
   setCookie,
@@ -77,4 +92,5 @@ export {
   getQueryStringValue,
   textInputValidation,
   getTokenFromApp,
+  getTokenFromAppByBridge,
 };

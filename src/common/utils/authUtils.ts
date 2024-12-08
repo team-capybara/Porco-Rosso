@@ -82,6 +82,7 @@ const getTokenFromAppByBridge = () => {
       return null;
     }
   });
+  return null;
 };
 
 export {

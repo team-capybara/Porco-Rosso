@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   getCookie,
-  getTokenFromApp,
+  // getTokenFromApp,
   getTokenFromAppByBridge,
 } from '../common/utils/authUtils';
 
@@ -27,10 +27,8 @@ apiClient.interceptors.request.use(
     // 앱 -> 웹 토큰으로 통일
     // mock token 제거 했습니다 -> 테스트 시 필요하면 마지막 || 뒤에 넣어서 사
     const token =
-      getTokenFromApp() ||
-      getTokenFromAppByBridge() ||
-      getCookie('access_token') ||
-      '';
+      // getTokenFromApp()
+      getTokenFromAppByBridge() || getCookie('access_token') || '';
     const deviceToken = getCookie('deviceToken') || '';
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;

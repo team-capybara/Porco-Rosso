@@ -23,18 +23,22 @@ const apiClient = axios.create({
 
 // 요청 인터셉터 설정
 apiClient.interceptors.request.use(
-  (config) => {
-    // 앱 -> 웹 토큰으로 통일
-    // mock token 제거 했습니다 -> 테스트 시 필요하면 마지막 || 뒤에 넣어서 사
-    const token =
-      // getTokenFromApp()
-      getTokenFromAppByBridge() || getCookie('access_token') || '';
-    const deviceToken = getCookie('deviceToken') || '';
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    if (deviceToken) {
-      config.headers['Device-Token'] = deviceToken;
+  async (config) => {
+    try {
+      // 앱 -> 웹 토큰으로 통일
+      // mock token 제거 했습니다 -> 테스트 시 필요하면 마지막 || 뒤에 넣어서 사
+      const token =
+        (await getTokenFromAppByBridge()) || getCookie('access_token') || '';
+      const deviceToken = getCookie('deviceToken') || '';
+
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+      if (deviceToken) {
+        config.headers['Device-Token'] = deviceToken;
+      }
+    } catch (error) {
+      console.error('Error fetching token:', error);
     }
     return config;
   },

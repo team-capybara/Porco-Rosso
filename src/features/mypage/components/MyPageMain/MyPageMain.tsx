@@ -94,7 +94,6 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
           <div className={cn('version')}>
             버전정보<span className={cn('number')}>{appVersion}</span>
           </div>
-          <div className={cn('text')}>강남구 근처</div>
         </div>
       </div>
       <div className={cn('account_area')}>

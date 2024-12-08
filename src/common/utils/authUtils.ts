@@ -70,19 +70,52 @@ const getTokenFromApp = () => {
   return null;
 };
 
-const getTokenFromAppByBridge = () => {
-  window.kmpJsBridge?.callNative('getAccessToken', '', function (data: string) {
-    // 브릿징은 string 형태 외에 주고 받을 수 없음
-    const parsedData = JSON.parse(data);
-    console.log(parsedData, 'parsedData from access token app');
-    if (parsedData) {
-      console.log(parsedData.accessToken, 'parsedData.accessToken');
-      return parsedData.accessToken;
-    } else {
-      return null;
+const parsingToken = (): Promise<string | null> => {
+  return new Promise<string | null>((resolve, reject) => {
+    if (!window.kmpJsBridge) {
+      reject('kmpJsBridge not available');
+      return;
     }
+    window.kmpJsBridge.callNative(
+      'getAccessToken',
+      '',
+      function (data: string) {
+        try {
+          const parsedData = JSON.parse(data);
+          console.log(parsedData, 'parsedData from access token app');
+          if (parsedData && parsedData.accessToken) {
+            resolve(parsedData.accessToken);
+          } else {
+            resolve(null);
+          }
+        } catch (error) {
+          reject(error);
+        }
+      }
+    );
   });
-  return null;
+};
+
+const getTokenFromAppByBridge = (): Promise<string | null> => {
+  const maxRetries = 5; // 최대 재시도 횟수
+  const retryDelay = 500; // 재시도 간격 (ms)
+
+  let retries = 0;
+
+  return new Promise<string | null>((resolve, reject) => {
+    const tryGetToken = () => {
+      if (window.kmpJsBridge) {
+        parsingToken().then(resolve).catch(reject);
+      } else if (retries < maxRetries) {
+        retries++;
+        setTimeout(tryGetToken, retryDelay);
+      } else {
+        reject('Failed to get token: kmpJsBridge not initialized');
+      }
+    };
+
+    tryGetToken();
+  });
 };
 
 export {

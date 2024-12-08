@@ -10,6 +10,7 @@ import PhotoCard from '../PhotoList/PhotoCard/PhotoCard';
 import { useMoimePhotoQuery } from '../../utils/useMoimePhotoQuery';
 import { useGatheringInfoQuery } from '../../../../api/service/gatheringApi';
 import { getDateFromDatetime } from '../../../../common/utils/dateUtils';
+import useUpdatePhotoLikes from '../../utils/useUpdatePhotoLikes';
 // import { useLocation, useNavigate } from 'react-router-dom';
 const cn = classnames.bind(styles);
 
@@ -26,17 +27,17 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
     photoId: -1,
   });
 
+  // 좋아요 수 변경 후 리프레쉬를 위해
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
+
   // moimeId = '1'
   const { data, photoLikeUpdate } = useMoimePhotoQuery(moimId, null); // 초기 cursorId = null;
+  const { updatePhotoLikes } = useUpdatePhotoLikes(moimId);
   const { data: moimData } = useGatheringInfoQuery(moimId);
 
-  useEffect(() => {
-    // 쿼리스트링이 변경될 때마다 실행됨
-    console.log('Query string changed:', location.search);
-
+  function updateSelectedPhoto() {
     const searchParams = new URLSearchParams(location.search);
     const selectedPhotoId = searchParams.get('selectedPhotoId');
-
     if (selectedPhotoId !== null && selectedPhotoId !== '-1') {
       if (data !== undefined) {
         data.pages.forEach((page, pageNum: number) => {
@@ -51,16 +52,32 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
                 liked: photo.liked,
                 likeButtonEnabled: true,
                 pageNum: pageNum,
-                photoLikeUpdateHandler: photoLikeUpdate,
               });
             }
           });
         });
       }
     }
+  }
 
+  async function updatePhotoLikesHandler(pageNum: number) {
+    await updatePhotoLikes(pageNum);
+    setIsRefresh(true);
+  }
+
+  useEffect(() => {
+    // 쿼리스트링이 변경될 때마다 실행됨
+    console.log('Query string changed:', location.search);
+    updateSelectedPhoto();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]); // location.search를 의존성으로 설정
+
+  useEffect(() => {
+    if (!isRefresh) return;
+    updateSelectedPhoto();
+    setIsRefresh(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRefresh]);
 
   return (
     <>
@@ -81,7 +98,12 @@ const RenderPhotoDetail = (props: RenderPhotoDetailProps) => {
         />
       </div>
       <div className={cn('wrap_photo_card')}>
-        <PhotoCard {...selectedPhoto} key="selected-photo" />
+        <PhotoCard
+          {...selectedPhoto}
+          photoLikeUpdateHandler={photoLikeUpdate}
+          updatePhotoLikes={updatePhotoLikesHandler}
+          key="selected-photo"
+        />
       </div>
       <div className={cn('wrap_scroll_photo_list')}>
         <ScrollPhotoList

@@ -20,15 +20,34 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
   const [appVersion, setAppVersion] = useState<string>('');
 
   useEffect(() => {
-    window.kmpJsBridge?.callNative(
-      'onGetAppVersion',
-      '',
-      function (data: string) {
-        // 브릿징은 string 형태 외에 주고 받을 수 없음
-        const parsedData = JSON.parse(data);
-        setAppVersion(parsedData.version);
-      }
-    );
+    function waitForBridge(callback: { (): void; (): void }, maxChecks = 30) {
+      let attempts = 0;
+
+      const interval = setInterval(() => {
+        attempts++;
+
+        if (window.kmpJsBridge !== undefined) {
+          clearInterval(interval);
+          callback();
+        } else if (attempts >= maxChecks) {
+          clearInterval(interval);
+          console.warn('Bridge connection attempts exceeded the limit.');
+        }
+      }, 100); // 100ms 간격
+
+      return () => clearInterval(interval); // 컴포넌트 언마운트 시 클린업
+    }
+
+    waitForBridge(() => {
+      window.kmpJsBridge?.callNative(
+        'onGetAppVersion',
+        '',
+        function (data: string) {
+          const parsedData = JSON.parse(data);
+          setAppVersion(parsedData.version);
+        }
+      );
+    });
   }, []);
 
   const renderItem = ({ text, url, handleClick }: ItemProps) => {

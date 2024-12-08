@@ -66,9 +66,11 @@ const NotificationPage = () => {
 
   const renderItem = (notification: MoimeNotification) => {
     let isWarning = false;
+
     if (
-      notification.type in
-      ['MOIM_FAILED', 'MOIM_FINISHED', 'MOIM_OWNER_ASSIGNED']
+      ['MOIM_FAILED', 'MOIM_FINISHED', 'MOIM_OWNER_ASSIGNED'].includes(
+        notification.type
+      )
     ) {
       isWarning = true;
     }

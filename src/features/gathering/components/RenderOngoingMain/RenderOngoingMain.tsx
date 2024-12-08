@@ -20,6 +20,7 @@ import { getUserInfoId } from '../../../../common/utils/userInfo';
 import { onPopBridge } from '../../../../bridge/gatheringBridge';
 import InviteFriends from '../InviteFriend/InviteFriends';
 import { useNavigate } from 'react-router-dom';
+import ScrollSelectedPhotoList from '../PhotoList/ScrollSelectedPhotoList';
 
 const cn = classnames.bind(styles);
 
@@ -76,7 +77,6 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
 
   useEffect(() => {
     checkMoimOngoingStatus();
-    console.log('다시불러오기');
     setGatheringInfoDataFunc();
     setUserIdFromCookie();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,7 +119,6 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                       ? true
                       : false
                   }
-                  // hasShareButton={moimStatus === 'COMPLETED' ? true : false}
                   onClickRefreshButton={() => {
                     checkMoimOngoingStatus();
                     setGatheringInfoDataFunc();
@@ -143,16 +142,25 @@ const RenderOngoingMain = (props: RenderOngoingMainProps) => {
                   onClickAddButton={handleInviteFriendLayer}
                 />
               </section>
-              <section className={cn('section')}>
-                <ScrollPhotoList
-                  moimeId={String(moimId)}
-                  hiddenTitle={false}
-                  isMiniPhotoCard={false}
-                  isJustImg={false}
-                  arrowButtonClickHandler={arrowButtonClickHandler}
-                  isRefresh={isRefresh}
-                />
-              </section>
+              {moimStatus !== 'COMPLETED' ? (
+                <section className={cn('section')}>
+                  <ScrollPhotoList
+                    moimeId={String(moimId)}
+                    hiddenTitle={false}
+                    isMiniPhotoCard={false}
+                    isJustImg={false}
+                    arrowButtonClickHandler={arrowButtonClickHandler}
+                    isRefresh={isRefresh}
+                  />
+                </section>
+              ) : (
+                <section className={cn('section')}>
+                  <ScrollSelectedPhotoList
+                    moimeId={String(moimId)}
+                    arrowButtonClickHandler={arrowButtonClickHandler}
+                  />
+                </section>
+              )}
               <section className={cn('section')}>
                 <RouteMap
                   locationSummary={gatheringInfoData?.location}

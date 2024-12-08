@@ -108,10 +108,6 @@ const ScrollPhotoList = ({
                 if (arrowButtonClickHandler === undefined) return;
                 arrowButtonClickHandler(e);
               }}
-              // onClick={() => {
-              //   if (setRenderComponent === undefined) return;
-              //   setRenderComponent!('PhotoList');
-              // }}
             >
               <ArrowLeft24X24 className={cn('arrow_icon')} />
               <span className={cn('blind')}>더보기</span>

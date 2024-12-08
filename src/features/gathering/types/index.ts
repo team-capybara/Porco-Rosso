@@ -47,6 +47,7 @@ export interface PhotoCardProps {
     newLikedState: boolean,
     pageIndex: number
   ) => void;
+  updatePhotoLikes?: (pageNum: number) => void;
 }
 
 export interface SelectedPhotoCardProps {

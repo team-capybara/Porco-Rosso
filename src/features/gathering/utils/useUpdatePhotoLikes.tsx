@@ -25,6 +25,7 @@ const useUpdatePhotoLikes = (moimeId: string) => {
         moimeId,
         photoIds
       );
+
       const updatedLikes = response.data.reduce(
         (acc: Record<number, number>, photo: LikesForPhoto) => {
           acc[photo.photoId] = photo.likes;
@@ -39,7 +40,10 @@ const useUpdatePhotoLikes = (moimeId: string) => {
           ...page,
           data: page.data.map((photo: Photo) => ({
             ...photo,
-            likes: updatedLikes[photo.photoId] || photo.likes,
+            likes:
+              updatedLikes[photo.photoId] != null
+                ? updatedLikes[photo.photoId]
+                : photo.likes,
           })),
         };
 

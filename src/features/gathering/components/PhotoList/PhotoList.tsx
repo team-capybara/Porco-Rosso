@@ -107,6 +107,7 @@ const PhotoList = ({ moimeId }: PhotoListProps) => {
   const setSelectedPhotoId = (selectedPhotoId: string) => {
     const searchParams = new URLSearchParams(location.search);
     searchParams.set('selectedPhotoId', selectedPhotoId);
+    searchParams.set('timestamp', `${Date.now()}`);
     navigate(`${location.pathname}?${searchParams.toString()}`, {
       replace: true,
     });

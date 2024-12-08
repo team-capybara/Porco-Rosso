@@ -31,6 +31,7 @@ const PhotoCard = memo(
     isJustImg = false,
     pageNum,
     photoLikeUpdateHandler = () => {},
+    updatePhotoLikes = () => {},
   }: PhotoCardProps) => {
     const [isLiked, setLiked] = useState(liked);
     const [likeCount, setLikeCount] = useState(likes);
@@ -45,7 +46,9 @@ const PhotoCard = memo(
         await updatePhotoLike(moimId, photoId, isLiked);
         if (pageNum !== undefined) {
           photoLikeUpdateHandler(photoId, !isLiked, pageNum);
+          updatePhotoLikes(pageNum);
         }
+
         setLiked(!isLiked);
         setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
       } catch (error) {

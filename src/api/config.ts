@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   getCookie,
-  // getTokenFromApp,
+  getTokenFromApp,
   getTokenFromAppByBridge,
 } from '../common/utils/authUtils';
 
@@ -25,10 +25,15 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     try {
-      // 앱 -> 웹 토큰으로 통일
-      // mock token 제거 했습니다 -> 테스트 시 필요하면 마지막 || 뒤에 넣어서 사
+      // 앱 -> 웹 토큰 브라우저 저장소에서 가져옴 (android 작동, ios 미작동) ||
+      // 앱 -> 웹 토큰 브릿지로 가져움 (ios를 위한 방어 로직) ||
+      // 앱 오류 시 로그인 시 받은 웹 토큰 사용 ||
+      // mock token 제거 했습니다 -> 테스트 시 필요하면 마지막 || 뒤에 넣어서 사용
       const token =
-        (await getTokenFromAppByBridge()) || getCookie('access_token') || '';
+        getTokenFromApp() ||
+        (await getTokenFromAppByBridge()) ||
+        getCookie('access_token') ||
+        '';
       const deviceToken = getCookie('deviceToken') || '';
 
       if (token) {

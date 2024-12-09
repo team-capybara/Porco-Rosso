@@ -3,7 +3,7 @@ name: Deploy to S3 and CloudFront
 on:
   push:
     branches:
-    - dev
+    - main
 
 jobs:
   build-and-deploy:
@@ -69,7 +69,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git push https://x-access-token:${GITHUB_TOKEN}@github.com/team-capybara/Porco-Rosso.git dev
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/team-capybara/Porco-Rosso.git main
 
     - name: Build project
       run: npm run build

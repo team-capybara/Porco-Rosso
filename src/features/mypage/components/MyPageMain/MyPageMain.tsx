@@ -92,22 +92,34 @@ const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
       <div className={cn('section')}>
         {renderItem({
           text: '자주 묻는 질문',
-          url: 'https://www.notion.so/ko/templates/category/landing-pages',
+          url: 'https://moime.notion.site/25b90f89bb7940b2b783b21af182aa5b',
         })}
         {renderItem({
           text: '1:1 문의',
-          url: 'https://www.notion.so/ko/templates/category/landing-pages',
+          url: 'https://docs.google.com/forms/d/e/1FAIpQLSdlOND37chlk68Ki_y2e4MBgP2E0Qou4wdbWWDMYCdZCOv5mw/viewform?usp=header',
         })}
         {renderItem({
           text: '앱 평가',
-          url: 'https://www.notion.so/ko/templates/category/landing-pages',
+          url: '#',
+          handleClick: () => {
+            alert('준비중입니다.');
+          },
         })}
       </div>
       <div className={cn('section')}>
         {/* 아래 서비스 약관, 개인정보 처리방침, 공지사항 => 기획 및 퍼블 필요 */}
-        {renderItem({ text: '서비스 약관', url: '/' })}
-        {renderItem({ text: '개인정보 처리방침', url: '/' })}
-        {renderItem({ text: '공지사항', url: '/' })}
+        {renderItem({
+          text: '서비스 약관',
+          url: 'https://moime.notion.site/cacf52a3c35c4e5a9f25916581645f13',
+        })}
+        {renderItem({
+          text: '개인정보 처리방침',
+          url: 'https://moime.notion.site/fb9d3d1bfae14894ad776175bebadd97',
+        })}
+        {renderItem({
+          text: '공지사항',
+          url: 'https://moime.notion.site/20ba5534c347455bae6456adedf78b1d',
+        })}
         {/* 버전정보 브릿지 및 위치정보? 기획필요 */}
         <div className={cn('version_area')}>
           <div className={cn('version')}>

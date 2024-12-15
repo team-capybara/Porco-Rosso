@@ -38,7 +38,16 @@ const ScrollSelectedPhotoList = ({
     <div className={cn('scroll_photo_list')}>
       <div className={cn('title_area')}>
         <div className={cn('main_title')}>
-          <strong className={cn('title')}>순간 모음</strong>
+          <button
+            type="button"
+            className={cn('title')}
+            onClick={(e) => {
+              if (arrowButtonClickHandler === undefined) return;
+              arrowButtonClickHandler(e);
+            }}
+          >
+            순간 모음
+          </button>
           <button
             type="button"
             className={cn('button')}

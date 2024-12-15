@@ -13,7 +13,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: 'us-east-1'  # AWS 리전으로 수정
-      S3_BUCKET: 'dev-s3-capybara'  # S3 버킷 이름으로 수정
+      S3_BUCKET: 'prod-s3-capybara'  # S3 버킷 이름으로 수정
       CLOUDFRONT_DISTRIBUTION_ID: 'E37SR1MTEBWHJE'  # CloudFront 배포 ID로 수정
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

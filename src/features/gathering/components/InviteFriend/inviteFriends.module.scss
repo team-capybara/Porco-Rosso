@@ -1,0 +1,19 @@
+.invite_friends {
+  .wrap_participant_list {
+    margin-top: 37px;
+  }
+  .wrap_friend_search_input {
+    margin: 20px 16px 0;
+    .title {
+      @include font-type('16-22', 600);
+      display: block;
+      margin-bottom: 12px;
+      color: $gray-50;
+    }
+    .count {
+      @include font-type('14-20', 500);
+      margin: 1px 0 0 4px;
+      color: $gray-400;
+    }
+  }
+}

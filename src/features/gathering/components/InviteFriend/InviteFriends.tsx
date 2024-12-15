@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import BackNavigation from '../../../auth/components/signup/BackNavigation';
 import classnames from 'classnames/bind';
-import styles from '../../createGathering.module.scss';
+import styles from './inviteFriends.module.scss';
 import GatheringTitle from '../GatheringTitle/GatheringTitle';
 import ParticipantList from '../ParticipantList/ParticipantList';
 import FriendSearchInput from './FriendSearchInput';
@@ -224,7 +224,7 @@ const InviteFriends = ({
   });
 
   return (
-    <div>
+    <div className={cn('invite_friends')}>
       <BackNavigation
         classNameForIconType="close_type"
         hasNext={false}
@@ -259,22 +259,20 @@ const InviteFriends = ({
         </strong>
         <FriendSearchInput onChange={handleSearchChange} />
       </div>
-      <div className={cn('friend_search_list')}>
-        <FriendSearchList
-          friends={friendsData || []}
-          selectedFriends={selectedFriends}
-          onFriendSelect={handleFriendSelect}
-          moimStart={moimStart}
-          participantData={participantData}
-          moimStatus={moimStatus}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          isLoading={isLoading}
-          isFetching={isFetching}
-          isError={isError}
-        />
-      </div>
+      <FriendSearchList
+        friends={friendsData || []}
+        selectedFriends={selectedFriends}
+        onFriendSelect={handleFriendSelect}
+        moimStart={moimStart}
+        participantData={participantData}
+        moimStatus={moimStatus}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        isError={isError}
+      />
     </div>
   );
 };

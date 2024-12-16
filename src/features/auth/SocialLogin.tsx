@@ -10,7 +10,7 @@ const SocialLogin = () => {
   return (
     <div className={cn('social_login')}>
       <h1 className={cn('title')}>
-        소셜 기록은 간편하게,
+        샌드박스 소셜 기록은 간편하게,
         <br />
         인사이트는 풍부하게
         <span className={cn('logo')}>

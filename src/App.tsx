@@ -18,7 +18,7 @@ function App() {
           buttonPosition="top-right"
           position="left"
         />
-        <Router>
+        <Router basename="/dev">
           <AppRoutes />
         </Router>
       </QueryClientProvider>

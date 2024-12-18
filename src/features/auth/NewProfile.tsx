@@ -9,6 +9,7 @@ import { UserProfile } from './types/index';
 import StepThree from './components/signup/StepThree';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getCookie } from '../../common/utils/authUtils';
+import CircularProgress from '../../common/components/CircularProgress/CircularProgress';
 
 const cn = classnames.bind(styles);
 
@@ -32,8 +33,8 @@ const NewProfile = () => {
   }, [location, navigate]);
 
   const {
-    // isLoading,
-    // isFetching,
+    isLoading,
+    isFetching,
     data: userData,
     // isError,
     // error,
@@ -86,7 +87,9 @@ const NewProfile = () => {
             )}
           </>
         ) : (
-          <div>No user data available</div>
+          (isLoading || isFetching) && (
+            <CircularProgress size={40} thickness={4} color="#00e86b" />
+          )
         )}
       </div>
     </div>

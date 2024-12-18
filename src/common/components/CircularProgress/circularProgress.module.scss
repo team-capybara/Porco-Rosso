@@ -1,0 +1,46 @@
+.circular-progress {
+  position: absolute;
+  top: 45%;
+  left: 45%;
+  animation: rotate 1.4s linear infinite;
+
+  &__svg {
+    transform-origin: center;
+  }
+
+  &__bg {
+    fill: none;
+  }
+
+  &__bar {
+    stroke-linecap: round;
+    fill: none;
+    animation: dash 1.4s ease-in-out infinite;
+    stroke-dasharray: 80, 200; // 고정된 길이
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 80, 200; // 처음 길이 (일부만 보임)
+    stroke-dashoffset: 0; // 시작점
+  }
+  50% {
+    stroke-dasharray: 150, 200; // 최대 길이
+    stroke-dashoffset: -40; // 이동된 위치
+  }
+  100% {
+    stroke-dasharray: 80, 200; // 다시 원래 길이로 돌아감
+    stroke-dashoffset: -120; // 완전히 이동
+  }
+}

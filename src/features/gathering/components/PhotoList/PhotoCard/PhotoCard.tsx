@@ -67,10 +67,19 @@ const PhotoCard = memo(
       <div className={cn('photo_card')}>
         <div
           className={cn('thumbnail')}
-          onClick={() => {
+          onClick={(e) => {
             if (onClickHandler === undefined) return;
-            onClickHandler(String(photoId));
+            setTimeout(() => {
+              if (e.detail === 1) {
+                // 싱글클릭일때만
+                onClickHandler(String(photoId));
+              }
+            }, 200);
           }}
+          onDoubleClick={() => {
+            if (!likeButtonEnabled) return;
+            toggleLike();
+          }} // 더블클릭
           aria-hidden="true"
         >
           <img src={photoUrl} alt="/" className={cn('image')} />
@@ -79,7 +88,10 @@ const PhotoCard = memo(
         {!isJustImg && (
           <button
             type="button"
-            onClick={toggleLike}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleLike();
+            }}
             className={cn('like_button', { active: isLiked })}
             disabled={!likeButtonEnabled}
           >

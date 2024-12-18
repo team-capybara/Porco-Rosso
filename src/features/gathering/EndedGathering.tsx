@@ -47,6 +47,7 @@ const EndedGathering = () => {
   const remainTime = useRef<number>(600);
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
+  const [timeStr, setTimeStr] = useState<string>('');
   const [finish, setFinish] = useState<boolean>(false);
 
   // 모임 상세 정보 가져오기
@@ -117,6 +118,13 @@ const EndedGathering = () => {
     return () => clearInterval(timer);
   });
 
+  useEffect(() => {
+    if (min === 0 && sec === 0) return;
+
+    const nextStr = `00 : ${String(min).padStart(2, '0')} : ${sec}`;
+    setTimeStr(nextStr);
+  }, [min, sec]);
+
   return (
     moimId >= 0 && (
       <>
@@ -145,7 +153,7 @@ const EndedGathering = () => {
                 </button>
               ) : (
                 <button type="button" className={cn('button')} disabled={true}>
-                  00 : {String(min).padStart(2, '0')} : {sec}
+                  {timeStr}
                 </button>
               )}
             </div>

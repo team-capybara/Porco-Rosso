@@ -24,6 +24,7 @@ import ModalContents from '../../common/components/Modal/ModalContents';
 import { getMoimStatus } from '../../api/service/gatheringApi';
 import { useNavigate } from 'react-router-dom';
 import { CustomError } from '../error/types';
+import CircularProgress from '../../common/components/CircularProgress/CircularProgress';
 
 const cn = classnames.bind(styles);
 
@@ -137,9 +138,27 @@ const UpcomingGathering = () => {
   }, [remainingTime]);
 
   // 모임 상세 정보 가져오기
+  // const setGatheringInfoDataFunc = async () => {
+  //   const response: IGatheringInfo = await getGatheringInfo(moimId);
+  //   setGatheringInfoData(response);
+  // };
+
   const setGatheringInfoDataFunc = async () => {
-    const response: IGatheringInfo = await getGatheringInfo(moimId);
-    setGatheringInfoData(response);
+    try {
+      const response: IGatheringInfo = await getGatheringInfo(moimId);
+      setGatheringInfoData(response); // 정상적으로 데이터를 설정
+    } catch (error) {
+      console.error('Error fetching gathering info:', error);
+      // 적절한 오류 처리
+      setModal({
+        title: '데이터를 불러오는 중 문제가 발생했습니다.',
+        description: '다시 시도해 주세요.',
+        firstButton: '확인',
+        onClickFirstButton: () => {
+          setModal(null); // 모달 닫기
+        },
+      });
+    }
   };
 
   // 사용자 id 셋팅
@@ -335,7 +354,7 @@ const UpcomingGathering = () => {
           )}
         </div>
       ) : (
-        <>데이터 불러오는데에 문제가 발생했습니다.</>
+        <CircularProgress size={40} thickness={4} color="#00e86b" />
       )}
       {modal && (
         <Modal>

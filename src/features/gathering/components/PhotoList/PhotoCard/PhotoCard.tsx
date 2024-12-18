@@ -36,6 +36,7 @@ const PhotoCard = memo(
     const [isLiked, setLiked] = useState(liked);
     const [likeCount, setLikeCount] = useState(likes);
     const likeLoading = useRef<boolean>(false); // 요청 상태 관리
+    let clickTimer: null | number = null;
 
     const toggleLike = async () => {
       if (!likeButtonEnabled || likeLoading.current || moimId === undefined)
@@ -67,17 +68,24 @@ const PhotoCard = memo(
       <div className={cn('photo_card')}>
         <div
           className={cn('thumbnail')}
-          onClick={(e) => {
+          onClick={() => {
             if (onClickHandler === undefined) return;
-            setTimeout(() => {
-              if (e.detail === 1) {
+            if (likeButtonEnabled) {
+              if (clickTimer) return;
+              clickTimer = setTimeout(() => {
                 // 싱글클릭일때만
                 onClickHandler(String(photoId));
-              }
-            }, 200);
+              }, 400);
+            } else {
+              onClickHandler(String(photoId));
+            }
           }}
           onDoubleClick={() => {
             if (!likeButtonEnabled) return;
+            if (clickTimer) {
+              clearTimeout(clickTimer);
+              clickTimer = null;
+            }
             toggleLike();
           }} // 더블클릭
           aria-hidden="true"

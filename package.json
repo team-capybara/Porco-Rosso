@@ -1,7 +1,7 @@
 {
   "name": "porco-rosso",
   "private": true,
-  "version": "1.1.26",
+  "version": "1.1.27",
   "type": "module",
   "husky": {
     "hooks": {

@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './shareModal.module.scss';
 import html2canvas from 'html2canvas';
-import moimeImg from '../../../assets/png/text_moime.png';
+import moimeImg from '../../../assets/png/text_moime_raw.png';
 
 const cn = classnames.bind(styles);
 
@@ -17,7 +17,7 @@ const ShareModal = ({ children, setModalShow }: Props) => {
   const handleDownloadImage = async () => {
     const element = screenshotRef.current;
     const canvas = await html2canvas(element as unknown as HTMLElement, {
-      scale: 2, // 화질 개선
+      scale: 4, // 화질 개선
       backgroundColor: 'none',
       logging: true,
       useCORS: true, //to enable cross origin perms

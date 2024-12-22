@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useRef } from 'react';
 import classnames from 'classnames/bind';
 import styles from './shareModal.module.scss';
 import html2canvas from 'html2canvas';
+import moimeImg from '../../../assets/png/text_moime.png';
 
 const cn = classnames.bind(styles);
 
@@ -42,9 +43,10 @@ const ShareModal = ({ children, setModalShow }: Props) => {
     } else {
       // 로컬 테스트용
       const link = document.createElement('a');
+      const localData = canvas.toDataURL('image/jpeg');
 
       if (typeof link.download === 'string') {
-        link.href = data;
+        link.href = localData;
         console.log('');
         link.download = 'image.jpg';
 
@@ -52,7 +54,7 @@ const ShareModal = ({ children, setModalShow }: Props) => {
         link.click();
         document.body.removeChild(link);
       } else {
-        window.open(data);
+        window.open(localData);
       }
       setModalShow(false);
     }
@@ -68,10 +70,17 @@ const ShareModal = ({ children, setModalShow }: Props) => {
 
   return (
     <div className={cn('share_modal')}>
-      <div className={cn('inner')} ref={screenshotRef}>
-        {children}
-        <div className={cn('moime')}>
-          <span className={cn('blind')}>MOIME</span>
+      <div className={cn('inner')}>
+        <div className={cn('capture_area')} ref={screenshotRef}>
+          {children}
+          <div className={cn('moime')}>
+            <img
+              className={cn('moime_text_img')}
+              src={moimeImg}
+              alt="모이미 로고"
+            ></img>
+            <span className={cn('blind')}>MOIME</span>
+          </div>
         </div>
       </div>
     </div>

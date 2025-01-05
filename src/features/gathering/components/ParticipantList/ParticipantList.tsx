@@ -5,6 +5,7 @@ import IconCrown14X11 from '../../../../assets/svg/icon/IconCrown14X11';
 import HorizontalScrollWrapper from '../../../../common/components/HorizontalScrollWrapper/HorizontalScrollWrapper';
 import { IParticipants } from '../../types';
 import IconX12X12 from '../../../../assets/svg/icon/IconX12X12';
+import { getUserInfoId } from '../../../../common/utils/userInfo';
 
 const cn = classnames.bind(styles);
 
@@ -74,7 +75,19 @@ const ParticipantList = (props: Props) => {
           {props.owner && (
             <li key={props.owner.userId} className={cn('item')}>
               {/* todo: 버튼 클릭시, 유저 프로필 모달 노출됩니다.(작업 전) */}
-              <button type="button" className={cn('button')}>
+              <button
+                type="button"
+                className={cn('button')}
+                onClick={async () => {
+                  const myId = await getUserInfoId();
+                  if (myId === props.owner!.userId) return; // 본인의 경우 return;
+
+                  window.kmpJsBridge?.callNative(
+                    'onNavigateToFriendDetail',
+                    JSON.stringify({ friendId: props.owner!.userId })
+                  );
+                }}
+              >
                 <div className={cn('thumbnail_area')}>
                   <div className={cn('thumbnail')}>
                     <img
@@ -101,7 +114,10 @@ const ParticipantList = (props: Props) => {
                 <button
                   type="button"
                   className={cn('button')}
-                  onClick={() => {
+                  onClick={async () => {
+                    const myId = await getUserInfoId();
+                    if (myId === data.userId) return; // 본인의 경우 return;
+
                     window.kmpJsBridge?.callNative(
                       'onNavigateToFriendDetail',
                       JSON.stringify({ friendId: data.userId })

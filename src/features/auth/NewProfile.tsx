@@ -9,7 +9,7 @@ import { UserProfile } from './types/index';
 import StepThree from './components/signup/StepThree';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getCookie } from '../../common/utils/authUtils';
-import CircularProgress from '../../common/components/CircularProgress/CircularProgress';
+// import CircularProgress from '../../common/components/CircularProgress/CircularProgress';
 
 const cn = classnames.bind(styles);
 
@@ -30,6 +30,17 @@ const NewProfile = () => {
       // 다시 로그인으로
       // navigate('/login', { state: { from: location } });
     }
+    // 수동 요청 실행
+    const fetchUserInfoManually = async () => {
+      try {
+        const response = await getUserInfo();
+        console.log(response, 'response 수동 요청');
+      } catch (error) {
+        console.log(error, 'error');
+      }
+    };
+
+    fetchUserInfoManually(); // 컴포넌트 마운트 시 실행
   }, [location, navigate]);
 
   const {
@@ -87,9 +98,14 @@ const NewProfile = () => {
             )}
           </>
         ) : (
-          (isLoading || isFetching) && (
-            <CircularProgress size={40} thickness={4} color="#00e86b" />
-          )
+          <>
+            <>유저데이터 못불러옴</>
+            {isLoading && <>isLoading트루</>}
+            {isFetching && <>isFetching트루</>}
+          </>
+          // (isLoading || isFetching) && (
+          //   <CircularProgress size={40} thickness={4} color="#00e86b" />
+          // )
         )}
       </div>
     </div>

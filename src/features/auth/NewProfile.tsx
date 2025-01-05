@@ -22,6 +22,7 @@ const NewProfile = () => {
   const location = useLocation();
 
   useEffect(() => {
+    console.log('왜 요청이 안가지');
     // new bie 랜딩
     const accessToken = getCookie('access_token');
 
@@ -32,6 +33,7 @@ const NewProfile = () => {
     }
     // 수동 요청 실행
     const fetchUserInfoManually = async () => {
+      console.log('뭐지?');
       try {
         const response = await getUserInfo();
         console.log(response, 'response 수동 요청');

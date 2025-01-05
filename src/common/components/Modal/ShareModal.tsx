@@ -3,6 +3,7 @@ import classnames from 'classnames/bind';
 import styles from './shareModal.module.scss';
 import html2canvas from 'html2canvas';
 import moimeImg from '../../../assets/png/text_moime_raw.png';
+import ellipseImg from '../../../assets/png/map_ellipse_img.png';
 import { fetchConvertImgToBase64 } from '../../../api/service/photoApi';
 
 const cn = classnames.bind(styles);
@@ -31,7 +32,7 @@ const ShareModal = ({ children, setModalShow }: Props) => {
 
       // 새로운 img 생성
       const img = document.createElement('img');
-      img.src = '/src/assets/png/map_ellipse_img.png';
+      img.src = ellipseImg;
       img.className = `ellipse-img-${idx}`;
       img.alt = 'map ellipse Image';
 

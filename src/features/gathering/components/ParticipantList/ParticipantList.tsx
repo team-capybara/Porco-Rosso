@@ -80,7 +80,7 @@ const ParticipantList = (props: Props) => {
                 className={cn('button')}
                 onClick={async () => {
                   const myId = await getUserInfoId();
-                  if (myId === props.owner!.userId) return; // 본인의 경우 return;
+                  if (Number(myId) === props.owner!.userId) return; // 본인의 경우 return;
 
                   window.kmpJsBridge?.callNative(
                     'onNavigateToFriendDetail',
@@ -116,7 +116,7 @@ const ParticipantList = (props: Props) => {
                   className={cn('button')}
                   onClick={async () => {
                     const myId = await getUserInfoId();
-                    if (myId === data.userId) return; // 본인의 경우 return;
+                    if (Number(myId) === data.userId) return; // 본인의 경우 return;
 
                     window.kmpJsBridge?.callNative(
                       'onNavigateToFriendDetail',

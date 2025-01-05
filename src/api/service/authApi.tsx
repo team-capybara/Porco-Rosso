@@ -2,7 +2,7 @@ import apiClient from '../config';
 // import axios from 'axios';
 // import MockAdapter from 'axios-mock-adapter';
 import { UpdateProfile } from '../../features/auth/types';
-import { deleteCookie } from '../../common/utils/authUtils';
+import { deleteCookie, getCookie } from '../../common/utils/authUtils';
 
 // const mock: MockAdapter = new MockAdapter(axios, { delayResponse: 800 });
 
@@ -18,7 +18,27 @@ import { deleteCookie } from '../../common/utils/authUtils';
 const getUserInfo = async () => {
   try {
     const response = await apiClient.get('/users/my');
-    console.log(response, '요청 자체가 가나?');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    throw error; // 에러 처리 (필요에 따라 사용)
+  }
+};
+
+const getUserFirstInfo = async () => {
+  try {
+    // 쿠키에서 액세스 토큰 가져오기
+    const accessToken = getCookie('access_token');
+    console.log(accessToken, 'accesstoken 토큰주입');
+
+    // 요청에 사용할 헤더 설정
+    const headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+
+    // apiClient로 요청 보내기 (헤더 강제 설정)
+    const response = await apiClient.get('/users/my', { headers });
+    console.log(response, '토큰강제주입');
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);
@@ -71,4 +91,10 @@ const userWithdraw = async () => {
   }
 };
 
-export { getUserInfo, updateProfile, userLogout, userWithdraw };
+export {
+  getUserInfo,
+  getUserFirstInfo,
+  updateProfile,
+  userLogout,
+  userWithdraw,
+};

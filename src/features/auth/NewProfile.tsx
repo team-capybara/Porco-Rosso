@@ -3,7 +3,11 @@ import { UpdateProfile } from './types/index';
 import classnames from 'classnames/bind';
 import styles from './newProfile.module.scss';
 import StepOne from './components/signup/StepOne';
-import { getUserInfo, updateProfile } from '../../api/service/authApi';
+import {
+  getUserInfo,
+  updateProfile,
+  getUserFirstInfo,
+} from '../../api/service/authApi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserProfile } from './types/index';
 import StepThree from './components/signup/StepThree';
@@ -53,8 +57,8 @@ const NewProfile = () => {
     // error,
     // refetch,
   } = useQuery<UserProfile>({
-    queryKey: ['userInfo'],
-    queryFn: getUserInfo,
+    queryKey: ['userFirstInfo'],
+    queryFn: getUserFirstInfo,
     select: (data) => {
       // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
       return {
@@ -68,7 +72,7 @@ const NewProfile = () => {
     mutationFn: updateProfile,
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
+      queryClient.invalidateQueries({ queryKey: ['userFirstInfo'] });
     },
   });
 

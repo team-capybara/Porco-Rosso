@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {
   getCookie,
-  getTokenFromApp,
-  getTokenFromAppByBridge,
+  // getTokenFromApp,
+  // getTokenFromAppByBridge,
 } from '../common/utils/authUtils';
 
 // api base 설정
@@ -30,10 +30,9 @@ apiClient.interceptors.request.use(
       // 앱 오류 시 로그인 시 받은 웹 토큰 사용 ||
       // mock token 제거 했습니다 -> 테스트 시 필요하면 마지막 || 뒤에 넣어서 사용
       const token =
-        getTokenFromApp() ||
-        (await getTokenFromAppByBridge()) ||
-        getCookie('access_token') ||
-        '';
+        // getTokenFromApp() ||
+        // (await getTokenFromAppByBridge()) ||
+        getCookie('access_token') || '';
       const deviceToken = getCookie('deviceToken') || '';
 
       if (token) {

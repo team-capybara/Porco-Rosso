@@ -6,14 +6,14 @@ import StepOne from './components/signup/StepOne';
 import {
   getUserInfo,
   updateProfile,
-  getUserFirstInfo,
+  // getUserFirstInfo,
 } from '../../api/service/authApi';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserProfile } from './types/index';
 import StepThree from './components/signup/StepThree';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getCookie } from '../../common/utils/authUtils';
-// import CircularProgress from '../../common/components/CircularProgress/CircularProgress';
+import CircularProgress from '../../common/components/CircularProgress/CircularProgress';
 
 const cn = classnames.bind(styles);
 
@@ -26,7 +26,6 @@ const NewProfile = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log('왜 요청이 안가지');
     // new bie 랜딩
     const accessToken = getCookie('access_token');
 
@@ -35,18 +34,6 @@ const NewProfile = () => {
       // 다시 로그인으로
       // navigate('/login', { state: { from: location } });
     }
-    // 수동 요청 실행
-    const fetchUserInfoManually = async () => {
-      console.log('뭐지?');
-      try {
-        const response = await getUserInfo();
-        console.log(response, 'response 수동 요청');
-      } catch (error) {
-        console.log(error, 'error');
-      }
-    };
-
-    fetchUserInfoManually(); // 컴포넌트 마운트 시 실행
   }, [location, navigate]);
 
   const {
@@ -57,8 +44,8 @@ const NewProfile = () => {
     // error,
     // refetch,
   } = useQuery<UserProfile>({
-    queryKey: ['userFirstInfo'],
-    queryFn: getUserFirstInfo,
+    queryKey: ['userInfo'],
+    queryFn: getUserInfo,
     select: (data) => {
       // 프로필 URL 뒤에 타임스탬프를 추가하여 유니크하게 만듦
       return {
@@ -72,7 +59,7 @@ const NewProfile = () => {
     mutationFn: updateProfile,
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['userFirstInfo'] });
+      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
     },
   });
 
@@ -104,14 +91,9 @@ const NewProfile = () => {
             )}
           </>
         ) : (
-          <>
-            <>유저데이터 못불러옴</>
-            {isLoading && <>isLoading트루</>}
-            {isFetching && <>isFetching트루</>}
-          </>
-          // (isLoading || isFetching) && (
-          //   <CircularProgress size={40} thickness={4} color="#00e86b" />
-          // )
+          (isLoading || isFetching) && (
+            <CircularProgress size={40} thickness={4} color="#00e86b" />
+          )
         )}
       </div>
     </div>

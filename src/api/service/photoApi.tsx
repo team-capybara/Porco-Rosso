@@ -60,3 +60,13 @@ export const fetchLikesForPhotos = async (
     throw new Error('좋아요 수를 불러오는 중 오류가 발생했습니다..');
   }
 };
+
+export const fetchConvertImgToBase64 = async (url: string): Promise<string> => {
+  try {
+    const res = await apiClient.get(`util/convert/image?url=${url}`);
+    return res.data;
+  } catch (error) {
+    console.error('Error FetchConvertImgToBase64:', error);
+    throw new Error('이미지 변환 중 오류 발생했습니다...');
+  }
+};

@@ -30,10 +30,10 @@ apiClient.interceptors.request.use(
       // 앱 오류 시 로그인 시 받은 웹 토큰 사용 ||
       // mock token 제거 했습니다 -> 테스트 시 필요하면 마지막 || 뒤에 넣어서 사용
       const token =
+        getCookie('access_token') ||
         getTokenFromApp() ||
         (await getTokenFromAppByBridge()) ||
         // 위 앱에서 토큰 가져오는 방식이, 앱을 한번도 안 거친 첫 소셜 로그인 페이지에서 유저정보를 가지고 오는 요청을 보낼 때, 에러를 일으켜서 초기 로그인 화면에서 오류를 발생시키고 있음, 위 두 함수를 수정하거나, 첫 로그인 시 요청의 경우 헤더 설정을 분기하거나 등등의 해결방법을 고민해야함
-        getCookie('access_token') ||
         '';
       const deviceToken = getCookie('deviceToken') || '';
 

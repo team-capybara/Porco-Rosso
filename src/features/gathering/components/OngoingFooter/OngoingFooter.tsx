@@ -50,13 +50,13 @@ const OngoingFooter = (props: OngoingFooterProps) => {
     secondButton: '추억 남기기',
     onClickFirstButton: () => {
       checkMoimOngoingStatus();
-      leaveMoim(moimId, false);
+      leaveMoim(moimId, true);
       onPopBridge();
       setModal(null);
     },
     onClickSecondButton: () => {
       checkMoimOngoingStatus();
-      leaveMoim(moimId, true);
+      leaveMoim(moimId, false);
       onPopBridge();
       setModal(null);
     },

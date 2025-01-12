@@ -132,12 +132,7 @@ const ShareModal = ({ children, setModalShow }: Props) => {
         <div className={cn('capture_area')} ref={screenshotRef}>
           {children}
           <div className={cn('moime')}>
-            <img
-              className={cn('moime_text_img')}
-              src={moimeImg}
-              alt="모이미 로고"
-            ></img>
-            <span className={cn('blind')}>MOIME</span>
+            <img className={cn('logo_image')} src={moimeImg} alt="MOIME"></img>
           </div>
         </div>
       </div>

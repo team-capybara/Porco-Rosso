@@ -110,7 +110,11 @@ const PhotoCard = memo(
         )}
         {!isJustImg && (
           <div className={cn('user_thumbnail')}>
-            <img src={profileUrl} alt="/" className={cn('image')} />
+            <img
+              src={`${profileUrl}?timestamp=${Date.now()}`}
+              alt="/"
+              className={cn('image')}
+            />
           </div>
         )}
       </div>

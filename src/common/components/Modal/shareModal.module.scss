@@ -11,31 +11,27 @@
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
   .inner {
+    overflow: hidden;
     position: absolute;
     right: 36px;
     left: 36px;
-    padding: 10px 3px 6px; // 기존 45px 13px 56px;
-    border-radius: 10px;
     border: 2px solid rgba(255, 255, 255, 0.3);
-    background: $gray-700;
+    border-radius: 10px;
+    background-color: $gray-700;
   }
   .capture_area {
-    padding: 35px 10px 50px; // 35 + 10: 45, 10 + 3 : 13, 50 + 6: 56
-    background: $gray-700;
+    padding: 45px 13px 56px;
+    background-color: $gray-700;
   }
   .moime {
     position: absolute;
     right: 0;
     bottom: 22px;
     left: 0;
-    height: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    // background: url('../../../assets/png/text_moime.png') no-repeat center;
-    // background-size: auto 100%;
-  }
-  .moime_text_img {
     height: 18px;
+    text-align: center;
+  }
+  .logo_image {
+    height: 100%;
   }
 }

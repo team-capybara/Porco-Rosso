@@ -4,8 +4,9 @@ import { UserProfile } from '../../../auth/types';
 import { useState } from 'react';
 import ModalContents from '../../../../common/components/Modal/ModalContents';
 import Modal from '../../../../common/components/Modal/Modal';
-import { userLogout, userWithdraw } from '../../../../api/service/authApi';
+import { userWithdraw } from '../../../../api/service/authApi';
 import { ModalContentsProps } from '../../../gathering/types';
+import { deleteCookie } from '../../../../common/utils/authUtils';
 
 const cn = classnames.bind(style);
 
@@ -39,18 +40,20 @@ const DeleteUser = ({ userProfile }: DeleteUserProps) => {
         if (current == 0) {
           clearInterval(timerId);
           setShowModal(false);
-          userLogout().then(() => {
-            window.location.href = '/login'; // to SocialLogin
-          });
+          // 쿠키 삭제 및 리다이렉트
+          deleteCookie('access_token', '.moime.app');
+          deleteCookie('Authorization', '.moime.app');
+          window.location.href = '/login';
         }
         setModal({
           title: '정상적으로 탈퇴되었어요.',
           description: '5초 뒤에 자동으로 로그인 화면으로 이동해요.',
           firstButton: '확인',
           onClickFirstButton: () => {
-            userLogout().then(() => {
-              window.location.href = '/login'; // to SocialLogin
-            });
+            // 쿠키 삭제 및 리다이렉트
+            deleteCookie('access_token', '.moime.app');
+            deleteCookie('Authorization', '.moime.app');
+            window.location.href = '/login';
           },
         });
         current--;

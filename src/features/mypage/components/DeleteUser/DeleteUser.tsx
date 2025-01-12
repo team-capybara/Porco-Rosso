@@ -6,7 +6,7 @@ import ModalContents from '../../../../common/components/Modal/ModalContents';
 import Modal from '../../../../common/components/Modal/Modal';
 import { userWithdraw } from '../../../../api/service/authApi';
 import { ModalContentsProps } from '../../../gathering/types';
-import { deleteCookie } from '../../../../common/utils/authUtils';
+// import { deleteCookie } from '../../../../common/utils/authUtils';
 
 const cn = classnames.bind(style);
 
@@ -41,8 +41,8 @@ const DeleteUser = ({ userProfile }: DeleteUserProps) => {
           clearInterval(timerId);
           setShowModal(false);
           // 쿠키 삭제 및 리다이렉트
-          deleteCookie('access_token', '.moime.app');
-          deleteCookie('Authorization', '.moime.app');
+          // deleteCookie('access_token', '.moime.app');
+          // deleteCookie('Authorization', '.moime.app');
           window.location.href = '/login';
         }
         setModal({
@@ -51,8 +51,8 @@ const DeleteUser = ({ userProfile }: DeleteUserProps) => {
           firstButton: '확인',
           onClickFirstButton: () => {
             // 쿠키 삭제 및 리다이렉트
-            deleteCookie('access_token', '.moime.app');
-            deleteCookie('Authorization', '.moime.app');
+            // deleteCookie('access_token', '.moime.app');
+            // deleteCookie('Authorization', '.moime.app');
             window.location.href = '/login';
           },
         });

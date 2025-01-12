@@ -111,7 +111,7 @@ const PhotoCard = memo(
         {!isJustImg && (
           <div className={cn('user_thumbnail')}>
             <img
-              src={`${profileUrl}?timestamp=${Date.now()}`}
+              src={`https://cdn.moime.app/${profileUrl}?timestamp=${Date.now()}`}
               alt="/"
               className={cn('image')}
             />

@@ -36,7 +36,7 @@ const StepThree = ({ nickname }: { nickname: string }) => {
             </button>
             <div className={cn('text')}>
               <a
-                href="https://www.notion.so/woogies-outer-brain/Team-Capybara-28b73095ed364ecc9ecde51660ef2a23"
+                href="https://moime.notion.site/fb9d3d1bfae14894ad776175bebadd97"
                 className={cn('link')}
               >
                 개인정보 처리방침
@@ -57,7 +57,7 @@ const StepThree = ({ nickname }: { nickname: string }) => {
             </button>
             <div className={cn('text')}>
               <a
-                href="https://www.notion.so/woogies-outer-brain/Team-Capybara-28b73095ed364ecc9ecde51660ef2a23"
+                href="https://moime.notion.site/cacf52a3c35c4e5a9f25916581645f13"
                 className={cn('link')}
               >
                 서비스 이용약관

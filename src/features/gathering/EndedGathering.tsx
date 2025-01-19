@@ -121,7 +121,7 @@ const EndedGathering = () => {
   useEffect(() => {
     if (min === 0 && sec === 0) return;
 
-    const nextStr = `00 : ${String(min).padStart(2, '0')} : ${sec}`;
+    const nextStr = `00 : ${String(min).padStart(2, '0')} : ${String(sec).padStart(2, '0')}`;
     setTimeStr(nextStr);
   }, [min, sec]);
 

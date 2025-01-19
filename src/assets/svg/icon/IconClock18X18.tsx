@@ -1,0 +1,25 @@
+import { SVGProps } from 'react';
+
+const IconClock18X18 = (props: SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      width={18}
+      height={18}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <g
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M16.5 9c0 4.14-3.36 7.5-7.5 7.5-4.14 0-7.5-3.36-7.5-7.5 0-4.14 3.36-7.5 7.5-7.5 4.14 0 7.5 3.36 7.5 7.5z" />
+        <path d="M11.783 11.385L9.458 9.997c-.405-.24-.735-.817-.735-1.29V5.632" />
+      </g>
+    </svg>
+  );
+};
+
+export default IconClock18X18;

@@ -1,0 +1,82 @@
+.share_gathering {
+  .wrap_scroll_photo_list {
+    margin-top: 21px;
+  }
+  .grid_area {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 8px 16px 40px;
+  }
+  .grid_item {
+    padding: 8px;
+    border-radius: 12px;
+    background-color: $gray-50;
+    box-sizing: border-box;
+    &:nth-child(n + 3) {
+      height: 159px;
+    }
+    &:nth-child(3) {
+      padding: 0;
+    }
+    &:nth-child(4) {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .days {
+        @include font-type('24-30');
+        color: $gray-800;
+      }
+      .date {
+        font-size: 32px;
+        line-height: 36px;
+        color: $gray-800;
+        word-break: keep-all;
+      }
+    }
+    .title {
+      @include font-type('12-20', 400);
+      display: block;
+      color: $gray-400;
+      .icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin: 2px 2px 0 0;
+        color: inherit;
+        vertical-align: top;
+      }
+    }
+    .total_time {
+      @include font-type('16-22', 600);
+      display: block;
+      margin-top: 10px;
+      color: #000;
+      .number {
+        @include font-type('24-30');
+      }
+    }
+  }
+  .inner_modal {
+    .moime_title {
+      @include ellipsis(1);
+      @include font-type('24-30');
+      color: $gray-50;
+      text-align: center;
+    }
+    .moime_date {
+      @include font-type('12-20', 600);
+      color: $gray-50;
+      text-align: center;
+    }
+    .wrap_photo_card {
+      overflow: hidden;
+      margin-top: 25px;
+      border-radius: 8px;
+    }
+    .grid_area {
+      padding: 0;
+      margin-top: 8px;
+    }
+  }
+}

@@ -1,0 +1,56 @@
+.step_three {
+  .title {
+    @include font-type('24-30');
+    margin: 50px 16px 0;
+    color: $gray-50;
+  }
+  .wrap_agree_conditions {
+    height: 122px;
+    .inner {
+      position: fixed;
+      right: 58px;
+      bottom: 122px;
+      left: 23px;
+    }
+    .button_area {
+      display: flex;
+      align-items: center;
+      & + .button_area {
+        margin-top: 12px;
+      }
+    }
+    .button {
+      position: relative;
+      flex: none;
+      &::before {
+        display: block;
+        width: 32px;
+        height: 32px;
+        margin-right: 9px;
+        border-radius: 50%;
+        background-color: $gray-500;
+        content: '';
+      }
+      &.selected::after {
+        position: absolute;
+        top: 50%;
+        right: 50%;
+        left: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: $green;
+        transform: translate3d(50%, -50%, 0);
+        content: '';
+      }
+    }
+    .text {
+      @include font-type('16-22', 500);
+      color: $gray-50;
+      word-break: keep-all;
+      .link {
+        text-decoration: underline;
+      }
+    }
+  }
+}

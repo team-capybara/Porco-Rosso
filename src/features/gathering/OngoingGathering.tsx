@@ -1,0 +1,132 @@
+import { useEffect, useState } from 'react';
+import classnames from 'classnames/bind';
+import { ModalContentsProps, ongoingType } from './types/index';
+import styles from './ongoingGathering.module.scss';
+import OngoingFooter from './components/OngoingFooter/OngoingFooter';
+import RenderOngoingMain from './components/RenderOngoingMain/RenderOngoingMain';
+import RenderPhotoList from './components/RenderPhotoList/RenderPhotoList';
+import RenderPhotoDetail from './components/RenderPhotoDetail/RenderPhotoDetail';
+import { getmoimId } from '../../common/utils/queryString';
+import Modal from '../../common/components/Modal/Modal';
+import ModalContents from '../../common/components/Modal/ModalContents';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getMoimStatus } from '../../api/service/gatheringApi';
+
+const cn = classnames.bind(styles);
+
+// 진행 중 모임 (moimStatus = Ongoing)
+const OngoingGathering = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [renderComponent, setRenderComponent] =
+    useState<ongoingType>('OngoingMain');
+  const [moimId] = useState<number>(getmoimId(useLocation()));
+  const [modal, setModal] = useState<ModalContentsProps | null>(null);
+  const [inviteFriendOpen, setInviteFriendOpen] = useState<boolean>(false);
+  const [exitBtnClicked, setExitBtnClicked] = useState<boolean>(false);
+
+  useEffect(() => {
+    // 쿼리스트링에 선택된 사진이 바뀔 때 photodetail로 변경
+    if (renderComponent === 'PhotoDetail') return;
+
+    const searchParams = new URLSearchParams(location.search);
+    const selectedPhotoId = searchParams.get('selectedPhotoId');
+
+    if (selectedPhotoId !== null && selectedPhotoId !== '-1') {
+      setRenderComponent('PhotoDetail');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]); // location.search를 의존성으로 설정
+
+  // 진행 중 모임 때 상태 확인 후 모임종료로 redirect 하는 로직 추가
+  const checkMoimOngoingStatus = async () => {
+    const status = await getMoimStatus(moimId);
+    if (status == 'ONGOING') return;
+    else {
+      let current = 5;
+      const timerId = setInterval(function () {
+        if (current == 0) {
+          clearInterval(timerId);
+          navigate(`/ended-gathering?moimId=${moimId}`);
+        }
+        setModal({
+          title: '모임이 종료됐어요.',
+          description: '5초 뒤에 자동으로 모임종료 페이지로 이동해요.',
+          firstButton: '확인',
+          onClickFirstButton: () => {
+            navigate(`/ended-gathering?moimId=${moimId}`);
+          },
+        });
+        current--;
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    checkMoimOngoingStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const arrowButtonClickHandler = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    console.warn('클릭됨');
+    e.preventDefault();
+    setRenderComponent('PhotoList');
+  };
+
+  return (
+    moimId >= 0 && (
+      <>
+        <div className={cn('ongoing_gathering')}>
+          {renderComponent === 'OngoingMain' && (
+            <RenderOngoingMain
+              moimStatus="ONGOING"
+              moimId={moimId}
+              setModal={setModal}
+              checkMoimOngoingStatus={checkMoimOngoingStatus}
+              arrowButtonClickHandler={arrowButtonClickHandler}
+              inviteFriendOpen={inviteFriendOpen}
+              setInviteFriendOpen={setInviteFriendOpen}
+              exitBtnClicked={exitBtnClicked}
+            />
+          )}
+          {renderComponent === 'PhotoList' && (
+            <RenderPhotoList
+              moimId={String(moimId)}
+              setRenderComponent={setRenderComponent}
+            />
+          )}
+          {renderComponent === 'PhotoDetail' && (
+            <RenderPhotoDetail
+              moimId={String(moimId)}
+              setRenderComponent={setRenderComponent}
+            />
+          )}
+          {!inviteFriendOpen && (
+            <OngoingFooter
+              moimId={moimId}
+              setModal={setModal}
+              checkMoimOngoingStatus={checkMoimOngoingStatus}
+              setExitBtnClicked={setExitBtnClicked}
+            />
+          )}
+        </div>
+        {modal && (
+          <Modal>
+            <ModalContents
+              title={modal.title}
+              description={modal.description}
+              firstButton={modal.firstButton}
+              secondButton={modal.secondButton}
+              onClickFirstButton={modal.onClickFirstButton}
+              onClickSecondButton={modal.onClickSecondButton}
+            />
+          </Modal>
+        )}
+      </>
+    )
+  );
+};
+
+export default OngoingGathering;

@@ -1,0 +1,37 @@
+.share_modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  .inner {
+    overflow: hidden;
+    position: absolute;
+    right: 36px;
+    left: 36px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background-color: $gray-700;
+  }
+  .capture_area {
+    padding: 45px 13px 56px;
+    background-color: $gray-700;
+  }
+  .moime {
+    position: absolute;
+    right: 0;
+    bottom: 22px;
+    left: 0;
+    height: 18px;
+    text-align: center;
+  }
+  .logo_image {
+    height: 100%;
+  }
+}

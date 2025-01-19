@@ -1,4 +1,3 @@
-import React from 'react';
 import { statisticsProps } from './types/index';
 
 const StatisticsPage = (props: statisticsProps) => {

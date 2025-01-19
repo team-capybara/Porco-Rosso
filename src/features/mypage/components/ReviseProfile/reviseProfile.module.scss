@@ -1,0 +1,40 @@
+.revise_profile {
+  .title_area {
+    overflow: hidden;
+    padding: 0 16px;
+  }
+  .title {
+    @include font-type('24-30');
+    color: #fff;
+  }
+  .clear_button {
+    @include font-type('16-22', 500);
+    float: right;
+    padding: 4px;
+    margin: 0 -4px;
+    color: $green;
+  }
+  .wrap_login {
+    margin-top: 11px;
+    text-align: center;
+    .icon {
+      width: 14px;
+      height: 16px;
+      margin: 6px 4px 0 0;
+      color: $gray-300;
+    }
+  }
+  .apple_login {
+    @include font-type('14-20');
+    display: inline-block;
+    line-height: 30px;
+    color: $gray-300;
+    vertical-align: top;
+  }
+  .wrap_profile_image {
+    margin-top: 56px;
+  }
+  .wrap_nickname_input {
+    margin: 20px 16px 0;
+  }
+}

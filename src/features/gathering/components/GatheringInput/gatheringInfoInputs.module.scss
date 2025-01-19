@@ -1,0 +1,71 @@
+.gathering_info_inputs {
+  margin: 0 16px;
+  .info_button + .info_button {
+    margin-top: 32px;
+  }
+  .title {
+    @include font-type('16-22', 600);
+    display: block;
+    margin-bottom: 12px;
+    color: $gray-50;
+    .icon {
+      width: 18px;
+      height: 18px;
+      margin: 2px 4px 0 0;
+      color: $gray-50;
+    }
+  }
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 56px;
+    padding: 0 20px;
+    border-radius: 30px;
+    background-color: $gray-500;
+    box-sizing: border-box;
+    .text {
+      @include ellipsis(1);
+      @include font-type('16-22', 600);
+      flex: 1 1 auto;
+      overflow-x: auto;
+      color: $gray-400;
+      white-space: nowrap;
+      text-align: left;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      &.active {
+        color: $gray-50;
+      }
+    }
+    .number {
+      @include number-font-type('16-22', 400);
+      color: $gray-50;
+    }
+    .icon {
+      flex: none;
+      width: 24px;
+      height: 24px;
+      margin: 0 6px 0 14px;
+      color: $gray-700;
+      transform: rotate(180deg);
+    }
+    &.active .text {
+      color: $gray-50;
+    }
+  }
+  .wrap_confirm_button {
+    margin: 24px 16px 32px;
+  }
+  .confirm_button {
+    @include font-type('16-22', 600);
+    display: block;
+    width: 100%;
+    height: 56px;
+    border-radius: 30px;
+    background-color: $gray-300;
+    color: $gray-700;
+  }
+}

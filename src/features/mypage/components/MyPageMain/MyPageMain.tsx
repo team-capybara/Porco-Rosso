@@ -1,0 +1,184 @@
+import classnames from 'classnames/bind';
+import style from './myPageMain.module.scss';
+import ArrowLeft24X24 from '../../../../assets/svg/arrow/ArrowLeft24X24';
+import Modal from '../../../../common/components/Modal/Modal';
+import ModalContents from '../../../../common/components/Modal/ModalContents';
+import { MyPageMainProps } from '../../types';
+import { useEffect, useState } from 'react';
+import { userLogout } from '../../../../api/service/authApi';
+
+const cn = classnames.bind(style);
+
+interface ItemProps {
+  url: string;
+  text: string;
+  handleClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+}
+
+const MyPageMain = ({ userProfile, setRenderComponent }: MyPageMainProps) => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [appVersion, setAppVersion] = useState<string>('');
+
+  useEffect(() => {
+    function waitForBridge(callback: { (): void; (): void }, maxChecks = 30) {
+      let attempts = 0;
+
+      const interval = setInterval(() => {
+        attempts++;
+
+        if (window.kmpJsBridge !== undefined) {
+          clearInterval(interval);
+          callback();
+        } else if (attempts >= maxChecks) {
+          clearInterval(interval);
+          console.warn('Bridge connection attempts exceeded the limit.');
+        }
+      }, 100); // 100ms 간격
+
+      return () => clearInterval(interval); // 컴포넌트 언마운트 시 클린업
+    }
+
+    waitForBridge(() => {
+      window.kmpJsBridge?.callNative(
+        'onGetAppVersion',
+        '',
+        function (data: string) {
+          const parsedData = JSON.parse(data);
+          setAppVersion(parsedData.version);
+        }
+      );
+    });
+  }, []);
+
+  const renderItem = ({ text, url, handleClick }: ItemProps) => {
+    return (
+      <a href={url} onClick={handleClick} className={cn('link')}>
+        <span className={cn('text')}>{text}</span>
+        <ArrowLeft24X24 className={cn('arrow_icon')} />
+      </a>
+    );
+  };
+
+  return (
+    <div className={cn('my_page_main')}>
+      <strong className={cn('title')}>마이페이지</strong>
+      <div className={cn('profile_area')}>
+        <div className={cn('thumbnail')}>
+          <img src={userProfile.profile} alt="" className={cn('image')} />
+        </div>
+        <div className={cn('information')}>
+          <strong className={cn('nickname')}>{userProfile.nickname}</strong>
+          <div className={cn('email')}>{userProfile.email}</div>
+        </div>
+      </div>
+      <div className={cn('button_area')}>
+        <button
+          type="button"
+          className={cn('revise_button')}
+          onClick={() => setRenderComponent('reviseProfile')}
+        >
+          프로필 수정
+        </button>
+      </div>
+      {renderItem({
+        text: '알림 설정',
+        url: '/',
+        handleClick: (e) => {
+          e.preventDefault(); // href='/' 무효
+          setRenderComponent('alarmSetting');
+        },
+      })}
+      {/* 자주, 1:1, 앱 평가 외부링크 클릭시 브라우저가 따로 켜지는지..? */}
+      <div className={cn('section')}>
+        {renderItem({
+          text: '자주 묻는 질문',
+          url: 'https://moime.notion.site/25b90f89bb7940b2b783b21af182aa5b',
+        })}
+        {renderItem({
+          text: '1:1 문의',
+          url: 'https://docs.google.com/forms/d/e/1FAIpQLSdlOND37chlk68Ki_y2e4MBgP2E0Qou4wdbWWDMYCdZCOv5mw/viewform?usp=header',
+        })}
+        {renderItem({
+          text: '앱 평가',
+          url: '#',
+          handleClick: () => {
+            alert('준비중입니다.');
+          },
+        })}
+      </div>
+      <div className={cn('section')}>
+        {/* 아래 서비스 약관, 개인정보 처리방침, 공지사항 => 기획 및 퍼블 필요 */}
+        {renderItem({
+          text: '서비스 약관',
+          url: 'https://moime.notion.site/cacf52a3c35c4e5a9f25916581645f13',
+        })}
+        {renderItem({
+          text: '개인정보 처리방침',
+          url: 'https://moime.notion.site/fb9d3d1bfae14894ad776175bebadd97',
+        })}
+        {renderItem({
+          text: '공지사항',
+          url: 'https://moime.notion.site/20ba5534c347455bae6456adedf78b1d',
+        })}
+        {/* 버전정보 브릿지 및 위치정보? 기획필요 */}
+        <div className={cn('version_area')}>
+          <div className={cn('version')}>
+            버전정보<span className={cn('number')}>{appVersion}</span>
+          </div>
+        </div>
+      </div>
+      <div className={cn('account_area')}>
+        <a
+          href="/"
+          className={cn('account_link')}
+          onClick={(e) => {
+            e.preventDefault(); // href='/' 무효
+            setModalOpen(true);
+          }}
+        >
+          로그아웃
+        </a>
+        {/* 계정 삭제 상세페이지 퍼블 필요(기획중..) */}
+        <a
+          href="/"
+          className={cn('account_link')}
+          onClick={(e) => {
+            e.preventDefault(); // href='/' 무효
+            setRenderComponent('deleteUser');
+          }}
+        >
+          계정 삭제
+        </a>
+      </div>
+      {/* 로그아웃 클릭 시 모달 */}
+      {modalOpen && (
+        <Modal>
+          <ModalContents
+            title="로그아웃"
+            description="모이미에서 로그아웃할까요?"
+            firstButton="아직이요"
+            secondButton="로그아웃"
+            onClickFirstButton={() => {
+              setModalOpen(false);
+            }}
+            onClickSecondButton={() => {
+              userLogout().then(() => {
+                window.location.href = '/login'; // to SocialLogin
+              });
+            }}
+          />
+        </Modal>
+      )}
+    </div>
+  );
+};
+
+MyPageMain.defaultProps = {
+  userProfile: {
+    profile: '',
+    nickname: '',
+    email: '',
+  },
+};
+
+export default MyPageMain;

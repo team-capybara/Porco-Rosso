@@ -1,0 +1,59 @@
+.time_input {
+  margin: 0 16px 16px;
+  .title {
+    @include font-type('16-22', 500);
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    color: $gray-50;
+    .icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+      color: $gray-50;
+    }
+  }
+  .wrap_time {
+    overflow: hidden;
+    height: 110px;
+    margin: 0 -4px;
+  }
+  .time_list {
+    overflow-y: auto;
+    display: inline-block;
+    // scroll snap 테스트중
+    scroll-snap-type: y;
+    width: 50%;
+    padding: 0 4px;
+    max-height: 100%;
+    box-sizing: border-box;
+    vertical-align: top;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .item:first-child {
+      margin-top: 10px;
+    }
+    .item:last-child {
+      margin-bottom: 10px;
+    }
+    .item + .item {
+      margin-top: 15px;
+      // scroll snap 테스트중
+      scroll-snap-align: center;
+    }
+    .button {
+      @include font-type('20-24');
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 48px;
+      border-radius: 30px;
+      // background-color: $gray-500;
+      color: $gray-50;
+      &.active {
+        background-color: $gray-500;
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+.notification_page {
+  .title {
+    @include font-type('24-30');
+    padding: 0 16px;
+    color: $gray-50;
+  }
+  .notification_list {
+    margin: 44px 16px;
+  }
+  .base {
+    padding: 16px;
+    background-color: transparent;
+  }
+  .item {
+    padding: 16px;
+    border-radius: 20px;
+    background-color: $gray-500;
+    & + .item {
+      margin-top: 8px;
+    }
+    .inner {
+      display: flex;
+    }
+    .badge {
+      flex: none;
+      width: 48px;
+      height: 48px;
+      margin-right: 13px;
+      border-radius: 50%;
+      background-color: $gray-100;
+      .icon {
+        display: block;
+        width: 24px;
+        height: 24px;
+        margin: 12px auto 0;
+        color: $gray-600;
+      }
+      &.warning {
+        background-color: $red;
+        .icon {
+          color: $gray-50;
+        }
+      }
+    }
+    .text_area {
+      .text {
+        @include font-type('16-22', 500);
+        color: $gray-50;
+        word-break: keep-all;
+      }
+      .time {
+        @include font-type('14-20');
+        margin: 5px 0 -3px 0;
+        color: $gray-400;
+      }
+      .number {
+        @include number-font-type('14-20');
+        color: inherit;
+      }
+    }
+    // 읽지 않은 알림인 경우
+    &.not_read::before {
+      display: block;
+      width: 8px;
+      height: 8px;
+      margin-bottom: 3px;
+      border-radius: 50%;
+      background-color: $red;
+      content: '';
+    }
+  }
+}

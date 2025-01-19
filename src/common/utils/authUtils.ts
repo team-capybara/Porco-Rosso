@@ -1,0 +1,129 @@
+const getCookie = (name: string) => {
+  const cookieString = document.cookie;
+  const cookies = cookieString.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    // 쿠키 이름이 일치하는 경우 해당 값을 반환
+    if (cookie.startsWith(name + '=')) {
+      return cookie.substring(name.length + 1);
+    }
+  }
+  // 일치하는 쿠키가 없을 경우 null 반환
+  return null;
+};
+
+const setCookie = (name: string, value: string, days: number) => {
+  const date = new Date();
+  date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+  const expires = 'expires=' + date.toUTCString();
+  document.cookie = name + '=' + value + ';' + expires + ';path=/';
+};
+
+const deleteCookie = (name: string, domain: string) => {
+  // 쿠키가 저장된 도메인과 일치해야 삭제가능
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1999 00:00:10 GMT; path=/; domain=${domain};`;
+};
+
+const getQueryStringValue = (key: string, url = window.location.href) => {
+  const urlObj = new URL(url);
+  const params = new URLSearchParams(urlObj.search);
+  // 특정 키의 값을 가져옵니다.
+  return params.get(key);
+};
+
+const textInputValidation = (
+  input: string,
+  type: 'withEmoji' | 'withoutEmoji'
+) => {
+  // 허용된 문자: 한글, 영어, 숫자, 공백, 특수 문자 (!@#^%_$), 이모지
+  const validCharacters = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9!@#^%_$\s]+$/u;
+  const validCharactersWithEmoji =
+    /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9!@#^%_$\s\p{Emoji}]+$/u;
+
+  if (input.trim() === '') {
+    return '입력이 공백만으로 이루어질 수 없습니다.';
+  }
+
+  // type에 따라 이모지 포함/미포함 정규식 선택
+  const validPattern =
+    type === 'withEmoji' ? validCharactersWithEmoji : validCharacters;
+
+  if (!validPattern.test(input)) {
+    return type === 'withEmoji'
+      ? '한글/영어/숫자/특수 문자(!@#^%_$)/이모지만 사용할 수 있습니다.'
+      : '한글/영어/숫자/특수 문자(!@#^%_$)만 사용할 수 있습니다.';
+  }
+
+  if (input.length < 1 || input.length > 15) {
+    return '글자 수는 1자 이상, 15자 이하여야 합니다.';
+  }
+
+  return '';
+};
+
+const getTokenFromApp = () => {
+  const accessTokenFromApp = getCookie('Authorization');
+  if (accessTokenFromApp) {
+    const extractedToken = accessTokenFromApp.split(' ')[1];
+    return extractedToken;
+  }
+  return null;
+};
+
+const parsingToken = (): Promise<string | null> => {
+  return new Promise<string | null>((resolve, reject) => {
+    if (!window.kmpJsBridge) {
+      reject('kmpJsBridge not available');
+      return;
+    }
+    window.kmpJsBridge.callNative(
+      'getAccessToken',
+      '',
+      function (data: string) {
+        try {
+          const parsedData = JSON.parse(data);
+          console.log(parsedData, 'parsedData from access token app');
+          if (parsedData && parsedData.accessToken) {
+            resolve(parsedData.accessToken);
+          } else {
+            resolve(null);
+          }
+        } catch (error) {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
+const getTokenFromAppByBridge = (): Promise<string | null> => {
+  const maxRetries = 5; // 최대 재시도 횟수
+  const retryDelay = 500; // 재시도 간격 (ms)
+
+  let retries = 0;
+
+  return new Promise<string | null>((resolve, reject) => {
+    const tryGetToken = () => {
+      if (window.kmpJsBridge) {
+        parsingToken().then(resolve).catch(reject);
+      } else if (retries < maxRetries) {
+        retries++;
+        setTimeout(tryGetToken, retryDelay);
+      } else {
+        reject('Failed to get token: kmpJsBridge not initialized');
+      }
+    };
+
+    tryGetToken();
+  });
+};
+
+export {
+  getCookie,
+  setCookie,
+  deleteCookie,
+  getQueryStringValue,
+  textInputValidation,
+  getTokenFromApp,
+  getTokenFromAppByBridge,
+};

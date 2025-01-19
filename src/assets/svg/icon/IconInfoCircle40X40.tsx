@@ -1,0 +1,24 @@
+import { SVGProps } from 'react';
+
+const IconInfoCircle40X40 = (props: SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={40}
+      height={40}
+      fill="none"
+      viewBox="0 0 40 40"
+      {...props}
+    >
+      <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+        <path
+          strokeWidth="1.875"
+          d="M20.003 36.667c9.166 0 16.666-7.5 16.666-16.667S29.17 3.333 20.003 3.333 3.336 10.833 3.336 20s7.5 16.667 16.667 16.667M20 13.333v8.334"
+        />
+        <path strokeWidth="2.5" d="M19.992 26.667h.015" />
+      </g>
+    </svg>
+  );
+};
+
+export default IconInfoCircle40X40;

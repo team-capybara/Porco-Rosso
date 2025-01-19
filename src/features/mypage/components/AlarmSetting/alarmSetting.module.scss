@@ -1,0 +1,76 @@
+.alarm_setting {
+  .title {
+    @include font-type('24-30');
+    display: block;
+    padding: 0 16px 36px;
+    color: $gray-50;
+  }
+  .section {
+    padding: 32px 0 28px;
+    border-top: 2px solid $gray-500;
+    &:first-of-type {
+      padding-bottom: 67px;
+      .item {
+        margin-top: 0;
+      }
+    }
+  }
+  .section_title {
+    @include font-type('20-26', 700);
+    padding: 4px 16px;
+    color: $gray-50;
+  }
+  .item {
+    @include font-type('16-22', 600);
+    overflow: hidden;
+    margin-top: 20px;
+    padding: 4px 16px;
+    color: $gray-50;
+    .text {
+      float: right;
+    }
+  }
+  .toggle_button {
+    float: right;
+    position: relative;
+    width: 44px;
+    height: 24px;
+    margin-left: 5px;
+    border-radius: 40px;
+    background-color: #23b36b;
+    &::after {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: $gray-50;
+      transition: all 0.1s ease-out;
+      content: '';
+    }
+    &.off {
+      background-color: $gray-300;
+      &::after {
+        right: 22px;
+      }
+    }
+  }
+  &.is_off {
+    .section:not(:first-of-type) {
+      position: relative;
+      &::after {
+        position: absolute;
+        top: -2px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        content: '';
+      }
+      &:nth-of-type(2)::after {
+        top: 0;
+      }
+    }
+  }
+}

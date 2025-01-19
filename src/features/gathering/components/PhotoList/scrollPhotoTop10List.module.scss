@@ -1,0 +1,15 @@
+.scroll_photo_top10_list {
+  .photo_list {
+    padding: 0 16px;
+  }
+  .item {
+    overflow: hidden;
+    display: inline-block;
+    width: 328px;
+    border-radius: 8px;
+    vertical-align: top;
+    & + .item {
+      margin-left: 8px;
+    }
+  }
+}
